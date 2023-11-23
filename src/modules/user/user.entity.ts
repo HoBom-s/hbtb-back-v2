@@ -11,11 +11,13 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({
+    default: () => "",
+  })
   profileImg: string;
 
   @Column()
-  role: string;
+  role: "admin" | "user";
 
   @Column()
   introduction: string;
