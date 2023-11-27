@@ -1,6 +1,7 @@
 import { myDataSource } from "../../data-source";
 import User from "./user.entity";
-import { UserDto } from "./dto/user.dto";
+import { createUserDto } from "./dtos/createUser.dto";
+import { v4 as uuid4 } from "uuid";
 
 const user = myDataSource.getRepository(User);
 
@@ -20,7 +21,9 @@ export class UserRepository {
     return foundUser;
   }
 
-  async createUser(newUserInfo: UserDto) {
+  async createUser(newUserInfo: createUserDto) {
+    const id = uuid4();
+    // id 추가
     const createdUser = user.create(newUserInfo);
     return createdUser;
   }

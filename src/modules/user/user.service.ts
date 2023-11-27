@@ -1,4 +1,4 @@
-import { UserDto } from "./dto/user.dto";
+import { createUserDto } from "./dtos/createUser.dto";
 import { UserRepository } from "./user.repository";
 
 export class UserService {
@@ -23,7 +23,16 @@ export class UserService {
     );
   }
 
-  async createUser(newUserInfo: UserDto) {
+  async createUser(newUserInfo: createUserDto) {
+    const { nickname, password, profileImg, role, introduction } = newUserInfo;
+    const foundUser = await this.#userRepository.findOneUserByNickname(
+      nickname
+    );
+    if (foundUser) {
+      // error handling middleware
+      console.warn("해당 유저가 이미 존재합니다.");
+      return;
+    }
     const createdUser = this.#userRepository.createUser(newUserInfo);
     return createdUser;
   }
