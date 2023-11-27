@@ -1,4 +1,5 @@
 import { DataSource } from "typeorm";
+import { User } from "./modules/user/user.entity";
 
 export const myDataSource = new DataSource({
   type: "mysql",
@@ -7,7 +8,7 @@ export const myDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DB,
-  entities: ["src/entity/*.js"],
+  entities: [User],
   logging: true,
   synchronize: true,
 });

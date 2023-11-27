@@ -4,7 +4,7 @@ import { UserDto } from "./dto/user.dto";
 
 const user = myDataSource.getRepository(User);
 
-export class userRepository {
+export class UserRepository {
   async findOneUserByNicknameAndRole(nickname: string, role: "admin" | "user") {
     const foundUser = await user.findOneBy({ nickname, role });
     return foundUser;
