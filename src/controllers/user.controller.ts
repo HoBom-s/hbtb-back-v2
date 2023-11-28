@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { TCreateUser } from "../types/user";
 import { UserService } from "../services/user.service";
 
-class UserController {
+export class UserController {
   private userService: UserService;
 
   constructor() {
