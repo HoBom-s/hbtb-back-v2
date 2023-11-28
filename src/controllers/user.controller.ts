@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { TCreateUser } from "../types/user";
-import userService from "../services/user.service";
+import { UserService } from "../services/user.service";
 
 class UserController {
+  private userService: UserService;
+
+  constructor() {
+    this.userService = new UserService();
+  }
+
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { nickname, password, profileImg, introduction }: TCreateUser =
@@ -13,7 +19,7 @@ class UserController {
         console.error("모든 필수값을 입력해주세요");
       }
 
-      const createdUser = await userService.createUser({
+      const createdUser = await this.userService.createUser({
         nickname,
         password,
         profileImg,
@@ -31,10 +37,6 @@ class UserController {
     }
   }
 }
-
-const userController = new UserController();
-
-export default userController;
 
 /*
 logoutUserRequest

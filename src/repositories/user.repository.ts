@@ -5,7 +5,7 @@ import { TRole, TCreateUser } from "../types/user";
 
 const user = myDataSource.getRepository(User);
 
-class UserRepository {
+export class UserRepository {
   async findOneUserByNicknameAndRole(nickname: string, role: TRole) {
     const foundUser = await user.findOneBy({ nickname, role });
     return foundUser;
@@ -28,9 +28,6 @@ class UserRepository {
     return createdUser;
   }
 }
-
-const userRepository = new UserRepository();
-export default userRepository;
 
 /*
 loginUserRequest
