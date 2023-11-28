@@ -11,13 +11,16 @@ export class User {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   nickname: string;
 
   @Column()
   password: string;
 
   @Column({
+    nullable: true,
     default: () => "",
   })
   profileImg: string;
@@ -28,9 +31,11 @@ export class User {
   @Column()
   introduction: string;
 
+  @Column()
   @CreateDateColumn()
   createdAt: Date;
 
+  @Column()
   @UpdateDateColumn()
   updatedAt: Date;
 }
