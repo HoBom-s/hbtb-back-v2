@@ -1,12 +1,12 @@
-import { myDataSource } from "../../data-source";
-import User from "./user.entity";
-import { createUserDto } from "./dtos/createUser.dto";
+import { myDataSource } from "../data-source";
+import User from "../entities/user.entity";
 import { v4 as uuid4 } from "uuid";
+import { TRole, TCreateUser } from "../types/user";
 
 const user = myDataSource.getRepository(User);
 
-export class UserRepository {
-  async findOneUserByNicknameAndRole(nickname: string, role: "admin" | "user") {
+class UserRepository {
+  async findOneUserByNicknameAndRole(nickname: string, role: TRole) {
     const foundUser = await user.findOneBy({ nickname, role });
     return foundUser;
   }
@@ -21,13 +21,16 @@ export class UserRepository {
     return foundUser;
   }
 
-  async createUser(newUserInfo: createUserDto) {
+  async createUser(newUserInfo: TCreateUser) {
     const id = uuid4();
-    // id 추가
-    const createdUser = user.create(newUserInfo);
+    const userInfoWithId = { ...newUserInfo, id };
+    const createdUser = user.create(userInfoWithId);
     return createdUser;
   }
 }
+
+const userRepository = new UserRepository();
+export default userRepository;
 
 /*
 loginUserRequest

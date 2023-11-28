@@ -6,6 +6,8 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
+import { TRole } from "../types/user";
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -25,8 +27,10 @@ export class User {
   })
   profileImg: string;
 
-  @Column()
-  role: "admin" | "user";
+  @Column({
+    default: "user" as TRole,
+  })
+  role: TRole;
 
   @Column()
   introduction: string;
