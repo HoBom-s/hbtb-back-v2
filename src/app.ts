@@ -1,6 +1,5 @@
 import express from "express";
-import { Express, Request, Response } from "express";
-import { User } from "./entities/user.entity";
+import { Express } from "express";
 import userRouter from "./routes/user.router";
 import { myDataSource } from "./data-source";
 import dotenv from "dotenv";
