@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { TCreateUser } from "../types/user";
+import { TCreateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
 
 export class UserController {
@@ -17,6 +17,7 @@ export class UserController {
       if (!nickname || !password || !introduction) {
         // error handling middleware
         console.error("모든 필수값을 입력해주세요");
+        return;
       }
 
       const createdUser = await this.userService.createUser({
@@ -26,14 +27,15 @@ export class UserController {
         introduction,
       });
 
-      res.status(201).json({
+      return res.status(201).json({
         status: 201,
         message: "Successfully created user",
         data: createdUser,
       });
     } catch (error) {
       // error handling middleware
-      next(error);
+      // next(error);
+      console.error(error);
     }
   }
 }

@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-import { TRole } from "../types/user";
+import { TRole } from "../types/user.type";
 
 @Entity()
 export class User {
