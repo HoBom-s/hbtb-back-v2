@@ -2,6 +2,7 @@ import { UserRepository } from "../repositories/user.repository";
 import { TRole, TCreateUser } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import User from "../entities/user.entity";
+import { CustomError } from "../middleware/error.middleware";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -19,9 +20,7 @@ export class UserService {
       role
     );
     if (!foundUser) {
-      // error handling middleware
-      console.error("해당 유저가 존재하지 않습니다.");
-      return;
+      throw new CustomError(400, "해당 유저가 존재하지 않습니다.");
     }
     return foundUser;
   }
@@ -29,9 +28,7 @@ export class UserService {
   async findOneUserById(id: string): Promise<PossibleNull<User>> {
     const foundUser = await this.userRepository.findOneUserById(id);
     if (!foundUser) {
-      // error handling middleware
-      console.error("해당 유저가 존재하지 않습니다.");
-      return;
+      throw new CustomError(400, "해당 유저가 존재하지 않습니다.");
     }
     return foundUser;
   }
@@ -39,9 +36,7 @@ export class UserService {
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
     if (!foundUser) {
-      // error handling middleware
-      console.error("해당 유저가 존재하지 않습니다.");
-      return;
+      throw new CustomError(400, "해당 유저가 존재하지 않습니다.");
     }
     return foundUser;
   }
@@ -50,9 +45,7 @@ export class UserService {
     const { nickname, password, profileImg, introduction } = newUserInfo;
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
     if (foundUser) {
-      // error handling middleware
-      console.warn("해당 유저가 이미 존재합니다.");
-      return;
+      throw new CustomError(400, "해당 유저가 이미 존재합니다.");
     }
     const createdUser = this.userRepository.createUser(newUserInfo);
     return createdUser;

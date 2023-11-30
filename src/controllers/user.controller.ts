@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { TCreateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
+import { CustomError } from "../middleware/error.middleware";
 
 export class UserController {
   private userService: UserService;
@@ -15,9 +16,7 @@ export class UserController {
         req.body;
 
       if (!nickname || !password || !introduction) {
-        // error handling middleware
-        console.error("모든 필수값을 입력해주세요");
-        return;
+        throw new CustomError(400, "모든 필수값을 입력해주세요");
       }
 
       const createdUser = await this.userService.createUser({
@@ -33,9 +32,7 @@ export class UserController {
         data: createdUser,
       });
     } catch (error) {
-      // error handling middleware
-      // next(error);
-      console.error(error);
+      next(error);
     }
   }
 }
