@@ -15,9 +15,8 @@ export class UserController {
       const { nickname, password, profileImg, introduction }: TCreateUser =
         req.body;
 
-      if (!nickname || !password || !introduction) {
+      if (!nickname || !password || !introduction)
         throw new CustomError(400, "모든 필수값을 입력해주세요.");
-      }
 
       const createdUser = await this.userService.createUser({
         nickname,
@@ -34,6 +33,15 @@ export class UserController {
     } catch (error) {
       next(error);
     }
+  }
+
+  async loginUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { nickname, password } = req.body;
+
+      if (!nickname || !password)
+        throw new CustomError(400, "아이디와 비밀번호를 입력해주세요.");
+    } catch (error) {}
   }
 }
 
