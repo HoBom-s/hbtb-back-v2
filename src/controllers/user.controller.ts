@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { TCreateUser } from "../types/user.type";
+import { TCreateUser, TLoginUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middleware/error.middleware";
 
@@ -37,11 +37,31 @@ export class UserController {
 
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { nickname, password } = req.body;
+      const { nickname, password }: TLoginUser = req.body;
 
       if (!nickname || !password)
         throw new CustomError(400, "아이디와 비밀번호를 입력해주세요.");
-    } catch (error) {}
+
+      const { accessToken, refreshToken } = await this.userService.loginUser(
+        nickname,
+        password
+      );
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 3 * 24 * 60 * 60 * 1000, // 3days in milliseconds
+      });
+
+      return res.json({
+        status: 200,
+        message: "Login success.",
+        accessToken,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 }
 

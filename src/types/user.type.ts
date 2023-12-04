@@ -6,3 +6,8 @@ export type TCreateUser = {
   profileImg?: string;
   introduction: string;
 };
+
+export type TLoginUser = {
+  nickname: string;
+  password: string;
+};
