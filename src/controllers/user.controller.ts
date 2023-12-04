@@ -16,7 +16,7 @@ export class UserController {
         req.body;
 
       if (!nickname || !password || !introduction) {
-        throw new CustomError(400, "모든 필수값을 입력해주세요");
+        throw new CustomError(400, "모든 필수값을 입력해주세요.");
       }
 
       const createdUser = await this.userService.createUser({
@@ -28,7 +28,7 @@ export class UserController {
 
       return res.status(201).json({
         status: 201,
-        message: "Successfully created user",
+        message: "Successfully created user.",
         data: createdUser,
       });
     } catch (error) {

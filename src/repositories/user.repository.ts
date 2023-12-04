@@ -4,6 +4,7 @@ import User from "../entities/user.entity";
 import { v4 as uuid4 } from "uuid";
 import { TRole, TCreateUser } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
+import bcrypt from "bcrypt";
 
 export class UserRepository {
   private user: Repository<User>;
@@ -31,9 +32,11 @@ export class UserRepository {
   }
 
   async createUser(newUserInfo: TCreateUser): Promise<User> {
+    const { nickname, password, profileImg, introduction } = newUserInfo;
     const id = uuid4();
-    const userInfoWithId = { ...newUserInfo, id };
-    const createdUser = this.user.create(userInfoWithId);
+    const hashedPassword = bcrypt.hashSync(password, process.env.SALT!);
+    const userInfo = { id, nickname, hashedPassword, profileImg, introduction };
+    const createdUser = this.user.create(userInfo);
     return createdUser;
   }
 }
