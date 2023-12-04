@@ -11,9 +11,7 @@ export class Auth {
   @PrimaryColumn()
   id: string;
 
-  @Column({
-    unique: true,
-  })
+  @Column()
   userId: string;
 
   @Column()
