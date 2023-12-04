@@ -4,14 +4,16 @@ import { PossibleNull } from "../types/common.type";
 import User from "../entities/user.entity";
 import { CustomError } from "../middleware/error.middleware";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import AuthHelper from "../helpers/auth.helper";
+import { AuthService } from "./auth.service";
 
 export class UserService {
   private userRepository: UserRepository;
+  private authServcie: AuthService;
 
   constructor() {
     this.userRepository = new UserRepository();
+    this.authServcie = new AuthService();
   }
 
   async findOneUserByNicknameAndRole(
@@ -63,11 +65,19 @@ export class UserService {
     if (!isPasswordCorrect)
       throw new CustomError(400, "비밀번호를 확인해주세요.");
 
-    const id = foundUser.id;
-    const authHelper = new AuthHelper();
-    const accessToken = authHelper.createAccessToken(id);
-    const refreshToken = authHelper.createRefreshToken(id);
+    const userId = foundUser.id;
+    const accessToken = this.authServcie.createAccessToken(userId);
+    const refreshToken = this.authServcie.createRefreshToken(userId);
 
     return { accessToken, refreshToken };
   }
 }
+
+/**
+ * 로그인 할 때
+ * (v) 1. access, refresh 둘 다 발급
+ * ( ) 2. refresh 쿠키 저장
+ * ( ) 3. refresh DB 저장
+ * ( ) 4. access 프론트 전달
+ *
+ */
