@@ -22,6 +22,12 @@ export class AuthRepository {
     });
     return createdRefreshToken;
   }
+
+  async getExistingRefreshToken(userId: string) {
+    const foundRefreshToken = this.auth.findOneBy({ userId });
+    if (!foundRefreshToken) this.createAndSaveRefreshToken(userId);
+    // 이미 refresh토큰 있을 시, 유효여부 확인 -> auth helper
+  }
 }
 
 /**
@@ -29,4 +35,5 @@ export class AuthRepository {
  * 2. 저장: repo
  * 3. 폐기: repo
  * 4. 비교: helper
+ * 5. 유효여부: helper
  */

@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 class AuthHelper {
   constructor() {}
@@ -27,6 +27,25 @@ class AuthHelper {
     );
 
     return refreshToken;
+  }
+
+  verifyRefreshToken(token: string) {
+    try {
+      const decodedRefreshToken = jwt.verify(
+        token,
+        process.env.REFRESH_TOKEN_SECRET_KEY as string
+      );
+
+      if (typeof decodedRefreshToken === "object") {
+        const currentTime = Date.now() / 1000;
+        const tokenExpirationTime = decodedRefreshToken.exp || 0;
+        return tokenExpirationTime > currentTime;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
   }
 }
 

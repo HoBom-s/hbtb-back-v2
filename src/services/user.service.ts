@@ -67,7 +67,7 @@ export class UserService {
 
     const userId = foundUser.id;
     const accessToken = this.authServcie.createAccessToken(userId);
-    const refreshToken = this.authServcie.createRefreshToken(userId);
+    const refreshToken = this.authServcie.getRefreshTokenByUserId(userId);
 
     return { accessToken, refreshToken };
   }
