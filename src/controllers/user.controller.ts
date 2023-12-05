@@ -16,7 +16,7 @@ export class UserController {
         req.body;
 
       if (!nickname || !password || !introduction)
-        throw new CustomError(400, "모든 필수값을 입력해주세요.");
+        throw new CustomError(400, "Please insert all required inputs.");
 
       const createdUser = await this.userService.createUser({
         nickname,
@@ -40,7 +40,7 @@ export class UserController {
       const { nickname, password }: TLoginUser = req.body;
 
       if (!nickname || !password)
-        throw new CustomError(400, "아이디와 비밀번호를 입력해주세요.");
+        throw new CustomError(400, "Please check nickname and password.");
 
       const { accessToken, refreshToken } = await this.userService.loginUser(
         nickname,
@@ -63,11 +63,13 @@ export class UserController {
       next(error);
     }
   }
+
+  async logoutUser(req: Request, res: Response, next: NextFunction) {}
 }
 
 /*
-( ) logoutUserRequest
-( ) getUserInformationRequest
-( ) updateUserRequest
-( ) deleteUserRequest
+(WIP) logoutUserRequest
+() getUserInformationRequest
+() updateUserRequest
+() deleteUserRequest
 */

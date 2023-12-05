@@ -25,7 +25,7 @@ export class UserService {
       role
     );
     if (!foundUser) {
-      throw new CustomError(400, "해당 유저가 존재하지 않습니다.");
+      throw new CustomError(400, "User does not exist.");
     }
     return foundUser;
   }
@@ -33,7 +33,7 @@ export class UserService {
   async findOneUserById(id: string): Promise<PossibleNull<User>> {
     const foundUser = await this.userRepository.findOneUserById(id);
     if (!foundUser) {
-      throw new CustomError(400, "해당 유저가 존재하지 않습니다.");
+      throw new CustomError(400, "User does not exist.");
     }
     return foundUser;
   }
@@ -41,7 +41,7 @@ export class UserService {
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
     if (!foundUser) {
-      throw new CustomError(400, "해당 유저가 존재하지 않습니다.");
+      throw new CustomError(400, "User does not exist.");
     }
     return foundUser;
   }
@@ -50,7 +50,7 @@ export class UserService {
     const { nickname, password, profileImg, introduction } = newUserInfo;
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
     if (foundUser) {
-      throw new CustomError(400, "해당 유저가 이미 존재합니다.");
+      throw new CustomError(400, "User already exists.");
     }
     const createdUser = this.userRepository.createUser(newUserInfo);
     return createdUser;
@@ -58,12 +58,11 @@ export class UserService {
 
   async loginUser(nickname: string, password: string) {
     const foundUser = await this.findOneUserByNickname(nickname);
-    if (!foundUser)
-      throw new CustomError(400, "해당 유저가 존재하지 않습니다.");
+    if (!foundUser) throw new CustomError(400, "User does not exist.");
     const hashedPassword = foundUser.password;
     const isPasswordCorrect = bcrypt.compare(password, hashedPassword);
     if (!isPasswordCorrect)
-      throw new CustomError(400, "비밀번호를 확인해주세요.");
+      throw new CustomError(400, "Please check password.");
 
     const userId = foundUser.id;
     const accessToken = this.authServcie.createAccessToken(userId);

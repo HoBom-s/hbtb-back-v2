@@ -21,4 +21,5 @@ export function errorMiddleware(
     statusCode,
     message,
   });
+  next();
 }
