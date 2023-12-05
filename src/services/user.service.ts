@@ -67,18 +67,8 @@ export class UserService {
 
     const userId = foundUser.id;
     const accessToken = this.authServcie.createAccessToken(userId);
-    const refreshToken = this.authServcie.getRefreshTokenByUserId(userId);
+    const refreshToken = this.authServcie.getRefreshToken(userId);
 
     return { accessToken, refreshToken };
   }
 }
-
-/**
- * 로그인 할 때
- * (v) 1. access, refresh 둘 다 발급
- *    () DB에 '유효한' refreshToken이 있는 경우 -> expiration 확인
- *    () DB에 refreshToken이 없는 경우 -> 새로 발급
- * () 2. refresh 쿠키 저장
- * () 3. refresh DB 저장
- * () 4. access 프론트 전달
- */

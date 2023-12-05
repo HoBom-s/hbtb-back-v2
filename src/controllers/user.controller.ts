@@ -66,10 +66,8 @@ export class UserController {
 }
 
 /*
-( ) loginUserRequest
 ( ) logoutUserRequest
 ( ) getUserInformationRequest
 ( ) updateUserRequest
 ( ) deleteUserRequest
-(v) Error handling middleware
 */

@@ -17,14 +17,8 @@ export class AuthService {
     return createdAccessToken;
   }
 
-  async getRefreshTokenByUserId(userId: string) {
-    const foundUser = await this.userRepository.findOneUserById(userId);
-    if (foundUser) {
-      const foundRefreshToken =
-        await this.authRepository.getExistingRefreshToken(userId);
-    }
-    const createdRefreshToken =
-      this.authRepository.createAndSaveRefreshToken(userId);
-    return createdRefreshToken;
+  async getRefreshToken(userId: string) {
+    const refreshToken = await this.authRepository.getRefreshToken(userId);
+    return refreshToken;
   }
 }

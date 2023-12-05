@@ -1,4 +1,4 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 class AuthHelper {
   constructor() {}
@@ -15,10 +15,10 @@ class AuthHelper {
     return accessToken;
   }
 
-  createRefreshToken(id: string) {
+  createRefreshToken(userId: string) {
     const refreshToken = jwt.sign(
       {
-        id,
+        userId,
       },
       process.env.REFRESH_TOKEN_SECRET_KEY as string,
       {
@@ -29,7 +29,7 @@ class AuthHelper {
     return refreshToken;
   }
 
-  verifyRefreshToken(token: string) {
+  verifyRefreshToken(token: string, userId: string) {
     try {
       const decodedRefreshToken = jwt.verify(
         token,
@@ -37,7 +37,7 @@ class AuthHelper {
       );
 
       if (typeof decodedRefreshToken === "object") {
-        const currentTime = Date.now() / 1000;
+        const currentTime = Math.floor(Date.now() / 1000);
         const tokenExpirationTime = decodedRefreshToken.exp || 0;
         return tokenExpirationTime > currentTime;
       } else {
