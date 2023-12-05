@@ -64,7 +64,13 @@ export class UserController {
     }
   }
 
-  async logoutUser(req: Request, res: Response, next: NextFunction) {}
+  async logoutUser(
+    req: Request & { userId?: string },
+    res: Response,
+    next: NextFunction
+  ) {
+    // WIP
+  }
 }
 
 /*

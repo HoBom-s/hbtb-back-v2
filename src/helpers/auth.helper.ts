@@ -3,9 +3,9 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 class AuthHelper {
   constructor() {}
 
-  createAccessToken(id: string) {
+  createAccessToken(userId: string) {
     const accessToken = jwt.sign(
-      { id },
+      { userId },
       process.env.ACCESS_TOKEN_SECRET_KEY as string,
       {
         expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME,
