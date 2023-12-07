@@ -69,12 +69,25 @@ export class UserController {
     res: Response,
     next: NextFunction
   ) {
-    // WIP
+    try {
+      const userId = req.userId;
+      if (!userId) throw new CustomError(400, "No token No userID");
+      // await this.userService.logoutUser(userId); // WIP
+      res.clearCookie("refreshToken");
+      return res.json({
+        status: 400,
+        message: "Logout success.",
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
 /*
 (WIP) logoutUserRequest
+  () 1. 유저측 쿠키 삭제: 액세스 토큰도 전달줬어야지
+  () 2. DB 리프레시 토큰 무효화: 삭제 or blacklist
 () getUserInformationRequest
 () updateUserRequest
 () deleteUserRequest
