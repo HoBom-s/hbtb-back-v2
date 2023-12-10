@@ -4,7 +4,6 @@ import { PossibleNull } from "../types/common.type";
 import User from "../entities/user.entity";
 import { CustomError } from "../middleware/error.middleware";
 import bcrypt from "bcrypt";
-import AuthHelper from "../helpers/auth.helper";
 import { AuthService } from "./auth.service";
 
 export class UserService {
@@ -82,5 +81,11 @@ export class UserService {
     if (!foundUser) throw new CustomError(400, "User not found");
     const updatedUser = this.userRepository.updateUser(id, updates);
     return updatedUser;
+  }
+
+  async deleteUser(id: string) {
+    const foundUser = await this.findOneUserById(id);
+    if (!foundUser) throw new CustomError(400, "User not found");
+    return this.userRepository.deleteUser(id);
   }
 }

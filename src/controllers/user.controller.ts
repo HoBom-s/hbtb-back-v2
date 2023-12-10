@@ -121,8 +121,23 @@ export class UserController {
       next(error);
     }
   }
-}
 
-/*
-() deleteUserRequest
-*/
+  async deleteUser(
+    req: Request & { userId?: string },
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { id } = req.params;
+      const userId = req.userId;
+      if (id !== userId) throw new CustomError(400, "User not identical.");
+      await this.userService.deleteUser(id);
+      return res.json({
+        status: 201,
+        message: "Delete user success",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+}

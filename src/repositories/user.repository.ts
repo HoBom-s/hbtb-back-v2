@@ -50,4 +50,8 @@ export class UserRepository {
     const updatedUser = await this.user.save(updates);
     return updatedUser;
   }
+
+  async deleteUser(id: string) {
+    return this.user.delete({ id });
+  }
 }

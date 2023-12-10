@@ -14,5 +14,10 @@ userRouter.patch(
   authValidateMiddleware,
   userController.updateUser
 );
+userRouter.delete(
+  "/delete/:id",
+  authValidateMiddleware,
+  userController.deleteUser
+);
 
 export default userRouter;
