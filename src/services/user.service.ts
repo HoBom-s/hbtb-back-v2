@@ -81,15 +81,6 @@ export class UserService {
     const foundUser = await this.findOneUserById(id);
     if (!foundUser) throw new CustomError(400, "User not found");
     const updatedUser = this.userRepository.updateUser(id, updates);
-    // WIP
     return updatedUser;
   }
 }
-
-/*
-(WIP) updateUser
-1. updated info 반환하는 법 > save 사용?
-https://stackoverflow.com/questions/47792808/typeorm-update-item-and-return-it
-
-2. 비밀번호 업데이트 시 hashing
- */

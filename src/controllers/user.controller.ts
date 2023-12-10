@@ -105,22 +105,24 @@ export class UserController {
     res: Response,
     next: NextFunction
   ) {
-    const { id } = req.params;
-    const userId = req.userId;
-    if (id !== userId) throw new CustomError(400, "User not identical.");
+    try {
+      const { id } = req.params;
+      const userId = req.userId;
+      if (id !== userId) throw new CustomError(400, "User not identical.");
+      const updates: TUpdateUser = req.body;
+      const updatedUser = await this.userService.updateUser(id, updates);
 
-    const updates: TUpdateUser = req.body;
-
-    await this.userService.updateUser(id, updates);
-
-    return res.json({
-      status: 201,
-      message: "User udate success.",
-    });
+      return res.json({
+        status: 201,
+        message: "User udate success.",
+        data: updatedUser,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
 /*
-(WIP) updateUserRequest
 () deleteUserRequest
 */

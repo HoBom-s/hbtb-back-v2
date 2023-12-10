@@ -40,5 +40,14 @@ export class UserRepository {
     return createdUser;
   }
 
-  async updateUser(id: string, updates: TUpdateUser) {}
+  async updateUser(id: string, updates: TUpdateUser) {
+    const isPasswordUpdate = Object.keys(updates).includes("password");
+    if (isPasswordUpdate) {
+      const password: string = updates.password!;
+      const hashedPassword = bcrypt.hashSync(password, process.env.SALT!);
+      updates.password = hashedPassword;
+    }
+    const updatedUser = await this.user.save(updates);
+    return updatedUser;
+  }
 }
