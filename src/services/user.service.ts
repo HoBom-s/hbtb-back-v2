@@ -58,7 +58,7 @@ export class UserService {
 
   async loginUser(nickname: string, password: string) {
     const foundUser = await this.findOneUserByNickname(nickname);
-    if (!foundUser) throw new CustomError(400, "User does not exist.");
+    if (!foundUser) throw new CustomError(400, "User not found.");
     const hashedPassword = foundUser.password;
     const isPasswordCorrect = bcrypt.compare(password, hashedPassword);
     if (!isPasswordCorrect)
@@ -69,5 +69,11 @@ export class UserService {
     const refreshToken = this.authServcie.getRefreshToken(userId);
 
     return { accessToken, refreshToken };
+  }
+
+  logoutUser(userId: string) {
+    const foundUser = this.findOneUserById(userId);
+    if (!foundUser) throw new CustomError(400, "User not found.");
+    return this.authServcie.removeRefreshToken(userId);
   }
 }

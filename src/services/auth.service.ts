@@ -21,4 +21,8 @@ export class AuthService {
     const refreshToken = await this.authRepository.getRefreshToken(userId);
     return refreshToken;
   }
+
+  removeRefreshToken(userId: string) {
+    return this.authRepository.removeRefreshToken(userId);
+  }
 }

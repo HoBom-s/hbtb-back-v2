@@ -37,4 +37,8 @@ export class AuthRepository {
     const createdRefreshToken = this.createAndSaveRefreshToken(userId);
     return createdRefreshToken;
   }
+
+  removeRefreshToken(userId: string) {
+    return this.auth.delete({ userId });
+  }
 }

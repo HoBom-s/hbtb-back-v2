@@ -69,12 +69,19 @@ export class UserController {
     res: Response,
     next: NextFunction
   ) {
-    // WIP
+    const userId = req.userId;
+    if (!userId) throw new CustomError(400, "UserID not found.");
+    await this.userService.logoutUser(userId);
+    res.clearCookie("refreshToken");
+
+    return res.status(201).json({
+      status: 201,
+      message: "Logout success.",
+    });
   }
 }
 
 /*
-(WIP) logoutUserRequest
 () getUserInformationRequest
 () updateUserRequest
 () deleteUserRequest
