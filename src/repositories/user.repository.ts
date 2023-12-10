@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import { myDataSource } from "../data-source";
 import User from "../entities/user.entity";
 import { v4 as uuid4 } from "uuid";
-import { TRole, TCreateUser } from "../types/user.type";
+import { TRole, TCreateUser, TUpdateUser } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 
@@ -39,10 +39,6 @@ export class UserRepository {
     const createdUser = this.user.create(userInfo);
     return createdUser;
   }
-}
 
-/*
-loginUserRequest
-updateUserRequest
-deleteUserRequest
- */
+  async updateUser(id: string, updates: TUpdateUser) {}
+}

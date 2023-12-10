@@ -11,3 +11,10 @@ export type TLoginUser = {
   nickname: string;
   password: string;
 };
+
+export type TUpdateUser = {
+  nickname?: string;
+  password?: string;
+  profileImg?: string;
+  introduction?: string;
+};

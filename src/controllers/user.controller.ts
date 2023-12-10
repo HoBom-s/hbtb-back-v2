@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { TCreateUser, TLoginUser } from "../types/user.type";
+import { TCreateUser, TLoginUser, TUpdateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middleware/error.middleware";
 
@@ -22,7 +22,7 @@ export class UserController {
 
       return res.json({
         status: 200,
-        message: "Successfully get the user information.",
+        message: "Get user info success.",
         data: foundUser,
       });
     } catch (error) {
@@ -47,7 +47,7 @@ export class UserController {
 
       return res.json({
         status: 201,
-        message: "Successfully created user.",
+        message: "Create user success.",
         data: createdUser,
       });
     } catch (error) {
@@ -99,10 +99,28 @@ export class UserController {
       message: "Logout success.",
     });
   }
+
+  async updateUser(
+    req: Request & { userId?: string },
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    const userId = req.userId;
+    if (id !== userId) throw new CustomError(400, "User not identical.");
+
+    const updates: TUpdateUser = req.body;
+
+    await this.userService.updateUser(id, updates);
+
+    return res.json({
+      status: 201,
+      message: "User udate success.",
+    });
+  }
 }
 
 /*
-
-() updateUserRequest
+(WIP) updateUserRequest
 () deleteUserRequest
 */
