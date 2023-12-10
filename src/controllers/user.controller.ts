@@ -10,6 +10,26 @@ export class UserController {
     this.userService = new UserService();
   }
 
+  async getUserInfo(
+    req: Request & { userId?: string },
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.userId;
+      if (!userId) throw new CustomError(400, "Please check the UserID.");
+      const foundUser = await this.userService.findOneUserById(userId);
+
+      return res.json({
+        status: 200,
+        message: "Successfully get the user information.",
+        data: foundUser,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { nickname, password, profileImg, introduction }: TCreateUser =
@@ -25,7 +45,7 @@ export class UserController {
         introduction,
       });
 
-      return res.status(201).json({
+      return res.json({
         status: 201,
         message: "Successfully created user.",
         data: createdUser,
@@ -70,11 +90,11 @@ export class UserController {
     next: NextFunction
   ) {
     const userId = req.userId;
-    if (!userId) throw new CustomError(400, "UserID not found.");
+    if (!userId) throw new CustomError(400, "Please check the UserID.");
     await this.userService.logoutUser(userId);
     res.clearCookie("refreshToken");
 
-    return res.status(201).json({
+    return res.json({
       status: 201,
       message: "Logout success.",
     });
@@ -82,7 +102,7 @@ export class UserController {
 }
 
 /*
-() getUserInformationRequest
+
 () updateUserRequest
 () deleteUserRequest
 */
