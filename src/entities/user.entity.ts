@@ -9,7 +9,7 @@ import {
 import { TRole } from "../types/user.type";
 
 @Entity()
-export class User {
+class User {
   @PrimaryGeneratedColumn()
   id: string;
 

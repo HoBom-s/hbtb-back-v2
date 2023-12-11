@@ -59,13 +59,13 @@ export class UserService {
     const foundUser = await this.findOneUserByNickname(nickname);
     if (!foundUser) throw new CustomError(400, "User not found.");
     const hashedPassword = foundUser.password;
-    const isPasswordCorrect = bcrypt.compare(password, hashedPassword);
+    const isPasswordCorrect = bcrypt.compareSync(password, hashedPassword);
     if (!isPasswordCorrect)
       throw new CustomError(400, "Please check password.");
 
     const userId = foundUser.id;
     const accessToken = this.authServcie.createAccessToken(userId);
-    const refreshToken = this.authServcie.getRefreshToken(userId);
+    const refreshToken = await this.authServcie.getRefreshToken(userId);
 
     return { accessToken, refreshToken };
   }
