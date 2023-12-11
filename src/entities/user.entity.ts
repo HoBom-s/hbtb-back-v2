@@ -1,16 +1,16 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  PrimaryColumn,
 } from "typeorm";
 
 import { TRole } from "../types/user.type";
 
 @Entity()
 class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: string;
 
   @Column({
@@ -23,7 +23,8 @@ class User {
 
   @Column({
     nullable: true,
-    default: () => "",
+    default:
+      "https://icon-library.com/images/default-profile-icon/default-profile-icon-6.jpg",
   })
   profileImg: string;
 
