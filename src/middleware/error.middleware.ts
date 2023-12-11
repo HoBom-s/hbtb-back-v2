@@ -16,7 +16,7 @@ export function errorMiddleware(
   next: NextFunction
 ) {
   const { statusCode, message } = err;
-  res.status(statusCode).json({
+  res.json({
     status: "Error",
     statusCode,
     message,

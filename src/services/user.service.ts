@@ -47,7 +47,7 @@ export class UserService {
 
   async createUser(newUserInfo: TCreateUser): Promise<PossibleNull<User>> {
     const { nickname, password, profileImg, introduction } = newUserInfo;
-    const foundUser = await this.findOneUserByNickname(nickname);
+    const foundUser = await this.userRepository.findOneUserByNickname(nickname);
     if (foundUser) {
       throw new CustomError(400, "User already exists.");
     }

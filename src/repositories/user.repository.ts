@@ -34,9 +34,13 @@ export class UserRepository {
   async createUser(newUserInfo: TCreateUser): Promise<User> {
     const { nickname, password, profileImg, introduction } = newUserInfo;
     const id = uuid4();
-    const hashedPassword = bcrypt.hashSync(password, process.env.SALT!);
+    const hashedPassword = bcrypt.hashSync(
+      password,
+      parseInt(process.env.SALT!)
+    );
     const userInfo = { id, nickname, hashedPassword, profileImg, introduction };
     const createdUser = this.user.create(userInfo);
+    await this.user.save(createdUser);
     return createdUser;
   }
 

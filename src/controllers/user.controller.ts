@@ -8,6 +8,7 @@ export class UserController {
 
   constructor() {
     this.userService = new UserService();
+    this.createUser = this.createUser.bind(this);
   }
 
   async getUserInfo(
@@ -34,17 +35,15 @@ export class UserController {
     try {
       const { nickname, password, profileImg, introduction }: TCreateUser =
         req.body;
-
       if (!nickname || !password || !introduction)
         throw new CustomError(400, "Please insert all required inputs.");
-
+      console.log(this);
       const createdUser = await this.userService.createUser({
         nickname,
         password,
         profileImg,
         introduction,
       });
-
       return res.json({
         status: 201,
         message: "Create user success.",
