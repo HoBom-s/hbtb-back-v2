@@ -10,6 +10,7 @@ export class UserController {
     this.userService = new UserService();
     this.createUser = this.createUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
+    this.getUserInfo = this.getUserInfo.bind(this);
   }
 
   async getUserInfo(

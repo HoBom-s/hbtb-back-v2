@@ -1,4 +1,4 @@
-import { UserRepository } from "../repositories/user.repository";
+import { UserRepository } from "../repositories/UserRepository";
 import { TRole, TCreateUser, TUpdateUser } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import User from "../entities/user.entity";

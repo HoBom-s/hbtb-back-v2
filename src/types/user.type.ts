@@ -18,3 +18,13 @@ export type TUpdateUser = {
   profileImg?: string;
   introduction?: string;
 };
+
+export type TUserWithoutPassword = {
+  id: string;
+  nickname: string;
+  profileImg: string;
+  role: TRole;
+  introduction: string;
+  createdAt: Date;
+  updatedAt: Date;
+};

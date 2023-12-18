@@ -13,9 +13,9 @@ export class AuthRepository {
     this.authHelper = new AuthHelper();
   }
 
-  createAndSaveRefreshToken(userId: string) {
+  async createAndSaveRefreshToken(userId: string) {
     const createdRefreshToken = this.authHelper.createRefreshToken(userId);
-    this.auth.create({
+    await this.auth.save({
       id: uuid4(),
       userId,
       refreshToken: createdRefreshToken,
