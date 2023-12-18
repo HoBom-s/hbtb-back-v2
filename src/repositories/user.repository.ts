@@ -38,7 +38,14 @@ export class UserRepository {
       password,
       parseInt(process.env.SALT!)
     );
-    const userInfo = { id, nickname, hashedPassword, profileImg, introduction };
+    console.log("---------hashedPassword:", hashedPassword);
+    const userInfo = {
+      id,
+      nickname,
+      password: hashedPassword,
+      profileImg,
+      introduction,
+    };
     const createdUser = this.user.create(userInfo);
     await this.user.save(createdUser);
     return createdUser;
