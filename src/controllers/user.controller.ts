@@ -88,15 +88,19 @@ export class UserController {
     res: Response,
     next: NextFunction
   ) {
-    const userId = req.userId;
-    if (!userId) throw new CustomError(400, "Please check the UserID.");
-    await this.userService.logoutUser(userId);
-    res.clearCookie("refreshToken");
+    try {
+      const userId = req.userId;
+      if (!userId) throw new CustomError(400, "Please check the UserID.");
+      await this.userService.logoutUser(userId);
+      res.clearCookie("refreshToken");
 
-    return res.json({
-      status: 201,
-      message: "Logout success.",
-    });
+      return res.json({
+        status: 201,
+        message: "Logout success.",
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   async updateUser(
