@@ -1,5 +1,10 @@
 import { UserRepository } from "../repositories/UserRepository";
-import { TRole, TCreateUser, TUpdateUser } from "../types/user.type";
+import {
+  TRole,
+  TCreateUser,
+  TUpdateUser,
+  TUserWithoutPassword,
+} from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import User from "../entities/user.entity";
 import { CustomError } from "../middleware/error.middleware";
@@ -45,7 +50,7 @@ export class UserService {
     return foundUser;
   }
 
-  async createUser(newUserInfo: TCreateUser): Promise<PossibleNull<User>> {
+  async createUser(newUserInfo: TCreateUser): Promise<TUserWithoutPassword> {
     const { nickname, password, profileImg, introduction } = newUserInfo;
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
     if (foundUser) {

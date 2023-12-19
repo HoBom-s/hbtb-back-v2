@@ -64,7 +64,7 @@ export class UserRepository {
       ])
       .where({ id })
       .getOne();
-    return userWithoutPassword!; // WIP
+    return userWithoutPassword!;
   }
 
   async updateUser(id: string, updates: TUpdateUser) {
