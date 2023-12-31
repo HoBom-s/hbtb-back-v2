@@ -1,6 +1,6 @@
 import AuthHelper from "../helpers/auth.helper";
 import { AuthRepository } from "../repositories/auth.repository";
-import { UserRepository } from "../repositories/UserRepository";
+import { UserRepository } from "../repositories/user.repository";
 
 export class AuthService {
   private authRepository: AuthRepository;

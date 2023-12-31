@@ -8,24 +8,24 @@ const userController = new UserController();
 userRouter.get(
   "/me",
   authValidateMiddleware,
-  userController.getUserInfo.bind(UserController) // WIP
+  userController.getUserInfo.bind(userController)
 );
-userRouter.post("/create", userController.createUser.bind(UserController));
-userRouter.post("/login", userController.loginUser.bind(UserController));
+userRouter.post("/create", userController.createUser.bind(userController));
+userRouter.post("/login", userController.loginUser.bind(userController));
 userRouter.post(
   "/logout",
   authValidateMiddleware,
-  userController.logoutUser.bind(UserController)
+  userController.logoutUser.bind(userController)
 );
 userRouter.patch(
   "/update/:id",
   authValidateMiddleware,
-  userController.updateUser.bind(UserController)
+  userController.updateUser.bind(userController)
 );
 userRouter.delete(
   "/delete/:id",
   authValidateMiddleware,
-  userController.deleteUser.bind(UserController)
+  userController.deleteUser.bind(userController)
 );
 
 export default userRouter;
