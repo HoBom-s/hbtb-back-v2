@@ -81,11 +81,15 @@ export class UserRepository {
     const isPasswordUpdate = Object.keys(updates).includes("password");
     if (isPasswordUpdate) {
       const password: string = updates.password!;
-      const hashedPassword = bcrypt.hashSync(password, process.env.SALT!);
+      const hashedPassword = bcrypt.hashSync(
+        password,
+        parseInt(process.env.SALT!)
+      );
       updates.password = hashedPassword;
     }
-    const updatedUser = await this.user.save(updates);
-    return updatedUser;
+    await this.user.update(id, updates);
+    const updatedUserWithoutPassword = await this.excludePassword(id);
+    return updatedUserWithoutPassword;
   }
 
   async deleteUser(id: string) {
