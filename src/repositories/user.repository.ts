@@ -10,6 +10,7 @@ import {
 } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
+import { CustomError } from "../middleware/error.middleware";
 
 export class UserRepository {
   private user: Repository<User>;
@@ -26,9 +27,14 @@ export class UserRepository {
     return foundUser;
   }
 
-  async findOneUserById(id: string): Promise<PossibleNull<User>> {
-    const foundUser = await this.user.findOneBy({ id });
-    return foundUser;
+  async findOneUserById(
+    id: string
+  ): Promise<PossibleNull<TUserWithoutPassword>> {
+    const userWithoutPassword = await this.excludePassword(id);
+    if (!userWithoutPassword) {
+      throw new CustomError(400, "User does not exist.");
+    }
+    return userWithoutPassword;
   }
 
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
@@ -51,7 +57,12 @@ export class UserRepository {
       introduction,
     };
     await this.user.save(userInfo);
-    const userWithoutPassword = await this.user
+    const userWithoutPassword = await this.excludePassword(id);
+    return userWithoutPassword!;
+  }
+
+  async excludePassword(id: string) {
+    return this.user
       .createQueryBuilder("user")
       .select([
         "user.id",
@@ -64,7 +75,6 @@ export class UserRepository {
       ])
       .where({ id })
       .getOne();
-    return userWithoutPassword!;
   }
 
   async updateUser(id: string, updates: TUpdateUser) {

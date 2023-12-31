@@ -34,11 +34,10 @@ export class UserService {
     return foundUser;
   }
 
-  async findOneUserById(id: string): Promise<PossibleNull<User>> {
+  async findOneUserById(
+    id: string
+  ): Promise<PossibleNull<TUserWithoutPassword>> {
     const foundUser = await this.userRepository.findOneUserById(id);
-    if (!foundUser) {
-      throw new CustomError(400, "User does not exist.");
-    }
     return foundUser;
   }
 
