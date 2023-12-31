@@ -1,8 +1,11 @@
 import express from "express";
-import { Express, Request, Response } from "express";
-import { User } from "./entity/user.entity";
-import { myDataSource } from "./data-source.ts";
+import { Express } from "express";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import cors from "cors";
+import userRouter from "./routes/user.router";
+import { myDataSource } from "./data-source";
+import { errorMiddleware } from "./middleware/error.middleware";
 
 dotenv.config();
 
@@ -12,13 +15,17 @@ myDataSource
   .catch((error) => console.warn(error));
 
 const app: Express = express();
+const corsOptions = {
+  credentials: true,
+};
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(helmet());
+app.use(cors(corsOptions));
 
-app.get("/users", async function (req: Request, res: Response) {
-  const users = await myDataSource.getRepository(User).find();
-  res.json(users);
-});
+app.use("/user", userRouter);
+app.use(errorMiddleware);
 
 app.listen(process.env.DB_PORT, () => {
   console.log(`SERVER IS RUNNING ON PORT ${process.env.DB_PORT}`);
