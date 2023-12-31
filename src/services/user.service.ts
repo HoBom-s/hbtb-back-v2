@@ -74,16 +74,14 @@ export class UserService {
     return { accessToken, refreshToken };
   }
 
-  logoutUser(userId: string) {
-    const foundUser = this.findOneUserById(userId);
-    if (!foundUser) throw new CustomError(400, "User not found.");
+  async logoutUser(userId: string) {
     return this.authServcie.removeRefreshToken(userId);
   }
 
   async updateUser(id: string, updates: TUpdateUser) {
     const foundUser = await this.findOneUserById(id);
     if (!foundUser) throw new CustomError(400, "User not found");
-    const updatedUser = this.userRepository.updateUser(id, updates);
+    const updatedUser = await this.userRepository.updateUser(id, updates);
     return updatedUser;
   }
 

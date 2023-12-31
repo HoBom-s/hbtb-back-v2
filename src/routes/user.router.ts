@@ -17,11 +17,12 @@ userRouter.post(
   authValidateMiddleware,
   userController.logoutUser.bind(userController)
 );
+
 userRouter.patch(
   "/update/:id",
   authValidateMiddleware,
   userController.updateUser.bind(userController)
-);
+); // WIP
 userRouter.delete(
   "/delete/:id",
   authValidateMiddleware,
