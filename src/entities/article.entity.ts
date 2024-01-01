@@ -33,11 +33,11 @@ export class Article {
   })
   contents: string;
 
-  @Column()
-  tags: string;
+  @Column("simple-array") // WIP_2
+  tags: string[];
 
-  @Column()
-  writers: string;
+  @Column("simple-array") // WIP_1
+  writers: string[];
 
   @Column({
     nullable: false,

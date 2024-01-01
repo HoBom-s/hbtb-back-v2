@@ -6,6 +6,7 @@ import cors from "cors";
 import userRouter from "./routes/user.router";
 import { myDataSource } from "./data-source";
 import { errorMiddleware } from "./middleware/error.middleware";
+import articleRouter from "./routes/article.router";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(helmet());
 app.use(cors(corsOptions));
 
 app.use("/user", userRouter);
+app.use("/article", articleRouter);
 app.use(errorMiddleware);
 
 app.listen(process.env.DB_PORT, () => {
