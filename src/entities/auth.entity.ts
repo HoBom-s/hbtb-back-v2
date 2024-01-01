@@ -17,11 +17,9 @@ export class Auth {
   @Column()
   refreshToken: string;
 
-  @Column()
   @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
   @UpdateDateColumn()
   updatedAt: Date;
 }

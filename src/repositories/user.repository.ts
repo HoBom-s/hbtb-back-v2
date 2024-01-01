@@ -21,14 +21,14 @@ export class UserRepository {
 
   async findOneUserByNicknameAndRole(
     nickname: string,
-    role: TRole
+    role: TRole,
   ): Promise<PossibleNull<User>> {
     const foundUser = await this.user.findOneBy({ nickname, role });
     return foundUser;
   }
 
   async findOneUserById(
-    id: string
+    id: string,
   ): Promise<PossibleNull<TUserWithoutPassword>> {
     const userWithoutPassword = await this.excludePassword(id);
     if (!userWithoutPassword) {
@@ -47,7 +47,7 @@ export class UserRepository {
     const id = uuid4();
     const hashedPassword = bcrypt.hashSync(
       password,
-      parseInt(process.env.SALT!)
+      parseInt(process.env.SALT!),
     );
     const userInfo = {
       id,
@@ -83,7 +83,7 @@ export class UserRepository {
       const password: string = updates.password!;
       const hashedPassword = bcrypt.hashSync(
         password,
-        parseInt(process.env.SALT!)
+        parseInt(process.env.SALT!),
       );
       updates.password = hashedPassword;
     }
