@@ -15,14 +15,20 @@ class User {
   id: string;
 
   @Column({
+    type: "nvarchar",
+    nullable: false,
     unique: true,
   })
   nickname: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    nullable: false,
+  })
   password: string;
 
   @Column({
+    type: "varchar",
     nullable: true,
     default:
       "https://icon-library.com/images/default-profile-icon/default-profile-icon-6.jpg",
@@ -30,18 +36,21 @@ class User {
   profileImg: string;
 
   @Column({
+    type: "varchar",
+    nullable: false,
     default: "user" as TRole,
   })
   role: TRole;
 
-  @Column()
+  @Column({
+    type: "nvarchar",
+    nullable: false,
+    default: "Hi!",
+  })
   introduction: string;
 
-  @OneToMany(
-    () => Article,
-    article => article.writer
-  )
-  articles: Article[]
+  @OneToMany(() => Article, (article) => article.writer)
+  articles: Article[];
 
   @CreateDateColumn()
   createdAt: Date;

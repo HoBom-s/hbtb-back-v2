@@ -2,17 +2,17 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 
 @Entity()
 export class Tag {
-  @PrimaryColumn({ type: "uuid" })
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column({
-    type: "varchar",
+    type: "nvarchar",
     nullable: false,
     length: 24,
   })

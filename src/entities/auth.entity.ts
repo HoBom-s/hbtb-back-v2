@@ -11,10 +11,16 @@ export class Auth {
   @PrimaryColumn()
   id: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    nullable: false,
+  })
   userId: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    nullable: false,
+  })
   refreshToken: string;
 
   @CreateDateColumn()
