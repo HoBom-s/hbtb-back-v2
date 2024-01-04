@@ -3,11 +3,14 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import User from "./user.entity";
+import { Tag } from "./tag.entity";
 
 @Entity()
 export class Article {
@@ -40,9 +43,6 @@ export class Article {
   })
   contents: string;
 
-  // @Column("simple-array") // WIP_2
-  // tags: string[];
-
   @Column({
     type: "varchar",
     nullable: false,
@@ -54,6 +54,20 @@ export class Article {
     name: "userId",
   })
   writer: string; // WIP_1
+
+  @ManyToMany(() => Tag)
+  @JoinTable({
+    name: "articles_tags",
+    joinColumn: {
+      name: "article",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "tag",
+      referencedColumnName: "id",
+    },
+  })
+  tags: Tag[]; // WIP_2
 
   @CreateDateColumn()
   createdAt: Date;
