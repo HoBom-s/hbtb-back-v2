@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import User from "./user.entity";
 
 @Entity()
 export class Article {
@@ -33,17 +36,21 @@ export class Article {
   })
   contents: string;
 
-  @Column("simple-array") // WIP_2
-  tags: string[];
-
-  @Column("simple-array") // WIP_1
-  writers: string[];
+  // @Column("simple-array") // WIP_2
+  // tags: string[];
 
   @Column({
     nullable: false,
   })
   path: string;
 
+  @ManyToOne(
+    () => User,
+    user => user.articles
+  )
+  @JoinColumn({name: "userId"})
+  writer: string; // WIP_1
+  
   @CreateDateColumn()
   createdAt: Date;
 

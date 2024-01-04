@@ -4,9 +4,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryColumn,
+  OneToMany,
 } from "typeorm";
-
 import { TRole } from "../types/user.type";
+import { Article } from "./article.entity";
 
 @Entity()
 class User {
@@ -35,6 +36,12 @@ class User {
 
   @Column()
   introduction: string;
+
+  @OneToMany(
+    () => Article,
+    article => article.writer
+  )
+  articles: Article[]
 
   @CreateDateColumn()
   createdAt: Date;
