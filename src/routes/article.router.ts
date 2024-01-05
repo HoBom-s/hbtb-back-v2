@@ -8,7 +8,7 @@ const articleController = new ArticleController();
 articleRouter.post(
   "/create",
   authValidateMiddleware,
-  articleController.createArticle,
+  articleController.createArticle.bind(articleController),
 );
 
 export default articleRouter;
@@ -18,11 +18,6 @@ router.get("/", articleController.getAllArticleRequest);
 router.get("/list", articleController.getArticlePerPageRequest);
 router.get("/find/:path", articleController.getArticleFindByPathRequest);
 router.get("/search", articleController.getArticleSearchRequest);
-router.post(
-  "/create",
-  authValidation,
-  articleController.createArticleRequest,
-);
 router.patch(
   "/update/:_id",
   articleController.updateArticleRequest,
@@ -30,5 +25,12 @@ router.patch(
 router.delete(
   "/delete/:_id",
   articleController.deleteArticleRequest,
+);
+
+(v)
+router.post(
+  "/create",
+  authValidation,
+  articleController.createArticleRequest,
 );
 */

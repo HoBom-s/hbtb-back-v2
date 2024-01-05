@@ -53,7 +53,7 @@ export class Article {
   @JoinColumn({
     name: "userId",
   })
-  writer: string; // WIP_1
+  writer: string;
 
   @ManyToMany(() => Tag)
   @JoinTable({
@@ -67,7 +67,7 @@ export class Article {
       referencedColumnName: "id",
     },
   })
-  tags: Tag[]; // WIP_2
+  tags: Tag[];
 
   @CreateDateColumn()
   createdAt: Date;

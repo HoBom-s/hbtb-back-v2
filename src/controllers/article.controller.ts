@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
-import { TCreateArticle } from "../types/article.type";
+import { TCreateArticle, TNewArticleInfo } from "../types/article.type";
 import { CustomError } from "../middleware/error.middleware";
 
 export class ArticleController {
@@ -9,12 +9,25 @@ export class ArticleController {
     this.articleService = new ArticleService();
   }
 
-  createArticle(req: Request, res: Response, next: NextFunction) {
+  createArticle(
+    req: Request & { userId?: string },
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const newArticleInfo: TCreateArticle = req.body;
+      const userId = req.userId;
+      if (!userId)
+        throw new CustomError(400, "Only the user can write the article.");
+      const newArticleInfo: TNewArticleInfo = req.body;
       if (!newArticleInfo)
         throw new CustomError(400, "Please check the fields of req.body.");
-      const createdArticle = this.articleService.createArticle(newArticleInfo);
+      const newArticleInfoWithUser: TCreateArticle = {
+        ...newArticleInfo,
+        userId,
+      };
+      const createdArticle = this.articleService.createArticle(
+        newArticleInfoWithUser,
+      );
       return res.json({
         status: 201,
         message: "Create article success.",

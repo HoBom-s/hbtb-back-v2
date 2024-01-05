@@ -12,6 +12,7 @@ import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 import { CustomError } from "../middleware/error.middleware";
 
+// WIP: USER REPOSITORY & SERVICE LAYER VALIDATION
 export class UserRepository {
   private user: Repository<User>;
 
