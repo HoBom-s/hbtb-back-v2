@@ -37,6 +37,19 @@ export class ArticleController {
       next(error);
     }
   }
+
+  async getAllArticles(req: Request, res: Response, next: NextFunction) {
+    try {
+      const allArticles = await this.articleService.getAllArticles();
+      res.json({
+        status: 200,
+        message: "Get article success.",
+        data: allArticles,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 /**

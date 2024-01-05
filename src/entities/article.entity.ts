@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -50,10 +49,7 @@ export class Article {
   path: string;
 
   @ManyToOne(() => User, (user) => user.articles)
-  @JoinColumn({
-    name: "userId",
-  })
-  writer: string;
+  user: User;
 
   @ManyToMany(() => Tag)
   @JoinTable({

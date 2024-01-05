@@ -16,27 +16,38 @@ export class ArticleRepository {
     if (!createdArticle) throw new CustomError(400, "Create article FAILED.");
     return createdArticle;
   }
+
+  async getAllArticles(): Promise<Article[]> {
+    const allArticles = await this.article.find({
+      relations: {
+        user: true,
+        tags: true,
+      },
+    });
+    if (!allArticles) throw new CustomError(400, "Get all articles FAILED.");
+    return allArticles;
+  }
 }
 
 /*
 () tagControl
 () writerControl
-() getAllArticleRequest
+(v) getAllArticleRequest
 () getArticlePerPageRequest
 () getArticleFindByPathRequest
 () getArticleSearchRequest
-(WIP) createArticleRequest
+(v) createArticleRequest
 () updateArticleRequest
 () deleteArticleRequest
  */
 
 /*
-id // WIP_check uuid creation
+id
 thumbnail
 title
 subtitle
 contents
 path
-userId(writer) // WIP_check field name
+userId
 tags
 */

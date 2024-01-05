@@ -12,4 +12,8 @@ export class ArticleService {
     const createdArticle = this.articleRepository.createArticle(newArticleInfo);
     return createdArticle;
   }
+
+  async getAllArticles() {
+    return this.articleRepository.getAllArticles();
+  }
 }

@@ -24,6 +24,7 @@ class User {
   @Column({
     type: "varchar",
     nullable: false,
+    select: false,
   })
   password: string;
 
@@ -49,7 +50,7 @@ class User {
   })
   introduction: string;
 
-  @OneToMany(() => Article, (article) => article.writer)
+  @OneToMany(() => Article, (article) => article.user)
   articles: Article[];
 
   @CreateDateColumn()
