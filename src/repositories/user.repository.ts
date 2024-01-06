@@ -12,7 +12,6 @@ import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 import { CustomError } from "../middleware/error.middleware";
 
-// WIP: USER REPOSITORY & SERVICE LAYER VALIDATION
 export class UserRepository {
   private user: Repository<User>;
 
@@ -25,6 +24,9 @@ export class UserRepository {
     role: TRole,
   ): Promise<PossibleNull<User>> {
     const foundUser = await this.user.findOneBy({ nickname, role });
+    if (!foundUser) {
+      throw new CustomError(400, "User does not exist.");
+    }
     return foundUser;
   }
 
@@ -40,6 +42,9 @@ export class UserRepository {
 
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
     const foundUser = await this.user.findOneBy({ nickname });
+    if (!foundUser) {
+      throw new CustomError(400, "User does not exist.");
+    }
     return foundUser;
   }
 
@@ -63,6 +68,7 @@ export class UserRepository {
   }
 
   async excludePassword(id: string) {
+    // WIP: select:false시 필요할지?
     return this.user
       .createQueryBuilder("user")
       .select([
