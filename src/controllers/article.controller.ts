@@ -38,6 +38,20 @@ export class ArticleController {
     }
   }
 
+  async getArticleFindByPath(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { path } = req.params;
+      const foundArticle = this.articleService.getArticleFindByPath(path);
+      return res.json({
+        status: 200,
+        message: "Get article by path success.",
+        data: foundArticle,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getAllArticles(req: Request, res: Response, next: NextFunction) {
     try {
       const allArticles = await this.articleService.getAllArticles();

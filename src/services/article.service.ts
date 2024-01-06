@@ -13,7 +13,11 @@ export class ArticleService {
     return createdArticle;
   }
 
-  async getAllArticles() {
+  getAllArticles() {
     return this.articleRepository.getAllArticles();
+  }
+
+  getArticleFindByPath(path: string) {
+    return this.articleRepository.getArticleFindByPath(path);
   }
 }

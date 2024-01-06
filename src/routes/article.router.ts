@@ -5,8 +5,14 @@ import { ArticleController } from "../controllers/article.controller";
 const articleRouter = Router();
 const articleController = new ArticleController();
 
-articleRouter.get("/", articleController.getAllArticles);
-
+articleRouter.get(
+  "/",
+  articleController.getAllArticles.bind(articleController),
+);
+articleRouter.get(
+  "/list",
+  articleController.getArticleFindByPath.bind(articleController),
+);
 articleRouter.post(
   "/create",
   authValidateMiddleware,
@@ -16,9 +22,7 @@ articleRouter.post(
 export default articleRouter;
 
 /*
-router.get("/", articleController.getAllArticleRequest);
 router.get("/list", articleController.getArticlePerPageRequest);
-router.get("/find/:path", articleController.getArticleFindByPathRequest);
 router.get("/search", articleController.getArticleSearchRequest);
 router.patch(
   "/update/:_id",
@@ -29,7 +33,11 @@ router.delete(
   articleController.deleteArticleRequest,
 );
 
+=================================
+
 (v)
+router.get("/", articleController.getAllArticleRequest);
+router.get("/find/:path", articleController.getArticleFindByPathRequest);
 router.post(
   "/create",
   authValidation,

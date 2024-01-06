@@ -27,6 +27,16 @@ export class ArticleRepository {
     if (!allArticles) throw new CustomError(400, "Get all articles FAILED.");
     return allArticles;
   }
+
+  async getArticleFindByPath(path: string) {
+    const foundArticle = await this.article.find({
+      where: { path },
+      relations: { user: true, tags: true },
+    });
+    if (!foundArticle)
+      throw new CustomError(400, "Article with the path NOT FOUND.");
+    return foundArticle;
+  }
 }
 
 /*
