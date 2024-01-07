@@ -65,7 +65,6 @@ export class UserRepository {
   }
 
   async excludePassword(id: string) {
-    // WIP: select:false시 필요할지?
     return this.user
       .createQueryBuilder("user")
       .select([

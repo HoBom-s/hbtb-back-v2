@@ -11,9 +11,11 @@ export class ArticleRepository {
     this.article = myDataSource.getRepository(Article);
   }
 
-  createArticle(newArticleInfo: TCreateArticle): Article {
+  // WIP: tag creation
+  async createArticle(newArticleInfo: TCreateArticle): Promise<Article> {
     const createdArticle = this.article.create(newArticleInfo);
     if (!createdArticle) throw new CustomError(400, "Create article FAILED.");
+    await this.article.save(createdArticle);
     return createdArticle;
   }
 

@@ -9,7 +9,7 @@ export class ArticleController {
     this.articleService = new ArticleService();
   }
 
-  createArticle(
+  async createArticle(
     req: Request & { userId?: string },
     res: Response,
     next: NextFunction,
@@ -25,7 +25,7 @@ export class ArticleController {
         ...newArticleInfo,
         userId,
       };
-      const createdArticle = this.articleService.createArticle(
+      const createdArticle = await this.articleService.createArticle(
         newArticleInfoWithUser,
       );
       return res.json({
