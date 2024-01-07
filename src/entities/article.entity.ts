@@ -55,11 +55,11 @@ export class Article {
   @JoinTable({
     name: "articles_tags",
     joinColumn: {
-      name: "article",
+      name: "articleId",
       referencedColumnName: "id",
     },
     inverseJoinColumn: {
-      name: "tag",
+      name: "tagId",
       referencedColumnName: "id",
     },
   })

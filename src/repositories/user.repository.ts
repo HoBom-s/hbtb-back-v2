@@ -42,9 +42,6 @@ export class UserRepository {
 
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
     const foundUser = await this.user.findOneBy({ nickname });
-    if (!foundUser) {
-      throw new CustomError(400, "User does not exist.");
-    }
     return foundUser;
   }
 

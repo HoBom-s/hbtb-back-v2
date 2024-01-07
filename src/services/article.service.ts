@@ -4,11 +4,13 @@ import { TCreateArticle } from "../types/article.type";
 
 export class ArticleService {
   private articleRepository: ArticleRepository;
+
   contructor() {
     this.articleRepository = new ArticleRepository();
   }
 
   createArticle(newArticleInfo: TCreateArticle): Article {
+    // WIP "Cannot read properties of undefined (reading 'createArticle')"
     const createdArticle = this.articleRepository.createArticle(newArticleInfo);
     return createdArticle;
   }
