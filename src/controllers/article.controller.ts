@@ -20,7 +20,7 @@ export class ArticleController {
         throw new CustomError(400, "Only the user can write the article.");
       const newArticleInfo: TNewArticleInfo = req.body;
       if (!newArticleInfo)
-        throw new CustomError(400, "Please check the fields of req.body.");
+        throw new CustomError(400, "Please check the fields.");
       const newArticleInfoWithUser: TCreateArticle = {
         ...newArticleInfo,
         userId,

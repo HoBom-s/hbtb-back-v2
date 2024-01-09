@@ -24,6 +24,7 @@ export class Tag {
   })
   path: string;
 
+  // 클릭 횟수
   @Column({
     type: "numeric",
     default: 0,
@@ -33,7 +34,7 @@ export class Tag {
   @Column({
     type: "simple-array",
   })
-  articles: string[];
+  articleId: string[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -2,14 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import User from "./user.entity";
-import { Tag } from "./tag.entity";
 
 @Entity()
 export class Article {
@@ -51,7 +48,7 @@ export class Article {
   @Column({
     type: "simple-array",
   })
-  tags: string[];
+  tagId: string[];
 
   @ManyToOne(() => User, (user) => user.articles)
   user: User;

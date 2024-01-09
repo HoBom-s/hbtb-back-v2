@@ -1,12 +1,10 @@
-import { Tag } from "../entities/tag.entity";
-
 export type TNewArticleInfo = {
   thumbnail?: string;
   title: string;
   subtitle: string;
   contents: string;
   path: string;
-  tags: Tag[];
+  tags: { title: string; path: string };
 };
 
 export type TCreateArticle = {
@@ -16,5 +14,5 @@ export type TCreateArticle = {
   contents: string;
   userId: string;
   path: string;
-  tags: Tag[];
+  tags: { title: string; path: string };
 };
