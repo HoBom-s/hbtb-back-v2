@@ -48,22 +48,13 @@ export class Article {
   })
   path: string;
 
+  @Column({
+    type: "simple-array",
+  })
+  tags: string[];
+
   @ManyToOne(() => User, (user) => user.articles)
   user: User;
-
-  @ManyToMany(() => Tag)
-  @JoinTable({
-    name: "articles_tags",
-    joinColumn: {
-      name: "articleId",
-      referencedColumnName: "id",
-    },
-    inverseJoinColumn: {
-      name: "tagId",
-      referencedColumnName: "id",
-    },
-  })
-  tags: Tag[];
 
   @CreateDateColumn()
   createdAt: Date;
