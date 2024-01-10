@@ -45,8 +45,8 @@ export class ArticleRepository {
     return foundArticle;
   }
 
-  async updateArticle(articleId: string, updatedInfo: TUpdateArticle) {
-    await this.article.save({ id: articleId, ...updatedInfo });
+  async updateArticle(id: string, updatedInfo: TUpdateArticle) {
+    await this.article.update({ id }, updatedInfo);
     return true;
   }
 }
@@ -54,22 +54,8 @@ export class ArticleRepository {
 /*
 () tagControl
 () writerControl
-(v) getAllArticleRequest
 () getArticlePerPageRequest
 () getArticleFindByPathRequest
 () getArticleSearchRequest
-(v) createArticleRequest
-() updateArticleRequest
 () deleteArticleRequest
  */
-
-/*
-id
-thumbnail
-title
-subtitle
-contents
-path
-userId
-tags
-*/

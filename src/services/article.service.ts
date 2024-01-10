@@ -48,12 +48,7 @@ export class ArticleService {
 
   async updateArticle(articleId: string, updatedInfo: TUpdateArticle) {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
-    if (!foundArticle) throw new CustomError(400, "Article not found.");
-
-    const isTagUpdated = Object.keys(updatedInfo).includes("tags");
-    if (isTagUpdated) {
-      // WIP: update tags
-    }
+    if (!foundArticle) throw new CustomError(400, "Original aticle not found.");
     return this.articleRepository.updateArticle(articleId, updatedInfo);
   }
 }

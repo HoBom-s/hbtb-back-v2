@@ -33,5 +33,4 @@ export type TUpdateArticle = {
   subtitle?: string;
   contents?: string;
   path?: string;
-  tags?: [{ title: string; path: string }];
 };

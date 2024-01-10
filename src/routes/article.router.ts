@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authValidateMiddleware from "../middleware/auth.middleware";
-import { ArticleController } from "../controllers/ArticleController";
+import { ArticleController } from "../controllers/article.controller";
 
 const articleRouter = Router();
 const articleController = new ArticleController();
@@ -29,26 +29,8 @@ export default articleRouter;
 /*
 router.get("/list", articleController.getArticlePerPageRequest);
 router.get("/search", articleController.getArticleSearchRequest);
-
 router.delete(
   "/delete/:_id",
   articleController.deleteArticleRequest,
-);
-
-(WIP)
-router.patch(
-  "/update/:_id",
-  articleController.updateArticleRequest,
-);
-
-=================================
-
-(v)
-router.get("/", articleController.getAllArticleRequest);
-router.get("/find/:path", articleController.getArticleFindByPathRequest);
-router.post(
-  "/create",
-  authValidation,
-  articleController.createArticleRequest,
 );
 */
