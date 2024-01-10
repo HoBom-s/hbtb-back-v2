@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { Article } from "../entities/article.entity";
-import { TCreateArticleWithTagId } from "../types/article.type";
+import { TCreateArticleWithTagId, TUpdateArticle } from "../types/article.type";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middleware/error.middleware";
 
@@ -35,8 +35,19 @@ export class ArticleRepository {
       where: { path },
       relations: { user: true },
     });
-    if (foundArticle) return foundArticle;
-    return false;
+    if (!foundArticle) return false;
+    return foundArticle;
+  }
+
+  async getArticleById(id: string) {
+    const foundArticle = await this.article.findOneBy({ id });
+    if (!foundArticle) return false;
+    return foundArticle;
+  }
+
+  async updateArticle(articleId: string, updatedInfo: TUpdateArticle) {
+    await this.article.save({ id: articleId, ...updatedInfo });
+    return true;
   }
 }
 

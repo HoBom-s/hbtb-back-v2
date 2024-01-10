@@ -1,7 +1,11 @@
 import { Article } from "../entities/article.entity";
 import { CustomError } from "../middleware/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
-import { TCreateArticle, TCreateArticleWithTagId } from "../types/article.type";
+import {
+  TCreateArticle,
+  TCreateArticleWithTagId,
+  TUpdateArticle,
+} from "../types/article.type";
 import { TagRepository } from "../repositories/tag.repository";
 
 export class ArticleService {
@@ -34,12 +38,22 @@ export class ArticleService {
     return this.articleRepository.createArticle(newArticleInfoWithTagId);
   }
 
-  // WIP: getting tag info
   getAllArticles() {
     return this.articleRepository.getAllArticles();
   }
 
   getArticleFindByPath(path: string) {
     return this.articleRepository.getArticleFindByPath(path);
+  }
+
+  async updateArticle(articleId: string, updatedInfo: TUpdateArticle) {
+    const foundArticle = await this.articleRepository.getArticleById(articleId);
+    if (!foundArticle) throw new CustomError(400, "Article not found.");
+
+    const isTagUpdated = Object.keys(updatedInfo).includes("tags");
+    if (isTagUpdated) {
+      // WIP: update tags
+    }
+    return this.articleRepository.updateArticle(articleId, updatedInfo);
   }
 }

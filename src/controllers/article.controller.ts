@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ArticleService } from "../services/ArticleService";
+import { ArticleService } from "../services/article.service";
 import { TCreateArticle, TNewArticleInfo } from "../types/article.type";
 import { CustomError } from "../middleware/error.middleware";
 
@@ -55,7 +55,7 @@ export class ArticleController {
   async getAllArticles(req: Request, res: Response, next: NextFunction) {
     try {
       const allArticles = await this.articleService.getAllArticles();
-      res.json({
+      return res.json({
         status: 200,
         message: "Get article success.",
         data: allArticles,
@@ -64,14 +64,20 @@ export class ArticleController {
       next(error);
     }
   }
-}
 
-/**
-    thumbnail?: string | undefined;
-    title: string;
-    subtitle: string;
-    contents: string;
-    tags: string[];
-    writers: string[];
-    path: string;
- */
+  async updateArticle(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const updatedInfo = req.body;
+      if (!id || !updatedInfo)
+        throw new CustomError(400, "Update article failed.");
+      await this.articleService.updateArticle(id, updatedInfo);
+      return res.json({
+        status: 201,
+        message: "Update article success",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+}

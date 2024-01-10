@@ -26,3 +26,12 @@ export type TCreateArticleWithTagId = {
   path: string;
   tags: [{ title: string; path: string }];
 };
+
+export type TUpdateArticle = {
+  thumbnail?: string;
+  title?: string;
+  subtitle?: string;
+  contents?: string;
+  path?: string;
+  tags?: [{ title: string; path: string }];
+};
