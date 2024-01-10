@@ -1,4 +1,4 @@
-import { DeleteResult, Repository } from "typeorm";
+import { Repository, Like } from "typeorm";
 import { Article } from "../entities/article.entity";
 import { TCreateArticleWithTagId, TUpdateArticle } from "../types/article.type";
 import { myDataSource } from "../data-source";
@@ -55,6 +55,18 @@ export class ArticleRepository {
     const deletedResult = await this.article.delete(articleId);
     if (!deletedResult) throw new CustomError(400, "Delete article failed.");
     return true;
+  }
+
+  async searchArticle(keyword: string) {
+    const foundArticles = await this.article.find({
+      where: [
+        { title: Like(`%${keyword}%`) },
+        { subtitle: Like(`%${keyword}%`) },
+      ],
+      relations: { user: true },
+    });
+    if (!foundArticles) return "No article with the keyword.";
+    return foundArticles;
   }
 }
 

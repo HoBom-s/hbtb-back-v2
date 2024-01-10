@@ -57,4 +57,8 @@ export class ArticleService {
     if (!foundArticle) throw new CustomError(400, "Original aticle not found.");
     return this.articleRepository.removeArticle(articleId);
   }
+
+  searchArticle(keyword: string) {
+    return this.articleRepository.searchArticle(keyword);
+  }
 }

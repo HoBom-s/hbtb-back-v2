@@ -28,14 +28,13 @@ articleRouter.delete(
   authValidateMiddleware,
   articleController.removeArticle.bind(articleController),
 );
+articleRouter.get(
+  "/search",
+  articleController.searchArticle.bind(articleController),
+);
 
 export default articleRouter;
 
 /*
 router.get("/list", articleController.getArticlePerPageRequest);
-router.get("/search", articleController.getArticleSearchRequest);
-router.delete(
-  "/delete/:_id",
-  articleController.deleteArticleRequest,
-);
 */

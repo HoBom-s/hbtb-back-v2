@@ -94,4 +94,21 @@ export class ArticleController {
       next(error);
     }
   }
+
+  async searchArticle(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { keyword } = req.query;
+      if (!keyword) throw new CustomError(400, "Please check the keyword.");
+      const foundArticles = await this.articleService.searchArticle(
+        keyword as string,
+      );
+      return res.json({
+        status: 200,
+        message: "Get searched articles success.",
+        data: foundArticles,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
