@@ -24,7 +24,6 @@ export class Tag {
   })
   path: string;
 
-  // 클릭 횟수
   @Column({
     type: "numeric",
     default: 0,

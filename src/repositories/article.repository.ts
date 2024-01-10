@@ -14,7 +14,7 @@ export class ArticleRepository {
   // WIP: tag creation
   async createArticle(newArticleInfo: TCreateArticle): Promise<Article> {
     const createdArticle = this.article.create(newArticleInfo);
-    if (!createdArticle) throw new CustomError(400, "Create article FAILED.");
+    if (!createdArticle) throw new CustomError(400, "Create article failed.");
     await this.article.save(createdArticle);
     return createdArticle;
   }
@@ -26,14 +26,14 @@ export class ArticleRepository {
         user: true,
       },
     });
-    if (!allArticles) throw new CustomError(400, "Get all articles FAILED.");
+    if (!allArticles) throw new CustomError(400, "Get all articles failed.");
     return allArticles;
   }
 
   async getArticleFindByPath(path: string) {
     const foundArticle = await this.article.find({
       where: { path },
-      relations: { user: true, tags: true },
+      relations: { user: true },
     });
     if (!foundArticle)
       throw new CustomError(400, "Article with the path NOT FOUND.");

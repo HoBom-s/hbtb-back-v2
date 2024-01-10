@@ -7,6 +7,7 @@ import userRouter from "./routes/user.router";
 import { myDataSource } from "./data-source";
 import { errorMiddleware } from "./middleware/error.middleware";
 import articleRouter from "./routes/article.router";
+import tagRouter from "./routes/tag.router";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(cors(corsOptions));
 
 app.use("/user", userRouter);
 app.use("/article", articleRouter);
+app.use("/tag", tagRouter);
 app.use(errorMiddleware);
 
 app.listen(process.env.DB_PORT, () => {
