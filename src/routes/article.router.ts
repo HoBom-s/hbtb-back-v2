@@ -38,7 +38,3 @@ articleRouter.delete(
 );
 
 export default articleRouter;
-
-/*
-router.get("/list", articleController.getArticlePerPageRequest);
-*/
