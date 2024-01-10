@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { DeleteResult, Repository } from "typeorm";
 import { Article } from "../entities/article.entity";
 import { TCreateArticleWithTagId, TUpdateArticle } from "../types/article.type";
 import { myDataSource } from "../data-source";
@@ -46,7 +46,14 @@ export class ArticleRepository {
   }
 
   async updateArticle(id: string, updatedInfo: TUpdateArticle) {
-    await this.article.update({ id }, updatedInfo);
+    const updatedResult = await this.article.update({ id }, updatedInfo);
+    if (!updatedResult) throw new CustomError(400, "Update article failed.");
+    return true;
+  }
+
+  async removeArticle(articleId: string) {
+    const deletedResult = await this.article.delete(articleId);
+    if (!deletedResult) throw new CustomError(400, "Delete article failed.");
     return true;
   }
 }
@@ -57,5 +64,4 @@ export class ArticleRepository {
 () getArticlePerPageRequest
 () getArticleFindByPathRequest
 () getArticleSearchRequest
-() deleteArticleRequest
  */

@@ -74,7 +74,21 @@ export class ArticleController {
       await this.articleService.updateArticle(id, updatedInfo);
       return res.json({
         status: 201,
-        message: "Update article success",
+        message: "Update article success.",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async removeArticle(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      if (!id) throw new CustomError(400, "Please check the id.");
+      await this.articleService.removeArticle(id);
+      return res.json({
+        status: 201,
+        message: "Delete article success.",
       });
     } catch (error) {
       next(error);

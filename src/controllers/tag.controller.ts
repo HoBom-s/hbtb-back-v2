@@ -43,7 +43,5 @@ export class TagController {
 
 /*
 () getAllTagRequest
-(v) createTagRequest
-() updateTagReqest
 () deleteTagRequest
  */

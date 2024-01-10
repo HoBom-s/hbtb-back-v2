@@ -51,4 +51,10 @@ export class ArticleService {
     if (!foundArticle) throw new CustomError(400, "Original aticle not found.");
     return this.articleRepository.updateArticle(articleId, updatedInfo);
   }
+
+  async removeArticle(articleId: string) {
+    const foundArticle = this.articleRepository.getArticleById(articleId);
+    if (!foundArticle) throw new CustomError(400, "Original aticle not found.");
+    return this.articleRepository.removeArticle(articleId);
+  }
 }

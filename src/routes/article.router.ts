@@ -23,6 +23,11 @@ articleRouter.post(
   authValidateMiddleware,
   articleController.createArticle.bind(articleController),
 );
+articleRouter.delete(
+  "/delete/:id",
+  authValidateMiddleware,
+  articleController.removeArticle.bind(articleController),
+);
 
 export default articleRouter;
 
