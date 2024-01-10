@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { Article } from "../entities/article.entity";
-import { TCreateArticle } from "../types/article.type";
+import { TCreateArticleWithTagId } from "../types/article.type";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middleware/error.middleware";
 
@@ -11,9 +11,10 @@ export class ArticleRepository {
     this.article = myDataSource.getRepository(Article);
   }
 
-  // WIP: tag creation
-  async createArticle(newArticleInfo: TCreateArticle): Promise<Article> {
-    const createdArticle = this.article.create(newArticleInfo);
+  async createArticle(
+    newArticleInfoWithTagId: TCreateArticleWithTagId,
+  ): Promise<Article> {
+    const createdArticle = this.article.create(newArticleInfoWithTagId);
     if (!createdArticle) throw new CustomError(400, "Create article failed.");
     await this.article.save(createdArticle);
     return createdArticle;
@@ -30,14 +31,13 @@ export class ArticleRepository {
     return allArticles;
   }
 
-  async getArticleFindByPath(path: string) {
+  async getArticleFindByPath(path: string): Promise<Article[] | boolean> {
     const foundArticle = await this.article.find({
       where: { path },
       relations: { user: true },
     });
-    if (!foundArticle)
-      throw new CustomError(400, "Article with the path NOT FOUND.");
-    return foundArticle;
+    if (foundArticle) return foundArticle;
+    return false;
   }
 }
 

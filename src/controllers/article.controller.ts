@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ArticleService } from "../services/article.service";
+import { ArticleService } from "../services/ArticleService";
 import { TCreateArticle, TNewArticleInfo } from "../types/article.type";
 import { CustomError } from "../middleware/error.middleware";
 

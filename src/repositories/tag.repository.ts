@@ -16,9 +16,10 @@ export class TagRepository {
     return false;
   }
 
-  createTag(newTagInfo: TCreateTag): Tag {
+  async createTag(newTagInfo: TCreateTag): Promise<Tag> {
     const createdTag = this.tag.create(newTagInfo);
     if (!createdTag) throw new CustomError(400, "Create tag failed.");
+    await this.tag.save(createdTag);
     return createdTag;
   }
 }
