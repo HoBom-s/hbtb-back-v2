@@ -111,4 +111,23 @@ export class ArticleController {
       next(error);
     }
   }
+
+  async getArticlePerPage(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { pageNumber, perPage } = req.query;
+      if (!pageNumber || !perPage)
+        throw new CustomError(400, "Please check pageNumber & perPage.");
+      const articlesAndPageCount = await this.articleService.getArticlePerPage(
+        pageNumber as string,
+        perPage as string,
+      );
+      return res.json({
+        status: 200,
+        message: "Get articles per page success.",
+        data: articlesAndPageCount,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

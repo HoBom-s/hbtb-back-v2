@@ -61,4 +61,16 @@ export class ArticleService {
   searchArticle(keyword: string) {
     return this.articleRepository.searchArticle(keyword);
   }
+
+  async getArticlePerPage(strPageNumber: string, strPerPage: string) {
+    const pageNumber: number = Number.parseInt(strPageNumber);
+    const perPage: number = Number.parseInt(strPerPage);
+    const foundArticles = await this.articleRepository.getArticlePerPage(
+      pageNumber,
+      perPage,
+    );
+    const totalPageCount =
+      await this.articleRepository.getTotalPageCount(perPage);
+    return { foundArticles, totalPageCount };
+  }
 }

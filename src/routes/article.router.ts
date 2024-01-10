@@ -13,24 +13,28 @@ articleRouter.get(
   "/find/:path",
   articleController.getArticleFindByPath.bind(articleController),
 );
-articleRouter.patch(
-  "/update/:id",
-  authValidateMiddleware,
-  articleController.updateArticle.bind(articleController),
+articleRouter.get(
+  "/search",
+  articleController.searchArticle.bind(articleController),
+);
+articleRouter.get(
+  "/list",
+  articleController.getArticlePerPage.bind(articleController),
 );
 articleRouter.post(
   "/create",
   authValidateMiddleware,
   articleController.createArticle.bind(articleController),
 );
+articleRouter.patch(
+  "/update/:id",
+  authValidateMiddleware,
+  articleController.updateArticle.bind(articleController),
+);
 articleRouter.delete(
   "/delete/:id",
   authValidateMiddleware,
   articleController.removeArticle.bind(articleController),
-);
-articleRouter.get(
-  "/search",
-  articleController.searchArticle.bind(articleController),
 );
 
 export default articleRouter;

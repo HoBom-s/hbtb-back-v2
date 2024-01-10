@@ -68,12 +68,26 @@ export class ArticleRepository {
     if (!foundArticles) return "No article with the keyword.";
     return foundArticles;
   }
-}
 
-/*
-() tagControl
-() writerControl
-() getArticlePerPageRequest
-() getArticleFindByPathRequest
-() getArticleSearchRequest
- */
+  async getArticlePerPage(pageNumber: number, perPage: number) {
+    const foundArticles = await this.article.find({
+      order: { createdAt: "DESC" },
+      skip: (pageNumber - 1) * perPage,
+      take: perPage,
+    });
+    return foundArticles;
+  }
+
+  async getArticleCount() {
+    return await this.article.count({});
+  }
+
+  async getTotalPageCount(perPage: number) {
+    const totalArticleCount = await this.getArticleCount();
+    let totalPageCount: number;
+    if (totalArticleCount % perPage === 0)
+      totalPageCount = totalArticleCount / perPage;
+    else totalPageCount = totalArticleCount / perPage + 1;
+    return totalPageCount;
+  }
+}
