@@ -20,7 +20,6 @@ export class ArticleRepository {
     return createdArticle;
   }
 
-  // WIP: getting tag info
   async getAllArticles(): Promise<Article[]> {
     const allArticles = await this.article.find({
       relations: {

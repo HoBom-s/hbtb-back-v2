@@ -4,7 +4,7 @@ export type TNewArticleInfo = {
   subtitle: string;
   contents: string;
   path: string;
-  tags: { title: string; path: string };
+  tags: [{ title: string; path: string }];
 };
 
 export type TCreateArticle = {
@@ -24,5 +24,5 @@ export type TCreateArticleWithTagId = {
   contents: string;
   userId: string;
   path: string;
-  tagId: string[];
+  tags: [{ title: string; path: string }];
 };

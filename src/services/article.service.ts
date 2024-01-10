@@ -18,11 +18,8 @@ export class ArticleService {
     const foundArticle = await this.getArticleFindByPath(path);
     if (foundArticle) throw new CustomError(400, "Article already exists.");
 
-    // WIP: tag creation
-    let tagId: string[] = [];
     for (const tag of tags) {
-      const createdTag = await this.tagRepository.createTag(tag);
-      tagId.push(createdTag.id);
+      await this.tagRepository.createTag(tag);
     }
 
     const newArticleInfoWithTagId: TCreateArticleWithTagId = {
@@ -32,12 +29,12 @@ export class ArticleService {
       contents,
       userId,
       path,
-      tagId,
+      tags,
     };
-
     return this.articleRepository.createArticle(newArticleInfoWithTagId);
   }
 
+  // WIP: getting tag info
   getAllArticles() {
     return this.articleRepository.getAllArticles();
   }
