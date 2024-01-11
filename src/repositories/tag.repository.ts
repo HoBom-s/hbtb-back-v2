@@ -10,13 +10,13 @@ export class TagRepository {
     this.tag = myDataSource.getRepository(Tag);
   }
 
-  async getTagById(id: string) {
+  async getTagById(id: string): Promise<Tag | boolean> {
     const foundTag = await this.tag.findOneBy({ id });
     if (!foundTag) return false;
     return foundTag;
   }
 
-  async getTagByTitle(title: string): Promise<boolean | Tag[]> {
+  async getTagByTitle(title: string): Promise<Tag[] | boolean> {
     const foundTag = await this.tag.findBy({ title });
     if (foundTag) return foundTag;
     return false;
@@ -41,7 +41,7 @@ export class TagRepository {
     return true;
   }
 
-  async getAllTag() {
+  async getAllTag(): Promise<Tag[]> {
     const foundTags = await this.tag.find({});
     if (!foundTags) throw new CustomError(400, "Get all tags failed");
     return foundTags;

@@ -16,7 +16,6 @@ tagRouter.patch(
   authValidateMiddleware,
   tagController.updateTag.bind(tagController),
 );
-
 tagRouter.delete(
   "/delete/:id",
   authValidateMiddleware,
