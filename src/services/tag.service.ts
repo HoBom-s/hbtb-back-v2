@@ -27,4 +27,8 @@ export class TagService {
     if (!foundTag) throw new CustomError(400, "Original tag not found.");
     return this.tagRepository.removeTag(tagId);
   }
+
+  getAllTag() {
+    return this.tagRepository.getAllTag();
+  }
 }

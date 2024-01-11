@@ -40,4 +40,10 @@ export class TagRepository {
     if (!deletedResult) throw new CustomError(400, "Delete tag failed.");
     return true;
   }
+
+  async getAllTag() {
+    const foundTags = await this.tag.find({});
+    if (!foundTags) throw new CustomError(400, "Get all tags failed");
+    return foundTags;
+  }
 }

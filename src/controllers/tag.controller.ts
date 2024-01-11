@@ -53,9 +53,17 @@ export class TagController {
       next(error);
     }
   }
-}
 
-/*
-() getAllTagRequest
-(WIP) deleteTagRequest
- */
+  async getAllTag(req: Request, res: Response, next: NextFunction) {
+    try {
+      const foundTags = await this.tagService.getAllTag();
+      return res.json({
+        status: 200,
+        message: "Get all tags success.",
+        data: foundTags,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+}
