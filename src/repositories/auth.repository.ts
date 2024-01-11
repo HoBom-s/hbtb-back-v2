@@ -31,7 +31,7 @@ export class AuthRepository {
     }
 
     const isRefreshTokenValid = this.authHelper.verifyRefreshToken(
-      foundRefreshToken.refreshToken
+      foundRefreshToken.refreshToken,
     );
     if (isRefreshTokenValid) return foundRefreshToken;
     const createdRefreshToken = this.createAndSaveRefreshToken(userId);

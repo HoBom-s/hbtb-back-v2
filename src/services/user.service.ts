@@ -22,20 +22,17 @@ export class UserService {
 
   async findOneUserByNicknameAndRole(
     nickname: string,
-    role: TRole
+    role: TRole,
   ): Promise<PossibleNull<User>> {
     const foundUser = await this.userRepository.findOneUserByNicknameAndRole(
       nickname,
-      role
+      role,
     );
-    if (!foundUser) {
-      throw new CustomError(400, "User does not exist.");
-    }
     return foundUser;
   }
 
   async findOneUserById(
-    id: string
+    id: string,
   ): Promise<PossibleNull<TUserWithoutPassword>> {
     const foundUser = await this.userRepository.findOneUserById(id);
     return foundUser;
@@ -43,9 +40,6 @@ export class UserService {
 
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
-    if (!foundUser) {
-      throw new CustomError(400, "User does not exist.");
-    }
     return foundUser;
   }
 
@@ -66,11 +60,9 @@ export class UserService {
     const isPasswordCorrect = bcrypt.compareSync(password, hashedPassword);
     if (!isPasswordCorrect)
       throw new CustomError(400, "Please check password.");
-
     const userId = foundUser.id;
     const accessToken = this.authServcie.createAccessToken(userId);
     const refreshToken = await this.authServcie.getRefreshToken(userId);
-
     return { accessToken, refreshToken };
   }
 

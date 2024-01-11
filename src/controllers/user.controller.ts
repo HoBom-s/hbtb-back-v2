@@ -13,7 +13,7 @@ export class UserController {
   async getUserInfo(
     req: Request & { userId?: string },
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const userId = req.userId;
@@ -62,7 +62,7 @@ export class UserController {
 
       const { accessToken, refreshToken } = await this.userService.loginUser(
         nickname,
-        password
+        password,
       );
 
       res.cookie("refreshToken", refreshToken, {
@@ -85,7 +85,7 @@ export class UserController {
   async logoutUser(
     req: Request & { userId?: string },
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const userId = req.userId;
@@ -105,7 +105,7 @@ export class UserController {
   async updateUser(
     req: Request & { userId?: string },
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const { id } = req.params;
@@ -127,7 +127,7 @@ export class UserController {
   async deleteUser(
     req: Request & { userId?: string },
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const { id } = req.params;

@@ -2,26 +2,38 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 
 @Entity()
-export class Auth {
-  @PrimaryColumn()
+export class Tag {
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column({
-    type: "varchar",
+    type: "nvarchar",
     nullable: false,
+    length: 24,
   })
-  userId: string;
+  title: string;
 
   @Column({
     type: "varchar",
     nullable: false,
   })
-  refreshToken: string;
+  path: string;
+
+  @Column({
+    type: "numeric",
+    default: 0,
+  })
+  count: number;
+
+  @Column({
+    type: "simple-array",
+  })
+  articleId: string[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -29,5 +41,3 @@ export class Auth {
   @UpdateDateColumn()
   updatedAt: Date;
 }
-
-export default Auth;

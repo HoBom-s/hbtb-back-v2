@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 export class CustomError extends Error {
-  statusCode;
+  statusCode: number;
   constructor(statusCode: number, message: string) {
     super();
     this.statusCode = statusCode;
@@ -13,7 +13,7 @@ export function errorMiddleware(
   err: CustomError,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const { statusCode, message } = err;
   res.json({
