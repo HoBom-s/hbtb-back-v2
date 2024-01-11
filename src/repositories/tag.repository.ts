@@ -29,7 +29,15 @@ export class TagRepository {
     return createdTag;
   }
 
-  updateTag(id: string, updatedTagInfo: TUpdateTag) {
-    return this.tag.update({ id }, updatedTagInfo);
+  async updateTag(id: string, updatedTagInfo: TUpdateTag) {
+    const updatedResult = await this.tag.update({ id }, updatedTagInfo);
+    if (!updatedResult) throw new CustomError(400, "Update tag failed.");
+    return true;
+  }
+
+  async removeTag(id: string) {
+    const deletedResult = await this.tag.delete(id);
+    if (!deletedResult) throw new CustomError(400, "Delete tag failed.");
+    return true;
   }
 }

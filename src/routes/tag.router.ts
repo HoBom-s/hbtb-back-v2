@@ -16,4 +16,17 @@ tagRouter.patch(
   tagController.updateTag.bind(tagController),
 );
 
+tagRouter.delete("/delete/:id", authValidateMiddleware, tagController.removeTag.bind(tagController))
+
 export default tagRouter;
+/*
+router.get("/", tagController.getAllTagRequest);
+
+
+router.delete(
+  "/delete/:_id",
+  authValidation,
+  paramValidation(STATIC_TAG_DELETE),
+  tagController.deleteTagRequest
+);
+*/

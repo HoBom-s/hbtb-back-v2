@@ -39,9 +39,23 @@ export class TagController {
       next(error);
     }
   }
+
+  async removeTag(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      if (!id) throw new CustomError(400, "Please check the id.");
+      await this.tagService.removeTag(id);
+      return res.json({
+        status: 201,
+        message: "Delete tag success.",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 /*
 () getAllTagRequest
-() deleteTagRequest
+(WIP) deleteTagRequest
  */

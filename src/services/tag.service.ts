@@ -21,4 +21,10 @@ export class TagService {
     if (!foundTag) throw new CustomError(400, "Original tag not found.");
     return this.tagRepository.updateTag(tagId, updatedTagInfo);
   }
+
+  async removeTag(tagId: string) {
+    const foundTag = await this.tagRepository.getTagById(tagId);
+    if (!foundTag) throw new CustomError(400, "Original tag not found.");
+    return this.tagRepository.removeTag(tagId);
+  }
 }
