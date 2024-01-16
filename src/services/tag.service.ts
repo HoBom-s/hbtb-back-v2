@@ -1,5 +1,5 @@
 import { Tag } from "../entities/tag.entity";
-import { CustomError } from "../middleware/error.middleware";
+import { CustomError } from "../middlewares/error.middleware";
 import { TagRepository } from "../repositories/tag.repository";
 import { TCreateTag, TUpdateTag } from "../types/tag.type";
 

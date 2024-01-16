@@ -1,6 +1,6 @@
 import { Request, NextFunction, Response } from "express";
 import { TagService } from "../services/tag.service";
-import { CustomError } from "../middleware/error.middleware";
+import { CustomError } from "../middlewares/error.middleware";
 import { TCreateTag, TUpdateTag } from "../types/tag.type";
 
 export class TagController {

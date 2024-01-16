@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
 import { TCreateArticle, TNewArticleInfo } from "../types/article.type";
-import { CustomError } from "../middleware/error.middleware";
+import { CustomError } from "../middlewares/error.middleware";
 
 export class ArticleController {
   private articleService: ArticleService;

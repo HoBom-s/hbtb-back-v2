@@ -7,7 +7,7 @@ import {
 } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import User from "../entities/user.entity";
-import { CustomError } from "../middleware/error.middleware";
+import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
 import { AuthService } from "./auth.service";
 

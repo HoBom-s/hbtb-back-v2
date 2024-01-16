@@ -2,7 +2,7 @@ import { Repository, Like } from "typeorm";
 import { Article } from "../entities/article.entity";
 import { TCreateArticleWithTagId, TUpdateArticle } from "../types/article.type";
 import { myDataSource } from "../data-source";
-import { CustomError } from "../middleware/error.middleware";
+import { CustomError } from "../middlewares/error.middleware";
 
 export class ArticleRepository {
   private article: Repository<Article>;

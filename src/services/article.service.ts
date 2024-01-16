@@ -1,5 +1,5 @@
 import { Article } from "../entities/article.entity";
-import { CustomError } from "../middleware/error.middleware";
+import { CustomError } from "../middlewares/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
 import {
   TCreateArticle,

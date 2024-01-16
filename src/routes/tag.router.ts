@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { TagController } from "../controllers/tag.controller";
-import authValidateMiddleware from "../middleware/auth.middleware";
+import authValidateMiddleware from "../middlewares/auth.middleware";
 
 const tagRouter = Router();
 const tagController = new TagController();
