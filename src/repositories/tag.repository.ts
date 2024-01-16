@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import { Tag } from "../entities/tag.entity";
 import { myDataSource } from "../data-source";
 import { TCreateTag, TUpdateTag } from "../types/tag.type";
-import { CustomError } from "../middleware/error.middleware";
+import { CustomError } from "../middlewares/error.middleware";
 
 export class TagRepository {
   private tag: Repository<Tag>;
@@ -10,13 +10,13 @@ export class TagRepository {
     this.tag = myDataSource.getRepository(Tag);
   }
 
-  async getTagById(id: string) {
+  async getTagById(id: string): Promise<Tag | boolean> {
     const foundTag = await this.tag.findOneBy({ id });
     if (!foundTag) return false;
     return foundTag;
   }
 
-  async getTagByTitle(title: string): Promise<boolean | Tag[]> {
+  async getTagByTitle(title: string): Promise<Tag[] | boolean> {
     const foundTag = await this.tag.findBy({ title });
     if (foundTag) return foundTag;
     return false;
@@ -29,7 +29,21 @@ export class TagRepository {
     return createdTag;
   }
 
-  updateTag(id: string, updatedTagInfo: TUpdateTag) {
-    return this.tag.update({ id }, updatedTagInfo);
+  async updateTag(id: string, updatedTagInfo: TUpdateTag) {
+    const updatedResult = await this.tag.update({ id }, updatedTagInfo);
+    if (!updatedResult) throw new CustomError(400, "Update tag failed.");
+    return true;
+  }
+
+  async removeTag(id: string) {
+    const deletedResult = await this.tag.delete(id);
+    if (!deletedResult) throw new CustomError(400, "Delete tag failed.");
+    return true;
+  }
+
+  async getAllTag(): Promise<Tag[]> {
+    const foundTags = await this.tag.find({});
+    if (!foundTags) throw new CustomError(400, "Get all tags failed");
+    return foundTags;
   }
 }

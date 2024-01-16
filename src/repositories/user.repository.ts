@@ -10,7 +10,7 @@ import {
 } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
-import { CustomError } from "../middleware/error.middleware";
+import { CustomError } from "../middlewares/error.middleware";
 
 export class UserRepository {
   private user: Repository<User>;

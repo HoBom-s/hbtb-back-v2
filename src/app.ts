@@ -5,7 +5,7 @@ import helmet from "helmet";
 import cors from "cors";
 import userRouter from "./routes/user.router";
 import { myDataSource } from "./data-source";
-import { errorMiddleware } from "./middleware/error.middleware";
+import { errorMiddleware } from "./middlewares/error.middleware";
 import articleRouter from "./routes/article.router";
 import tagRouter from "./routes/tag.router";
 

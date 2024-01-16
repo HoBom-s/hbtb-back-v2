@@ -1,5 +1,5 @@
 import { Tag } from "../entities/tag.entity";
-import { CustomError } from "../middleware/error.middleware";
+import { CustomError } from "../middlewares/error.middleware";
 import { TagRepository } from "../repositories/tag.repository";
 import { TCreateTag, TUpdateTag } from "../types/tag.type";
 
@@ -20,5 +20,15 @@ export class TagService {
     const foundTag = await this.tagRepository.getTagById(tagId);
     if (!foundTag) throw new CustomError(400, "Original tag not found.");
     return this.tagRepository.updateTag(tagId, updatedTagInfo);
+  }
+
+  async removeTag(tagId: string) {
+    const foundTag = await this.tagRepository.getTagById(tagId);
+    if (!foundTag) throw new CustomError(400, "Original tag not found.");
+    return this.tagRepository.removeTag(tagId);
+  }
+
+  getAllTag() {
+    return this.tagRepository.getAllTag();
   }
 }

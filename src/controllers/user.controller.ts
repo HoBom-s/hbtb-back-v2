@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { TCreateUser, TLoginUser, TUpdateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
-import { CustomError } from "../middleware/error.middleware";
+import { CustomError } from "../middlewares/error.middleware";
 
 export class UserController {
   private userService: UserService;

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import authValidateMiddleware from "../middleware/auth.middleware";
+import authValidateMiddleware from "../middlewares/auth.middleware";
 import { ArticleController } from "../controllers/article.controller";
 
 const articleRouter = Router();
