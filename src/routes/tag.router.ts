@@ -2,6 +2,7 @@ import { Router } from "express";
 import { TagController } from "../controllers/tag.controller";
 import authValidateMiddleware from "../middlewares/auth.middleware";
 import bodyValidateMiddleware from "../middlewares/body.middleware";
+import { TAG_CREATE } from "../static/body.const";
 
 const tagRouter = Router();
 const tagController = new TagController();
