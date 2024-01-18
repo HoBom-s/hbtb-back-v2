@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const bodyValidationHelper: { [key: string]: object } = {
+const validateHelper: { [key: string]: object } = {
   tagCreate: {
     title: Joi.string().required(),
     path: Joi.string().required(),
@@ -10,6 +10,14 @@ const bodyValidationHelper: { [key: string]: object } = {
     title: Joi.string().required(),
     path: Joi.string().required(),
   },
+
+  tagDelete: {
+    id: Joi.string().required(),
+  },
+
+  idParam: {
+    id: Joi.string().required(),
+  },
 };
 
-export default bodyValidationHelper;
+export default validateHelper;
