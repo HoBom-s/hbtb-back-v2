@@ -1,23 +1,77 @@
 import Joi from "joi";
+import { CustomError } from "../middlewares/error.middleware";
+import { ValidateObject } from "../types/common.type";
 
-const validateHelper: { [key: string]: object } = {
+const validateHelper: ValidateObject = {
+  idParam: {
+    id: Joi.string().required(),
+  },
+
+  articleCreate: {
+    thumbnail: Joi.string().optional(),
+    title: Joi.string().required(),
+    subtitle: Joi.string().required(),
+    contents: Joi.string().required(),
+    userId: Joi.string().required(),
+    path: Joi.string().required(),
+    tags: Joi.array().items(Joi.string().valid("title", "path").required()),
+  },
+
+  articleUpdate: {
+    thumbnail: Joi.string().optional(),
+    title: Joi.string().optional(),
+    subtitle: Joi.string().optional(),
+    contents: Joi.string().optional(),
+    path: Joi.string().optional(),
+  },
+
+  categoryCreate: {
+    title: Joi.string().required(),
+    path: Joi.string().required(),
+    spot: Joi.string().required(),
+  },
+
+  categoryUpdate: {
+    title: Joi.string().optional(),
+    path: Joi.string().optional(),
+    spot: Joi.string().optional(),
+  },
+
   tagCreate: {
     title: Joi.string().required(),
     path: Joi.string().required(),
   },
 
   tagUpdate: {
-    title: Joi.string().required(),
-    path: Joi.string().required(),
+    title: Joi.string().optional(),
+    path: Joi.string().optional(),
   },
 
-  tagDelete: {
-    id: Joi.string().required(),
+  userCreate: {
+    nickname: Joi.string().required(),
+    password: Joi.string().required(),
+    profileImg: Joi.string().optional(),
+    introduction: Joi.string().required(),
   },
 
-  idParam: {
-    id: Joi.string().required(),
+  userLogin: {
+    nickname: Joi.string().required(),
+    password: Joi.string().required(),
   },
+
+  userUpdate: {
+    nickname: Joi.string().optional(),
+    password: Joi.string().optional(),
+    profileImg: Joi.string().optional(),
+    introduction: Joi.string().optional(),
+  },
+};
+
+validateHelper.asJoiSchema = function (target: string) {
+  if (typeof target !== "string")
+    throw new CustomError(400, "Validation string type error.");
+  const joiSchema = Joi.object(validateHelper[target]);
+  return joiSchema;
 };
 
 export default validateHelper;
