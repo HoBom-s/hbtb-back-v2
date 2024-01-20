@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import validateHelper from "../helpers/validate.helper";
+import ValidateHelper from "../helpers/validate.helper";
 import { CustomError } from "./error.middleware";
+
+const validateHelper = new ValidateHelper();
 
 function bodyValidateMiddleware(target: string) {
   return function (req: Request, res: Response, next: NextFunction) {

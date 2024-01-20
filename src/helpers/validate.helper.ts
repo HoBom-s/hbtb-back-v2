@@ -1,13 +1,14 @@
 import Joi from "joi";
 import { CustomError } from "../middlewares/error.middleware";
-import { ValidateObject } from "../types/common.type";
 
-const validateHelper: ValidateObject = {
-  idParam: {
+class ValidateHelper {
+  constructor() {}
+
+  idParam = {
     id: Joi.string().required(),
-  },
+  };
 
-  articleCreate: {
+  articleCreate = {
     thumbnail: Joi.string().optional(),
     title: Joi.string().required(),
     subtitle: Joi.string().required(),
@@ -15,63 +16,63 @@ const validateHelper: ValidateObject = {
     userId: Joi.string().required(),
     path: Joi.string().required(),
     tags: Joi.array().items(Joi.string().valid("title", "path").required()),
-  },
+  };
 
-  articleUpdate: {
+  articleUpdate = {
     thumbnail: Joi.string().optional(),
     title: Joi.string().optional(),
     subtitle: Joi.string().optional(),
     contents: Joi.string().optional(),
     path: Joi.string().optional(),
-  },
+  };
 
-  categoryCreate: {
+  categoryCreate = {
     title: Joi.string().required(),
     path: Joi.string().required(),
     spot: Joi.string().required(),
-  },
+  };
 
-  categoryUpdate: {
+  categoryUpdate = {
     title: Joi.string().optional(),
     path: Joi.string().optional(),
     spot: Joi.string().optional(),
-  },
+  };
 
-  tagCreate: {
+  tagCreate = {
     title: Joi.string().required(),
     path: Joi.string().required(),
-  },
+  };
 
-  tagUpdate: {
+  tagUpdate = {
     title: Joi.string().optional(),
     path: Joi.string().optional(),
-  },
+  };
 
-  userCreate: {
+  userCreate = {
     nickname: Joi.string().required(),
     password: Joi.string().required(),
     profileImg: Joi.string().optional(),
     introduction: Joi.string().required(),
-  },
+  };
 
-  userLogin: {
+  userLogin = {
     nickname: Joi.string().required(),
     password: Joi.string().required(),
-  },
+  };
 
-  userUpdate: {
+  userUpdate = {
     nickname: Joi.string().optional(),
     password: Joi.string().optional(),
     profileImg: Joi.string().optional(),
     introduction: Joi.string().optional(),
-  },
-};
+  };
 
-validateHelper.asJoiSchema = function (target: string) {
-  if (typeof target !== "string")
-    throw new CustomError(400, "Validation string type error.");
-  const joiSchema = Joi.object(validateHelper[target]);
-  return joiSchema;
-};
+  asJoiSchema = (target: string) => {
+    if (typeof target !== "string")
+      throw new CustomError(400, "Validation string type error.");
+    const joiSchema = Joi.object(this[target]);
+    return joiSchema;
+  };
+}
 
-export default validateHelper;
+export default ValidateHelper;
