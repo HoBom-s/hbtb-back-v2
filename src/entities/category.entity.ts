@@ -28,9 +28,7 @@ class Category {
   @Column({
     type: "int",
     nullable: false,
-    default: 1,
   })
-  @Generated("increment")
   sortIndex: number;
 
   @Column({

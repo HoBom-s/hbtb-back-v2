@@ -45,7 +45,9 @@ export class Article {
   })
   path: string;
 
-  @Column()
+  @Column({
+    type: "simple-array",
+  })
   tags: [
     {
       title: string;
