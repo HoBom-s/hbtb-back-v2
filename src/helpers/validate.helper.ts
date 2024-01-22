@@ -1,6 +1,32 @@
 import Joi from "joi";
-import { CustomError } from "../middlewares/error.middleware";
 
+class JoiSchemaMaker {
+  private target: string;
+
+  constructor(target: string) {
+    this.target = target;
+  }
+
+  createSchema = () => {
+    return Joi.object();
+  };
+}
+
+class ValidateHelper {
+  asJoiSchema = (target: string) => {
+    return new JoiSchemaMaker(target).createSchema();
+  };
+}
+
+export default ValidateHelper;
+
+/*
+1. target 받아서 schema return
+2. target 관심사 여부에 따라 인스턴스 생성하는 클래스 (extends)
+- article, tag, user, category
+*/
+
+/*
 class ValidateHelper {
   constructor() {}
 
@@ -76,3 +102,4 @@ class ValidateHelper {
 }
 
 export default ValidateHelper;
+*/
