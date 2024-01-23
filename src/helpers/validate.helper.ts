@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { ValidateObject } from "../types/common.type";
+import { ValidateSchema } from "../types/common.type";
 import {
   idParam,
   articleCreate,
@@ -14,7 +14,7 @@ import {
 } from "../static/joi.const";
 
 class JoiSchemaMaker {
-  private schema: ValidateObject;
+  private schema: ValidateSchema;
 
   createSchema(target: string) {
     switch (target) {
