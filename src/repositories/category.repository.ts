@@ -24,7 +24,7 @@ export class CategoryRepository {
   }
 
   async getMaxIndex() {
-    const maxIndex = await this.category.maximum("sortIndex");
+    const maxIndex = await this.category.maximum("sortIndex", {});
     if (!maxIndex) return 0;
     return maxIndex;
   }
