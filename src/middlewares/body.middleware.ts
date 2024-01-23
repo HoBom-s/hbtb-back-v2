@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import ValidateHelper from "../helpers/validate.helper";
 import { CustomError } from "./error.middleware";
 
-const validateHelper = new ValidateHelper();
-
 function bodyValidateMiddleware(target: string) {
+  const validateHelper = new ValidateHelper();
+
   return function (req: Request, res: Response, next: NextFunction) {
     const bodies = req.body;
     const isBodyValidate = validateHelper.asJoiSchema(target).validate(bodies);

@@ -1,6 +1,18 @@
 import Joi from "joi";
 import { ValidateSchema } from "../types/common.type";
 import {
+  ID_PARAM,
+  ARTICLE_CREATE,
+  ARTICLE_UPDATE,
+  CATEGORY_CREATE,
+  CATEGORY_UPDATE,
+  TAG_CREATE,
+  TAG_UPDATE,
+  USER_CREATE,
+  USER_LOGIN,
+  USER_UPDATE,
+} from "../static/validate.const";
+import {
   idParam,
   articleCreate,
   articleUpdate,
@@ -18,34 +30,34 @@ class JoiSchemaMaker {
 
   createSchema(target: string) {
     switch (target) {
-      case "idParam":
+      case ID_PARAM:
         this.schema = idParam;
         break;
-      case "articleCreate":
+      case ARTICLE_CREATE:
         this.schema = articleCreate;
         break;
-      case "articleUpdate":
+      case ARTICLE_UPDATE:
         this.schema = articleUpdate;
         break;
-      case "categoryCreate":
+      case CATEGORY_CREATE:
         this.schema = categoryCreate;
         break;
-      case "categoryUpdate":
+      case CATEGORY_UPDATE:
         this.schema = categoryUpdate;
         break;
-      case "tagCreate":
+      case TAG_CREATE:
         this.schema = tagCreate;
         break;
-      case "tagUpdate":
+      case TAG_UPDATE:
         this.schema = tagUpdate;
         break;
-      case "userCreate":
+      case USER_CREATE:
         this.schema = userCreate;
         break;
-      case "userLogin":
+      case USER_LOGIN:
         this.schema = userLogin;
         break;
-      case "userUpdate":
+      case USER_UPDATE:
         this.schema = userUpdate;
         break;
     }
