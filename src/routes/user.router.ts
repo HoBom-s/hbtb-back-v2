@@ -19,7 +19,7 @@ userRouter.get(
   userController.getUserInfo.bind(userController),
 );
 userRouter.post(
-  "/create",
+  "/signup",
   // bodyValidateMiddleware(USER_CREATE),
   userController.createUser.bind(userController),
 );
