@@ -9,23 +9,24 @@ const tagRouter = Router();
 const tagController = new TagController();
 
 tagRouter.get("/", tagController.getAllTag.bind(tagController));
+
 tagRouter.post(
   "/create",
   authValidateMiddleware,
-  // bodyValidateMiddleware(TAG_CREATE),
+  bodyValidateMiddleware(TAG_CREATE),
   tagController.createTag.bind(tagController),
 );
 tagRouter.patch(
   "/update/:id",
   authValidateMiddleware,
-  // paramValidateMiddleware(ID_PARAM),
-  // bodyValidateMiddleware(TAG_UPDATE),
+  paramValidateMiddleware(ID_PARAM),
+  bodyValidateMiddleware(TAG_UPDATE),
   tagController.updateTag.bind(tagController),
 );
 tagRouter.delete(
   "/delete/:id",
   authValidateMiddleware,
-  // paramValidateMiddleware(ID_PARAM),
+  paramValidateMiddleware(ID_PARAM),
   tagController.removeTag.bind(tagController),
 );
 

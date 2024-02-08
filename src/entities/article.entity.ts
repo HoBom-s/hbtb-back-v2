@@ -48,12 +48,7 @@ export class Article {
   @Column({
     type: "simple-array",
   })
-  tags: [
-    {
-      title: string;
-      path: string;
-    },
-  ];
+  tags: string[];
 
   @ManyToOne(() => User, (user) => user.articles)
   user: User;

@@ -46,4 +46,10 @@ export class TagRepository {
     if (!foundTags) throw new CustomError(400, "Get all tags failed");
     return foundTags;
   }
+
+  async getOneTagIdByTitle(title: string): Promise<Tag | boolean> {
+    const foundTag = await this.tag.findOne({ where: { title } });
+    if (!foundTag) return false;
+    return foundTag;
+  }
 }

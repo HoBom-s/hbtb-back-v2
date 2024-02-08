@@ -20,12 +20,12 @@ userRouter.get(
 );
 userRouter.post(
   "/signup",
-  // bodyValidateMiddleware(USER_CREATE),
+  bodyValidateMiddleware(USER_CREATE),
   userController.createUser.bind(userController),
 );
 userRouter.post(
   "/login",
-  // bodyValidateMiddleware(USER_LOGIN),
+  bodyValidateMiddleware(USER_LOGIN),
   userController.loginUser.bind(userController),
 );
 userRouter.post(
@@ -36,14 +36,14 @@ userRouter.post(
 userRouter.patch(
   "/update/:id",
   authValidateMiddleware,
-  // paramValidateMiddleware(ID_PARAM),
-  // bodyValidateMiddleware(USER_UPDATE),
+  paramValidateMiddleware(ID_PARAM),
+  bodyValidateMiddleware(USER_UPDATE),
   userController.updateUser.bind(userController),
 );
 userRouter.delete(
   "/delete/:id",
   authValidateMiddleware,
-  // paramValidateMiddleware(ID_PARAM),
+  paramValidateMiddleware(ID_PARAM),
   userController.deleteUser.bind(userController),
 );
 

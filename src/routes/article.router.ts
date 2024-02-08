@@ -16,24 +16,29 @@ articleRouter.get(
   "/",
   articleController.getAllArticles.bind(articleController),
 );
+
 articleRouter.get(
   "/find/:path",
   articleController.getArticleFindByPath.bind(articleController),
 );
+
 articleRouter.get(
   "/search",
   articleController.searchArticle.bind(articleController),
 );
+
 articleRouter.get(
   "/list",
   articleController.getArticlePerPage.bind(articleController),
 );
+
 articleRouter.post(
   "/create",
   authValidateMiddleware,
-  // bodyValidateMiddleware(ARTICLE_CREATE),
+  bodyValidateMiddleware(ARTICLE_CREATE),
   articleController.createArticle.bind(articleController),
 );
+
 articleRouter.patch(
   "/update/:id",
   authValidateMiddleware,
@@ -41,6 +46,7 @@ articleRouter.patch(
   // bodyValidateMiddleware(ARTICLE_UPDATE),
   articleController.updateArticle.bind(articleController),
 );
+
 articleRouter.delete(
   "/delete/:id",
   authValidateMiddleware,

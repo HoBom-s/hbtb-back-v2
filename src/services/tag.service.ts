@@ -31,4 +31,10 @@ export class TagService {
   getAllTag() {
     return this.tagRepository.getAllTag();
   }
+
+  async getOneTagIdByTitle(title: string): Promise<string | boolean> {
+    const foundTag = await this.tagRepository.getOneTagIdByTitle(title);
+    if (typeof foundTag === "boolean") return false;
+    return foundTag.id;
+  }
 }

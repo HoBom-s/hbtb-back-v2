@@ -30,8 +30,8 @@ export class ArticleRepository {
     return allArticles;
   }
 
-  async getArticleFindByPath(path: string): Promise<Article[] | boolean> {
-    const foundArticle = await this.article.find({
+  async getArticleFindByPath(path: string): Promise<Article | boolean> {
+    const foundArticle = await this.article.findOne({
       where: { path },
       relations: { user: true },
     });

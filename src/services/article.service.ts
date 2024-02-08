@@ -6,25 +6,31 @@ import {
   TCreateArticleWithTagId,
   TUpdateArticle,
 } from "../types/article.type";
-import { TagRepository } from "../repositories/tag.repository";
+import { TagService } from "./tag.service";
 
 export class ArticleService {
   private articleRepository: ArticleRepository;
-  private tagRepository: TagRepository;
+  private tagService: TagService;
 
   constructor() {
     this.articleRepository = new ArticleRepository();
+    this.tagService = new TagService();
   }
 
   async createArticle(newArticleInfo: TCreateArticle): Promise<Article> {
     const { thumbnail, title, subtitle, contents, userId, path, tags } =
       newArticleInfo;
+
     const foundArticle = await this.getArticleFindByPath(path);
     if (foundArticle) throw new CustomError(400, "Article already exists.");
 
+    const tagIds: string[] = [];
     for (const tag of tags) {
-      await this.tagRepository.createTag(tag);
+      const tagId = await this.tagService.getOneTagIdByTitle(tag);
+      if (typeof tagId === "string") tagIds.push(tagId);
     }
+
+    console.log("::: tagIds :::", tagIds);
 
     const newArticleInfoWithTagId: TCreateArticleWithTagId = {
       thumbnail,
@@ -33,7 +39,7 @@ export class ArticleService {
       contents,
       userId,
       path,
-      tags,
+      tags: tagIds,
     };
     return this.articleRepository.createArticle(newArticleInfoWithTagId);
   }
