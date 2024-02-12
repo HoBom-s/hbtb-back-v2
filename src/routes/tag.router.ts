@@ -16,6 +16,7 @@ tagRouter.post(
   bodyValidateMiddleware(TAG_CREATE),
   tagController.createTag.bind(tagController),
 );
+
 tagRouter.patch(
   "/update/:id",
   authValidateMiddleware,
@@ -23,6 +24,7 @@ tagRouter.patch(
   bodyValidateMiddleware(TAG_UPDATE),
   tagController.updateTag.bind(tagController),
 );
+
 tagRouter.delete(
   "/delete/:id",
   authValidateMiddleware,
