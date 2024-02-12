@@ -4,6 +4,7 @@ import {
   TCreateUser,
   TUpdateUser,
   TUserWithoutPassword,
+  TUserWithPassword,
 } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import User from "../entities/user.entity";
@@ -35,6 +36,13 @@ export class UserService {
     id: string,
   ): Promise<PossibleNull<TUserWithoutPassword>> {
     const foundUser = await this.userRepository.findOneUserById(id);
+    return foundUser;
+  }
+
+  async findOneUserByIdWithPassword(
+    id: string,
+  ): Promise<PossibleNull<TUserWithPassword>> {
+    const foundUser = await this.userRepository.findOneUserByIdWithPassword(id);
     return foundUser;
   }
 

@@ -7,14 +7,17 @@ import {
   TUpdateArticle,
 } from "../types/article.type";
 import { TagService } from "./tag.service";
+import { UserService } from "./user.service";
 
 export class ArticleService {
   private articleRepository: ArticleRepository;
   private tagService: TagService;
+  private userService: UserService;
 
   constructor() {
     this.articleRepository = new ArticleRepository();
     this.tagService = new TagService();
+    this.userService = new UserService();
   }
 
   async createArticle(newArticleInfo: TCreateArticle): Promise<Article> {
@@ -30,14 +33,19 @@ export class ArticleService {
       if (typeof tagId === "string") tagIds.push(tagId);
     }
 
-    console.log("::: tagIds :::", tagIds);
+    const articleWriter =
+      await this.userService.findOneUserByIdWithPassword(userId);
+
+    if (!articleWriter) {
+      throw new CustomError(400, "User for article writer does not exist.");
+    }
 
     const newArticleInfoWithTagId: TCreateArticleWithTagId = {
       thumbnail,
       title,
       subtitle,
       contents,
-      userId,
+      user: articleWriter,
       path,
       tags: tagIds,
     };
@@ -52,15 +60,29 @@ export class ArticleService {
     return this.articleRepository.getArticleFindByPath(path);
   }
 
-  async updateArticle(articleId: string, updatedInfo: TUpdateArticle) {
+  async updateArticle(
+    articleId: string,
+    userId: string,
+    updatedInfo: TUpdateArticle,
+  ) {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
     if (!foundArticle) throw new CustomError(400, "Original aticle not found.");
+
+    const writerId = foundArticle.user.id;
+    if (writerId !== userId)
+      throw new CustomError(400, "Only the writer can update the article.");
+
     return this.articleRepository.updateArticle(articleId, updatedInfo);
   }
 
-  async removeArticle(articleId: string) {
-    const foundArticle = this.articleRepository.getArticleById(articleId);
+  async removeArticle(articleId: string, userId: string) {
+    const foundArticle = await this.articleRepository.getArticleById(articleId);
     if (!foundArticle) throw new CustomError(400, "Original aticle not found.");
+
+    const writerId = foundArticle.user.id;
+    if (writerId !== userId)
+      throw new CustomError(400, "Only the writer can remove the article.");
+
     return this.articleRepository.removeArticle(articleId);
   }
 

@@ -42,15 +42,15 @@ articleRouter.post(
 articleRouter.patch(
   "/update/:id",
   authValidateMiddleware,
-  // paramValidateMiddleware(ID_PARAM),
-  // bodyValidateMiddleware(ARTICLE_UPDATE),
+  paramValidateMiddleware(ID_PARAM),
+  bodyValidateMiddleware(ARTICLE_UPDATE),
   articleController.updateArticle.bind(articleController),
 );
 
 articleRouter.delete(
   "/delete/:id",
   authValidateMiddleware,
-  // paramValidateMiddleware(ID_PARAM),
+  paramValidateMiddleware(ID_PARAM),
   articleController.removeArticle.bind(articleController),
 );
 

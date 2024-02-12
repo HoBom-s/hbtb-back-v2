@@ -1,3 +1,5 @@
+import User from "../entities/user.entity";
+
 export type TNewArticleInfo = {
   thumbnail?: string;
   title: string;
@@ -22,7 +24,7 @@ export type TCreateArticleWithTagId = {
   title: string;
   subtitle: string;
   contents: string;
-  userId: string;
+  user: User;
   path: string;
   tags: string[];
 };

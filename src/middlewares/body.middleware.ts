@@ -5,12 +5,18 @@ import { CustomError } from "./error.middleware";
 function bodyValidateMiddleware(target: string) {
   const validateHelper = new ValidateHelper();
 
-  return function (req: Request, res: Response, next: NextFunction) {
-    const bodies = req.body;
-    const isBodyValidate = validateHelper.asJoiSchema(target).validate(bodies);
-    if (!isBodyValidate)
-      throw new CustomError(400, "Request body validation failed.");
-    next();
+  return async function (req: Request, res: Response, next: NextFunction) {
+    try {
+      const bodies = req.body;
+      const isBodyValidate = await validateHelper
+        .asJoiSchema(target)
+        .validateAsync(bodies);
+      if (!isBodyValidate)
+        throw new CustomError(400, "Request body validation failed.");
+      next();
+    } catch (error) {
+      next(error);
+    }
   };
 }
 
