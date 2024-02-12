@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
-import { TCreateArticle, TNewArticleInfo } from "../types/article.type";
+import {
+  TCreateArticle,
+  TNewArticleInfo,
+  TUpdateArticle,
+} from "../types/article.type";
 import { CustomError } from "../middlewares/error.middleware";
 
 export class ArticleController {
@@ -65,13 +69,23 @@ export class ArticleController {
     }
   }
 
-  async updateArticle(req: Request, res: Response, next: NextFunction) {
+  async updateArticle(
+    req: Request & { userId?: string },
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const { id } = req.params;
-      const updatedInfo = req.body;
-      if (!id || !updatedInfo)
-        throw new CustomError(400, "Update article failed.");
-      await this.articleService.updateArticle(id, updatedInfo);
+      const userId = req.userId;
+      const updatedInfo: TUpdateArticle = req.body;
+
+      if (!id || !userId || !updatedInfo)
+        throw new CustomError(
+          400,
+          "Update article failed on controller layer.",
+        );
+
+      await this.articleService.updateArticle(id, userId, updatedInfo);
       return res.json({
         status: 201,
         message: "Update article success.",
@@ -81,11 +95,20 @@ export class ArticleController {
     }
   }
 
-  async removeArticle(req: Request, res: Response, next: NextFunction) {
+  async removeArticle(
+    req: Request & { userId?: string },
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const { id } = req.params;
-      if (!id) throw new CustomError(400, "Please check the id.");
-      await this.articleService.removeArticle(id);
+      const userId = req.userId;
+      if (!id || !userId)
+        throw new CustomError(
+          400,
+          "Delete article failed on controller layer.",
+        );
+      await this.articleService.removeArticle(id, userId);
       return res.json({
         status: 201,
         message: "Delete article success.",

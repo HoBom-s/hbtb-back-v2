@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Generated,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -28,9 +27,7 @@ class Category {
   @Column({
     type: "int",
     nullable: false,
-    default: 1,
   })
-  @Generated("increment")
   sortIndex: number;
 
   @Column({

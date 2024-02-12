@@ -7,6 +7,7 @@ import {
   TCreateUser,
   TUpdateUser,
   TUserWithoutPassword,
+  TUserWithPassword,
 } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
@@ -38,6 +39,13 @@ export class UserRepository {
       throw new CustomError(400, "User does not exist.");
     }
     return userWithoutPassword;
+  }
+
+  async findOneUserByIdWithPassword(
+    id: string,
+  ): Promise<PossibleNull<TUserWithPassword>> {
+    const userWithPassword = await this.user.findOneBy({ id });
+    return userWithPassword;
   }
 
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {

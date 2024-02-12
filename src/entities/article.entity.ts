@@ -45,13 +45,10 @@ export class Article {
   })
   path: string;
 
-  @Column()
-  tags: [
-    {
-      title: string;
-      path: string;
-    },
-  ];
+  @Column({
+    type: "simple-array",
+  })
+  tags: string[];
 
   @ManyToOne(() => User, (user) => user.articles)
   user: User;

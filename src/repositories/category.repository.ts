@@ -2,7 +2,10 @@ import { Repository } from "typeorm";
 import Category from "../entities/category.entity";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
-import { TCreateCategory, TUpdateCategoryWithId } from "../types/category.type";
+import {
+  TCreateCategoryWithIndex,
+  TUpdateCategoryWithId,
+} from "../types/category.type";
 
 export class CategoryRepository {
   private category: Repository<Category>;
@@ -20,7 +23,15 @@ export class CategoryRepository {
     return allCategories;
   }
 
-  async createCategory(newCategoryInfo: TCreateCategory): Promise<Category> {
+  async getMaxIndex() {
+    const maxIndex = await this.category.maximum("sortIndex", {});
+    if (!maxIndex) return 0;
+    return maxIndex;
+  }
+
+  async createCategory(
+    newCategoryInfo: TCreateCategoryWithIndex,
+  ): Promise<Category> {
     const createdCategory = this.category.create(newCategoryInfo);
     if (!createdCategory)
       throw new CustomError(400, "Create category failed on repository layer.");

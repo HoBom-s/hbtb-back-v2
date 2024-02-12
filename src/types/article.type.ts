@@ -1,10 +1,12 @@
+import User from "../entities/user.entity";
+
 export type TNewArticleInfo = {
   thumbnail?: string;
   title: string;
   subtitle: string;
   contents: string;
   path: string;
-  tags: [{ title: string; path: string }];
+  tags: string[];
 };
 
 export type TCreateArticle = {
@@ -14,7 +16,7 @@ export type TCreateArticle = {
   contents: string;
   userId: string;
   path: string;
-  tags: [{ title: string; path: string }];
+  tags: string[];
 };
 
 export type TCreateArticleWithTagId = {
@@ -22,9 +24,9 @@ export type TCreateArticleWithTagId = {
   title: string;
   subtitle: string;
   contents: string;
-  userId: string;
+  user: User;
   path: string;
-  tags: [{ title: string; path: string }];
+  tags: string[];
 };
 
 export type TUpdateArticle = {

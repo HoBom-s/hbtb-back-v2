@@ -7,7 +7,7 @@ const authHelper = new AuthHelper();
 function authValidateMiddleware(
   req: Request & { userId?: string },
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const authHeader = req.headers.authorization;
   if (!authHeader) throw new CustomError(400, "Missing Authorization header.");

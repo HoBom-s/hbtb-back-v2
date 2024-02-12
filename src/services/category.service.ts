@@ -18,7 +18,14 @@ export class CategoryService {
     const foundCategory =
       await this.categoryRepository.findCategoryByTitle(title);
     if (foundCategory) throw new CustomError(400, "Category already exists.");
-    return this.categoryRepository.createCategory(newCategoryInfo);
+
+    const existingMaxIndex = await this.categoryRepository.getMaxIndex();
+    const newCategoryInfoWithIndex = {
+      ...newCategoryInfo,
+      sortIndex: existingMaxIndex + 1,
+    };
+
+    return this.categoryRepository.createCategory(newCategoryInfoWithIndex);
   }
 
   async updateCategory(

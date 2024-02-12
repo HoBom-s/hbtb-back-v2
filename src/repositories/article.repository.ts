@@ -30,8 +30,8 @@ export class ArticleRepository {
     return allArticles;
   }
 
-  async getArticleFindByPath(path: string): Promise<Article[] | boolean> {
-    const foundArticle = await this.article.find({
+  async getArticleFindByPath(path: string): Promise<Article | boolean> {
+    const foundArticle = await this.article.findOne({
       where: { path },
       relations: { user: true },
     });
@@ -40,7 +40,10 @@ export class ArticleRepository {
   }
 
   async getArticleById(id: string) {
-    const foundArticle = await this.article.findOneBy({ id });
+    const foundArticle = await this.article.findOne({
+      where: { id },
+      relations: { user: true },
+    });
     if (!foundArticle) return false;
     return foundArticle;
   }
