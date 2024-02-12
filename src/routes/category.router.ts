@@ -20,22 +20,22 @@ categoryRouter.get(
 categoryRouter.post(
   "/create",
   authValidateMiddleware,
-  // bodyValidateMiddleware(CATEGORY_CREATE),
+  bodyValidateMiddleware(CATEGORY_CREATE),
   categoryController.createCategory.bind(categoryController),
 );
 
 categoryRouter.patch(
   "/update/:id",
   authValidateMiddleware,
-  // paramValidateMiddleware(ID_PARAM),
-  // bodyValidateMiddleware(CATEGORY_UPDATE),
+  paramValidateMiddleware(ID_PARAM),
+  bodyValidateMiddleware(CATEGORY_UPDATE),
   categoryController.updateCategory.bind(categoryController),
 );
 
 categoryRouter.delete(
-  "delete/:id",
+  "/delete/:id",
   authValidateMiddleware,
-  // paramValidateMiddleware(ID_PARAM),
+  paramValidateMiddleware(ID_PARAM),
   categoryController.removeCategory.bind(categoryController),
 );
 

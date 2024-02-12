@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { CategoryService } from "../services/category.service";
 import { CustomError } from "../middlewares/error.middleware";
-import { TUpdateCategory, TUpdateCategoryWithId } from "../types/category.type";
+import {
+  TCreateCategory,
+  TUpdateCategory,
+  TUpdateCategoryWithId,
+} from "../types/category.type";
 
 export class CategoryController {
   private categoryService: CategoryService;
@@ -29,7 +33,7 @@ export class CategoryController {
 
   async createCategory(req: Request, res: Response, next: NextFunction) {
     try {
-      const { newCategoryInfo } = req.body;
+      const newCategoryInfo: TCreateCategory = req.body;
       if (!newCategoryInfo)
         throw new CustomError(
           400,
