@@ -33,6 +33,6 @@ app.use("/tag", tagRouter);
 app.use("/category", categoryRouter);
 app.use(errorMiddleware);
 
-app.listen(process.env.DB_PORT, () => {
-  console.log(`SERVER IS RUNNING ON PORT ${process.env.DB_PORT}`);
+app.listen(3306, () => {
+  console.log(`SERVER IS RUNNING ON PORT 3306`);
 });
