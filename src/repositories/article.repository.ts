@@ -11,6 +11,8 @@ export class ArticleRepository {
     this.article = myDataSource.getRepository(Article);
   }
 
+  async getArticlesWithTagIncluded() {}
+
   async createArticle(
     newArticleInfoWithTagId: TCreateArticleWithTagId,
   ): Promise<Article> {

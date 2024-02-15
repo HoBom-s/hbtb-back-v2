@@ -30,11 +30,6 @@ export class Tag {
   })
   count: number;
 
-  @Column({
-    type: "simple-array",
-  })
-  articleId: string[];
-
   @CreateDateColumn()
   createdAt: Date;
 

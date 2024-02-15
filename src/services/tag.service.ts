@@ -32,9 +32,9 @@ export class TagService {
     return this.tagRepository.getAllTag();
   }
 
-  async getOneTagIdByTitle(title: string): Promise<string | boolean> {
-    const foundTag = await this.tagRepository.getOneTagIdByTitle(title);
+  async getOneTagByTitle(title: string): Promise<Tag | boolean> {
+    const foundTag = await this.tagRepository.getOneTagByTitle(title);
     if (typeof foundTag === "boolean") return false;
-    return foundTag.id;
+    return foundTag;
   }
 }

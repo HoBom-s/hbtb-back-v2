@@ -29,8 +29,8 @@ export class ArticleService {
 
     const tagIds: string[] = [];
     for (const tag of tags) {
-      const tagId = await this.tagService.getOneTagIdByTitle(tag);
-      if (typeof tagId === "string") tagIds.push(tagId);
+      const foundTag = await this.tagService.getOneTagByTitle(tag);
+      if (typeof foundTag !== "boolean") tagIds.push(foundTag.id);
     }
 
     const articleWriter =
@@ -49,7 +49,15 @@ export class ArticleService {
       path,
       tags: tagIds,
     };
-    return this.articleRepository.createArticle(newArticleInfoWithTagId);
+
+    const createdTag = await this.articleRepository.createArticle(
+      newArticleInfoWithTagId,
+    );
+
+    // WIP
+    const createdTagId = createdTag.id;
+
+    return createdTag;
   }
 
   getAllArticles() {

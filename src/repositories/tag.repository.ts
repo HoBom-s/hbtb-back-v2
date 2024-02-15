@@ -47,7 +47,7 @@ export class TagRepository {
     return foundTags;
   }
 
-  async getOneTagIdByTitle(title: string): Promise<Tag | boolean> {
+  async getOneTagByTitle(title: string): Promise<Tag | boolean> {
     const foundTag = await this.tag.findOne({ where: { title } });
     if (!foundTag) return false;
     return foundTag;
