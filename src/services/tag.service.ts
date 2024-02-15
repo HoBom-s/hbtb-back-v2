@@ -37,4 +37,10 @@ export class TagService {
     if (typeof foundTag === "boolean") return false;
     return foundTag;
   }
+
+  async saveArticleId(tags: string[], createdArticleId: string) {
+    for (const tag of tags) {
+      await this.tagRepository.saveArticleId(tag, createdArticleId);
+    }
+  }
 }

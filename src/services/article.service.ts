@@ -50,14 +50,13 @@ export class ArticleService {
       tags: tagIds,
     };
 
-    const createdTag = await this.articleRepository.createArticle(
+    const createdArticle = await this.articleRepository.createArticle(
       newArticleInfoWithTagId,
     );
 
-    // WIP
-    const createdTagId = createdTag.id;
+    await this.tagService.saveArticleId(tags, createdArticle.id);
 
-    return createdTag;
+    return createdArticle;
   }
 
   getAllArticles() {
