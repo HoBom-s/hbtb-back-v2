@@ -33,7 +33,7 @@ export class Tag {
   @Column({
     type: "simple-array",
   })
-  articleId: string[];
+  articles: string[];
 
   @CreateDateColumn()
   createdAt: Date;
