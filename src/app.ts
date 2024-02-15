@@ -3,11 +3,11 @@ import { Express } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import cors from "cors";
-import userRouter from "./routes/user.router";
 import { myDataSource } from "./data-source";
 import { errorMiddleware } from "./middlewares/error.middleware";
-import articleRouter from "./routes/article.router";
+import userRouter from "./routes/user.router";
 import tagRouter from "./routes/tag.router";
+import articleRouter from "./routes/article.router";
 import categoryRouter from "./routes/category.router";
 
 dotenv.config();
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(cors(corsOptions));
 
-app.use("/user", userRouter);
+app.use("/api/v2/users", userRouter);
 app.use("/article", articleRouter);
 app.use("/tag", tagRouter);
 app.use("/category", categoryRouter);
