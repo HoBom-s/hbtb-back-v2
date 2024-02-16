@@ -14,7 +14,7 @@ const userRouter = Router();
 const userController = new UserController();
 
 userRouter.get(
-  "/me",
+  "/",
   authValidateMiddleware,
   userController.getUserInfo.bind(userController),
 );
@@ -38,7 +38,7 @@ userRouter.post(
 );
 
 userRouter.patch(
-  "/update/:id",
+  "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
   bodyValidateMiddleware(USER_UPDATE),
@@ -46,7 +46,7 @@ userRouter.patch(
 );
 
 userRouter.delete(
-  "/delete/:id",
+  "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
   userController.deleteUser.bind(userController),
