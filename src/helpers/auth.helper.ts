@@ -54,9 +54,11 @@ class AuthHelper {
         token,
         process.env.ACCESS_TOKEN_SECRET_KEY as string,
       );
+
       if (typeof decodedAccessToken === "object") {
         return decodedAccessToken.userId;
       }
+
       return false;
     } catch (error) {
       return false;

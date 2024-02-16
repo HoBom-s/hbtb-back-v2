@@ -3,15 +3,15 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryColumn,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { TRole } from "../types/user.type";
 import { Article } from "./article.entity";
 
 @Entity()
 class User {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column({

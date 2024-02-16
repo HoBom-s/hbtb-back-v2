@@ -10,13 +10,14 @@ function authValidateMiddleware(
   next: NextFunction,
 ) {
   const authHeader = req.headers.authorization;
-  if (!authHeader) throw new CustomError(400, "Missing Authorization header.");
+  if (!authHeader) throw new CustomError(401, "Missing Authorization header.");
+
   const isBearerExists = authHeader.startsWith("Bearer");
-  if (!isBearerExists) throw new CustomError(400, "Missing Bearer.");
+  if (!isBearerExists) throw new CustomError(401, "Missing Bearer.");
 
   const accessToken = authHeader.split(" ")[1];
   const userId = authHelper.verifyAccessToken(accessToken);
-  if (!userId) throw new CustomError(400, "Please check the access token");
+  if (!userId) throw new CustomError(401, "Please check the access token");
   req.userId = userId;
   next();
 }

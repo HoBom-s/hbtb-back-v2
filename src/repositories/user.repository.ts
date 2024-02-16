@@ -1,7 +1,6 @@
 import { Repository } from "typeorm";
 import { myDataSource } from "../data-source";
 import User from "../entities/user.entity";
-import { v4 as uuid4 } from "uuid";
 import {
   TRole,
   TCreateUser,
@@ -13,6 +12,7 @@ import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 import { CustomError } from "../middlewares/error.middleware";
 
+// WIP : remove unused check later
 export class UserRepository {
   private user: Repository<User>;
 
@@ -48,44 +48,41 @@ export class UserRepository {
     return userWithPassword;
   }
 
+  // o
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
     const foundUser = await this.user.findOneBy({ nickname });
+    if (!foundUser) return null;
     return foundUser;
   }
 
+  // o
   async createUser(newUserInfo: TCreateUser): Promise<TUserWithoutPassword> {
     const { nickname, password, profileImg, introduction } = newUserInfo;
-    const id = uuid4();
+
     const hashedPassword = bcrypt.hashSync(
       password,
       parseInt(process.env.SALT!),
     );
+
     const userInfo = {
-      id,
       nickname,
       password: hashedPassword,
       profileImg,
       introduction,
     };
-    await this.user.save(userInfo);
-    const userWithoutPassword = await this.excludePassword(id);
-    return userWithoutPassword!;
+    const createdUser = this.user.create(userInfo);
+    if (!createdUser) throw new CustomError(404, "Create user failed.");
+    await this.user.save(createdUser);
+
+    const createdUserWithoutPassword = await this.excludePassword(createdUser);
+
+    return createdUserWithoutPassword;
   }
 
-  async excludePassword(id: string) {
-    return this.user
-      .createQueryBuilder("user")
-      .select([
-        "user.id",
-        "user.nickname",
-        "user.profileImg",
-        "user.introduction",
-        "user.role",
-        "user.createdAt",
-        "user.updatedAt",
-      ])
-      .where({ id })
-      .getOne();
+  // o
+  async excludePassword(user: User) {
+    const { password, ...restUserInfo } = user;
+    return restUserInfo;
   }
 
   async updateUser(id: string, updates: TUpdateUser) {

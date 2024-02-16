@@ -17,7 +17,7 @@ export class UserController {
   ) {
     try {
       const userId = req.userId;
-      if (!userId) throw new CustomError(400, "Please check the UserID.");
+      if (!userId) throw new CustomError(401, "Please check the UserID.");
       const foundUser = await this.userService.findOneUserById(userId);
 
       return res.json({
@@ -32,17 +32,12 @@ export class UserController {
 
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { nickname, password, profileImg, introduction }: TCreateUser =
-        req.body;
-      if (!nickname || !password || !introduction)
-        throw new CustomError(400, "Please insert all required inputs.");
-      console.log(this);
-      const createdUser = await this.userService.createUser({
-        nickname,
-        password,
-        profileImg,
-        introduction,
-      });
+      const newUserInfo: TCreateUser = req.body;
+
+      if (!newUserInfo) throw new CustomError(400, "Missing req.body.");
+
+      const createdUser = await this.userService.createUser(newUserInfo);
+
       return res.json({
         status: 201,
         message: "Create user success.",
@@ -69,7 +64,7 @@ export class UserController {
         httpOnly: true,
         secure: true,
         sameSite: "strict",
-        maxAge: 3 * 24 * 60 * 60 * 1000, // 3days in milliseconds
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 3days in milliseconds
       });
 
       return res.json({
