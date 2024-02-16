@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { CustomError } from "../middlewares/error.middleware";
 
 class AuthHelper {
   constructor() {}
@@ -29,22 +30,22 @@ class AuthHelper {
     return refreshToken;
   }
 
-  verifyRefreshToken(token: string) {
+  verifyRefreshToken(refreshToken: string): boolean {
     try {
       const decodedRefreshToken = jwt.verify(
-        token,
+        refreshToken,
         process.env.REFRESH_TOKEN_SECRET_KEY as string,
       );
 
-      if (typeof decodedRefreshToken === "object") {
-        const currentTime = Math.floor(Date.now() / 1000);
-        const tokenExpirationTime = decodedRefreshToken.exp || 0;
-        return tokenExpirationTime > currentTime;
-      } else {
-        return false;
-      }
+      // Question : type string?
+      if (typeof decodedRefreshToken === "string") return false;
+
+      const currentTime = Math.floor(Date.now() / 1000);
+      const tokenExpirationTime = decodedRefreshToken.exp || 0;
+
+      return tokenExpirationTime > currentTime;
     } catch (error) {
-      return false;
+      throw new CustomError(404, "Verifying refresh token failed.");
     }
   }
 

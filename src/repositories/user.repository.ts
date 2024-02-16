@@ -51,7 +51,6 @@ export class UserRepository {
   // o
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
     const foundUser = await this.user.findOneBy({ nickname });
-    if (!foundUser) return null;
     return foundUser;
   }
 

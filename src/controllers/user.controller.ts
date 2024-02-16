@@ -50,21 +50,19 @@ export class UserController {
 
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { nickname, password }: TLoginUser = req.body;
+      const loginInfo: TLoginUser = req.body;
 
-      if (!nickname || !password)
-        throw new CustomError(400, "Please check nickname and password.");
+      if (!loginInfo)
+        throw new CustomError(400, "Please check login nickname and password.");
 
-      const { accessToken, refreshToken } = await this.userService.loginUser(
-        nickname,
-        password,
-      );
+      const { accessToken, refreshToken } =
+        await this.userService.loginUser(loginInfo);
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: "strict",
-        maxAge: 14 * 24 * 60 * 60 * 1000, // 3days in milliseconds
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14days in milliseconds
       });
 
       return res.json({
