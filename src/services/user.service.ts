@@ -55,6 +55,7 @@ export class UserService {
     return foundUser;
   }
 
+  // o
   async createUser(newUserInfo: TCreateUser): Promise<TUserWithoutPassword> {
     const { nickname, ...restInfo } = newUserInfo;
 
@@ -68,6 +69,7 @@ export class UserService {
     return createdUser;
   }
 
+  // o
   async loginUser(loginInfo: TLoginUser): Promise<TTokens> {
     const { nickname, password } = loginInfo;
 
@@ -83,7 +85,6 @@ export class UserService {
     const accessToken = this.authServcie.createAccessToken(userId);
     const refreshToken = await this.authServcie.getRefreshToken(userId);
 
-    // WIP
     return { accessToken, refreshToken };
   }
 
