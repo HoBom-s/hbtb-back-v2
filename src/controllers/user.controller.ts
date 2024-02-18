@@ -17,9 +17,9 @@ export class UserController {
     next: NextFunction,
   ) {
     try {
-      if (!req.authInfo) throw new CustomError(401, "Missing req.authInfo.");
-      const { userId, reissuedAccessToken } = req.authInfo;
-      if (!userId) throw new CustomError(401, "Please check the UserID.");
+      const { userId, reissuedAccessToken } = this.validateAuthInfo(
+        req.authInfo,
+      );
 
       const foundUser = await this.userService.findOneUserById(userId);
 
@@ -84,9 +84,7 @@ export class UserController {
     next: NextFunction,
   ) {
     try {
-      if (!req.authInfo) throw new CustomError(401, "Missing req.authInfo.");
-      const { userId } = req.authInfo;
-      if (!userId) throw new CustomError(401, "Please check the UserID.");
+      const { userId } = this.validateAuthInfo(req.authInfo);
 
       await this.userService.logoutUser(userId);
 
@@ -102,13 +100,16 @@ export class UserController {
   }
 
   async updateUser(
-    req: Request & { userId?: string },
+    req: Request & { authInfo?: RequestUserId },
     res: Response,
     next: NextFunction,
   ) {
     try {
       const { id } = req.params;
-      const userId = req.userId;
+      const { userId, reissuedAccessToken } = this.validateAuthInfo(
+        req.authInfo,
+      );
+
       if (id !== userId) throw new CustomError(400, "User not identical.");
       const updates: TUpdateUser = req.body;
       const updatedUser = await this.userService.updateUser(id, updates);
@@ -116,7 +117,7 @@ export class UserController {
       return res.json({
         status: 201,
         message: "User udate success.",
-        data: updatedUser,
+        data: { updatedUser, reissuedAccessToken },
       });
     } catch (error) {
       next(error);
@@ -124,21 +125,34 @@ export class UserController {
   }
 
   async deleteUser(
-    req: Request & { userId?: string },
+    req: Request & { authInfo?: RequestUserId },
     res: Response,
     next: NextFunction,
   ) {
     try {
       const { id } = req.params;
-      const userId = req.userId;
+      const { userId, reissuedAccessToken } = this.validateAuthInfo(
+        req.authInfo,
+      );
+
       if (id !== userId) throw new CustomError(400, "User not identical.");
+
       await this.userService.deleteUser(id);
+
       return res.json({
         status: 201,
         message: "Delete user success",
+        data: { reissuedAccessToken },
       });
     } catch (error) {
       next(error);
     }
+  }
+
+  validateAuthInfo(authInfo?: RequestUserId) {
+    if (!authInfo) throw new CustomError(401, "Missing req.authInfo.");
+    const { userId, reissuedAccessToken } = authInfo;
+    if (!userId) throw new CustomError(401, "Please check the UserID.");
+    return { userId, reissuedAccessToken };
   }
 }
