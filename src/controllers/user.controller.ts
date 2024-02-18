@@ -18,9 +18,9 @@ export class UserController {
   ) {
     try {
       if (!req.authInfo) throw new CustomError(401, "Missing req.authInfo.");
-
       const { userId, reissuedAccessToken } = req.authInfo;
       if (!userId) throw new CustomError(401, "Please check the UserID.");
+
       const foundUser = await this.userService.findOneUserById(userId);
 
       return res.json({
@@ -79,14 +79,17 @@ export class UserController {
   }
 
   async logoutUser(
-    req: Request & { userId?: string },
+    req: Request & { authInfo?: RequestUserId },
     res: Response,
     next: NextFunction,
   ) {
     try {
-      const userId = req.userId;
-      if (!userId) throw new CustomError(400, "Please check the UserID.");
+      if (!req.authInfo) throw new CustomError(401, "Missing req.authInfo.");
+      const { userId } = req.authInfo;
+      if (!userId) throw new CustomError(401, "Please check the UserID.");
+
       await this.userService.logoutUser(userId);
+
       res.clearCookie("refreshToken");
 
       return res.json({
