@@ -1,6 +1,7 @@
 import express from "express";
 import { Express } from "express";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
 import { myDataSource } from "./data-source";
@@ -23,6 +24,7 @@ const corsOptions = {
 };
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(cors(corsOptions));
@@ -31,6 +33,7 @@ app.use("/api/v2/users", userRouter);
 app.use("/article", articleRouter);
 app.use("/tag", tagRouter);
 app.use("/category", categoryRouter);
+app.user("/api/v2/auth", authRouter);
 app.use(errorMiddleware);
 
 app.listen(process.env.DB_PORT, () => {

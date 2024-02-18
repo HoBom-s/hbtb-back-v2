@@ -34,10 +34,11 @@ export class UserRepository {
   async findOneUserById(
     id: string,
   ): Promise<PossibleNull<TUserWithoutPassword>> {
-    const userWithoutPassword = await this.excludePassword(id);
-    if (!userWithoutPassword) {
-      throw new CustomError(400, "User does not exist.");
-    }
+    const foundUser = await this.user.findOneBy({ id });
+
+    if (!foundUser) throw new CustomError(404, "User not found");
+    const userWithoutPassword = await this.excludePassword(foundUser);
+
     return userWithoutPassword;
   }
 
@@ -84,8 +85,10 @@ export class UserRepository {
     return restUserInfo;
   }
 
+  // o
   async updateUser(id: string, updates: TUpdateUser) {
     const isPasswordUpdate = Object.keys(updates).includes("password");
+
     if (isPasswordUpdate) {
       const password: string = updates.password!;
       const hashedPassword = bcrypt.hashSync(
@@ -94,8 +97,11 @@ export class UserRepository {
       );
       updates.password = hashedPassword;
     }
+
     await this.user.update(id, updates);
-    const updatedUserWithoutPassword = await this.excludePassword(id);
+
+    const updatedUserWithoutPassword = await this.findOneUserById(id);
+
     return updatedUserWithoutPassword;
   }
 

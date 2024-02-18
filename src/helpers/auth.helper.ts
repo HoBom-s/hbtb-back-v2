@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { CustomError } from "../middlewares/error.middleware";
 
 class AuthHelper {
@@ -30,40 +30,43 @@ class AuthHelper {
     return refreshToken;
   }
 
-  verifyRefreshToken(refreshToken: string): boolean {
+  getUserIdFromToken(validToken: string, tokenType: string) {
     try {
-      const decodedRefreshToken = jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET_KEY as string,
-      );
+      const secretKey = this.getSecretKey(tokenType);
+      const decodedToken = jwt.verify(validToken, secretKey);
 
-      // Question : type string?
-      if (typeof decodedRefreshToken === "string") return false;
+      if (typeof decodedToken === "string") return false;
 
-      const currentTime = Math.floor(Date.now() / 1000);
-      const tokenExpirationTime = decodedRefreshToken.exp || 0;
-
-      return tokenExpirationTime > currentTime;
+      return decodedToken.userId;
     } catch (error) {
-      throw new CustomError(404, "Verifying refresh token failed.");
+      throw new CustomError(401, `Refresh token decoding failed: ${error}`);
     }
   }
 
-  verifyAccessToken(token: string) {
+  verifyToken(token: string, tokenType: string) {
     try {
-      const decodedAccessToken = jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN_SECRET_KEY as string,
-      );
+      const secretKey = this.getSecretKey(tokenType);
+      const decodedToken = jwt.verify(token, secretKey);
 
-      if (typeof decodedAccessToken === "object") {
-        return decodedAccessToken.userId;
-      }
+      // Question : type string?
+      if (typeof decodedToken === "string") return false;
 
-      return false;
+      const currentTime = Math.floor(Date.now() / 1000);
+      const tokenExpirationTime = decodedToken.exp!;
+
+      return tokenExpirationTime > currentTime;
     } catch (error) {
-      return false;
+      if (error instanceof TokenExpiredError) return false;
     }
+  }
+
+  getSecretKey(tokenType: string) {
+    const secretKey =
+      tokenType === "access"
+        ? (process.env.ACCESS_TOKEN_SECRET_KEY as string)
+        : (process.env.REFRESH_TOKEN_SECRET_KEY as string);
+
+    return secretKey;
   }
 }
 
