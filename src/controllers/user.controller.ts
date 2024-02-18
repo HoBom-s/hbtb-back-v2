@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { TCreateUser, TLoginUser, TUpdateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middlewares/error.middleware";
+import { RequestUserId } from "../types/common.type";
 
 export class UserController {
   private userService: UserService;
@@ -11,19 +12,21 @@ export class UserController {
   }
 
   async getUserInfo(
-    req: Request & { userId?: string },
+    req: Request & { authInfo?: RequestUserId },
     res: Response,
     next: NextFunction,
   ) {
     try {
-      const userId = req.userId;
+      if (!req.authInfo) throw new CustomError(401, "Missing req.authInfo.");
+
+      const { userId, reissuedAccessToken } = req.authInfo;
       if (!userId) throw new CustomError(401, "Please check the UserID.");
       const foundUser = await this.userService.findOneUserById(userId);
 
       return res.json({
         status: 200,
         message: "Get user info success.",
-        data: foundUser,
+        data: { foundUser, reissuedAccessToken },
       });
     } catch (error) {
       next(error);

@@ -39,7 +39,12 @@ class AuthHelper {
 
       return decodedToken.userId;
     } catch (error) {
-      throw new CustomError(401, `Refresh token decoding failed: ${error}`);
+      if (error instanceof TokenExpiredError) {
+        throw new CustomError(
+          401,
+          `Get userId from ${tokenType} token failed.`,
+        );
+      }
     }
   }
 
@@ -56,7 +61,7 @@ class AuthHelper {
 
       return tokenExpirationTime > currentTime;
     } catch (error) {
-      if (error instanceof TokenExpiredError) return false;
+      if (error instanceof TokenExpiredError) return null;
     }
   }
 

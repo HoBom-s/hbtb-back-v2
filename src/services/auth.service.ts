@@ -18,8 +18,10 @@ export class AuthService {
   async getRefreshToken(userId: string) {
     const refreshToken = await this.authRepository.getRefreshToken(userId);
 
-    const isRefreshTokenValid =
-      this.authHelper.verifyRefreshToken(refreshToken);
+    const isRefreshTokenValid = this.authHelper.verifyToken(
+      refreshToken,
+      "refresh",
+    );
 
     if (!isRefreshTokenValid) {
       return this.authRepository.createAndSaveRefreshToken(userId);

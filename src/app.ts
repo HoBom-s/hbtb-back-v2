@@ -33,7 +33,6 @@ app.use("/api/v2/users", userRouter);
 app.use("/article", articleRouter);
 app.use("/tag", tagRouter);
 app.use("/category", categoryRouter);
-app.user("/api/v2/auth", authRouter);
 app.use(errorMiddleware);
 
 app.listen(process.env.DB_PORT, () => {
