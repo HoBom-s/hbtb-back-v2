@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Repository, UpdateResult } from "typeorm";
 import { myDataSource } from "../data-source";
 import User from "../entities/user.entity";
 import {
@@ -81,7 +81,7 @@ export class UserRepository {
     return restUserInfo;
   }
 
-  updateUser(id: string, updates: TUpdateUser) {
+  async updateUser(id: string, updates: TUpdateUser) {
     const isPasswordUpdate = Object.keys(updates).includes("password");
 
     if (isPasswordUpdate) {
@@ -93,7 +93,11 @@ export class UserRepository {
       updates.password = hashedPassword;
     }
 
-    return this.user.update(id, updates);
+    const updateResult = await this.user.update(id, updates);
+    if (!updateResult.affected)
+      throw new CustomError(404, "Update user failed: 0 affected.");
+
+    return;
   }
 
   removeUser(id: string) {

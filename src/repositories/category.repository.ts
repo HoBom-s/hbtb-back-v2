@@ -44,11 +44,14 @@ export class CategoryRepository {
     return createdCategory;
   }
 
-  updateCategory(
-    updatedInfoWithId: TUpdateCategoryWithId,
-  ): Promise<UpdateResult> {
+  async updateCategory(updatedInfoWithId: TUpdateCategoryWithId) {
     const { id, ...updatedInfo } = updatedInfoWithId;
-    return this.category.update(id, updatedInfo);
+
+    const updateResult = await this.category.update(id, updatedInfo);
+    if (!updateResult.affected)
+      throw new CustomError(404, "Update category failed: 0 affected.");
+
+    return;
   }
 
   removeCategory(id: string): Promise<DeleteResult> {
