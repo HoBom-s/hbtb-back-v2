@@ -49,7 +49,7 @@ userRouter.delete(
   "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
-  userController.deleteUser.bind(userController),
+  userController.removeUser.bind(userController),
 );
 
 export default userRouter;

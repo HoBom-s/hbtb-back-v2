@@ -2,18 +2,21 @@ import { Request, Response, NextFunction } from "express";
 import { TCreateUser, TLoginUser, TUpdateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middlewares/error.middleware";
-import { Auth, RequestUserId } from "../types/auth.type";
+import { Auth } from "../types/auth.type";
+import AuthHelper from "../helpers/auth.helper";
 
 export class UserController {
   private userService: UserService;
+  private authHelper: AuthHelper;
 
   constructor() {
     this.userService = new UserService();
+    this.authHelper = new AuthHelper();
   }
 
   async getUserInfo(req: Request & Auth, res: Response, next: NextFunction) {
     try {
-      const { userId, reissuedAccessToken } = this.validateAuthInfo(
+      const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
 
@@ -74,7 +77,7 @@ export class UserController {
     }
   }
 
-  async logoutUser(req: Request & Auth, res: Response, next: NextFunction) {
+  async logoutUser(req: Request, res: Response, next: NextFunction) {
     try {
       res.clearCookie("refreshToken");
 
@@ -90,7 +93,7 @@ export class UserController {
   async updateUser(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { userId, reissuedAccessToken } = this.validateAuthInfo(
+      const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
       if (id !== userId) throw new CustomError(400, "User not identical.");
@@ -108,16 +111,16 @@ export class UserController {
     }
   }
 
-  async deleteUser(req: Request & Auth, res: Response, next: NextFunction) {
+  async removeUser(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { userId, reissuedAccessToken } = this.validateAuthInfo(
+      const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
 
       if (id !== userId) throw new CustomError(400, "User not identical.");
 
-      await this.userService.deleteUser(id);
+      await this.userService.removeUser(id);
 
       return res.json({
         status: 201,
@@ -127,12 +130,5 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  }
-
-  validateAuthInfo(authInfo?: RequestUserId) {
-    if (!authInfo) throw new CustomError(401, "Missing req.authInfo.");
-    const { userId, reissuedAccessToken } = authInfo;
-    if (!userId) throw new CustomError(401, "Please check the UserID.");
-    return { userId, reissuedAccessToken };
   }
 }

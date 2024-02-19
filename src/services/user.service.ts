@@ -95,9 +95,9 @@ export class UserService {
     return updatedUserWithoutPassword;
   }
 
-  async deleteUser(id: string) {
+  async removeUser(id: string) {
     await this.findOneUserById(id);
 
-    return this.userRepository.deleteUser(id);
+    return this.userRepository.removeUser(id);
   }
 }

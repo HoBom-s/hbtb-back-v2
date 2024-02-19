@@ -18,14 +18,14 @@ categoryRouter.get(
 );
 
 categoryRouter.post(
-  "/create",
+  "/",
   authValidateMiddleware,
   bodyValidateMiddleware(CATEGORY_CREATE),
   categoryController.createCategory.bind(categoryController),
 );
 
 categoryRouter.patch(
-  "/update/:id",
+  "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
   bodyValidateMiddleware(CATEGORY_UPDATE),
@@ -33,7 +33,7 @@ categoryRouter.patch(
 );
 
 categoryRouter.delete(
-  "/delete/:id",
+  "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
   categoryController.removeCategory.bind(categoryController),

@@ -6,21 +6,22 @@ import {
   TUpdateCategory,
   TUpdateCategoryWithId,
 } from "../types/category.type";
+import AuthHelper from "../helpers/auth.helper";
+import { Auth } from "../types/auth.type";
 
 export class CategoryController {
   private categoryService: CategoryService;
+  private authHelper: AuthHelper;
+
   constructor() {
     this.categoryService = new CategoryService();
+    this.authHelper = new AuthHelper();
   }
 
   async getAllCategories(req: Request, res: Response, next: NextFunction) {
     try {
       const allCategories = await this.categoryService.getAllCategories();
-      if (!allCategories)
-        throw new CustomError(
-          400,
-          "Get all categories failed on controller layer.",
-        );
+
       return res.json({
         status: 200,
         message: "Get all categories success.",
@@ -31,63 +32,69 @@ export class CategoryController {
     }
   }
 
-  async createCategory(req: Request, res: Response, next: NextFunction) {
+  async createCategory(req: Request & Auth, res: Response, next: NextFunction) {
     try {
+      const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
+        req.authInfo,
+      );
+
       const newCategoryInfo: TCreateCategory = req.body;
       if (!newCategoryInfo)
-        throw new CustomError(
-          400,
-          "Create category failed on controller layer.",
-        );
+        throw new CustomError(400, "Missing required fields.");
+
       const createdCategory =
         await this.categoryService.createCategory(newCategoryInfo);
-      if (!createdCategory)
-        throw new CustomError(
-          400,
-          "Create category failed on controller layer.",
-        );
+
       return res.json({
         status: 200,
         message: "Create new category success.",
-        data: createdCategory,
+        data: { createdCategory, reissuedAccessToken },
       });
     } catch (error) {
       next(error);
     }
   }
 
-  async updateCategory(req: Request, res: Response, next: NextFunction) {
+  async updateCategory(req: Request & Auth, res: Response, next: NextFunction) {
     try {
+      const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
+        req.authInfo,
+      );
       const { id } = req.params;
       const updatedInfo: TUpdateCategory = req.body;
+
       if (!id || !updatedInfo)
-        throw new CustomError(
-          400,
-          "Update category failed on controller layer. Please check the required fields",
-        );
+        throw new CustomError(400, "Missing required fields");
+
       const updatedInfoWithId: TUpdateCategoryWithId = { id, ...updatedInfo };
-      await this.categoryService.updateCategory(updatedInfoWithId);
+
+      const updatedCategory =
+        await this.categoryService.updateCategory(updatedInfoWithId);
+
       return res.json({
         status: 201,
         message: "Update category success.",
+        data: { updatedCategory, reissuedAccessToken },
       });
     } catch (error) {
       next(error);
     }
   }
 
-  async removeCategory(req: Request, res: Response, next: NextFunction) {
+  async removeCategory(req: Request & Auth, res: Response, next: NextFunction) {
     try {
+      const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
+        req.authInfo,
+      );
       const { id } = req.params;
-      if (!id)
-        throw new CustomError(
-          400,
-          "Delete category failed on controller layer.",
-        );
+      if (!id) throw new CustomError(400, "Missing req.params.");
+
       await this.categoryService.removeCategory(id);
+
       return res.json({
         status: 201,
         massage: "Delete category success.",
+        data: { reissuedAccessToken },
       });
     } catch (error) {
       next(error);

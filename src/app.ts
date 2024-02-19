@@ -32,7 +32,7 @@ app.use(cors(corsOptions));
 app.use("/api/v2/users", userRouter);
 app.use("/article", articleRouter);
 app.use("/tag", tagRouter);
-app.use("/category", categoryRouter);
+app.use("/api/v2/categories", categoryRouter);
 app.use(errorMiddleware);
 
 app.listen(process.env.DB_PORT, () => {
