@@ -11,20 +11,23 @@ export class TagService {
 
   async createTag(newTagInfo: TCreateTag): Promise<Tag> {
     const { title, path } = newTagInfo;
+
     const foundTag = await this.tagRepository.getTagByTitle(title);
     if (foundTag) throw new CustomError(400, "Tag already exists.");
+
     return this.tagRepository.createTag(newTagInfo);
   }
 
   async updateTag(tagId: string, updatedTagInfo: TUpdateTag) {
-    const foundTag = await this.tagRepository.getTagById(tagId);
-    if (!foundTag) throw new CustomError(400, "Original tag not found.");
+    await this.tagRepository.getTagById(tagId);
+
+    // WIP : UpdateResult _ update 전면수정
+
     return this.tagRepository.updateTag(tagId, updatedTagInfo);
   }
 
   async removeTag(tagId: string) {
-    const foundTag = await this.tagRepository.getTagById(tagId);
-    if (!foundTag) throw new CustomError(400, "Original tag not found.");
+    await this.tagRepository.getTagById(tagId);
     return this.tagRepository.removeTag(tagId);
   }
 

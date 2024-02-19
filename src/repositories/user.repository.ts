@@ -25,7 +25,7 @@ export class UserRepository {
   ): Promise<PossibleNull<User>> {
     const foundUser = await this.user.findOneBy({ nickname, role });
     if (!foundUser) {
-      throw new CustomError(400, "User does not exist.");
+      throw new CustomError(404, "User does not exist.");
     }
     return foundUser;
   }
