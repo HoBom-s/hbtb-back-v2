@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { TCreateUser, TLoginUser, TUpdateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middlewares/error.middleware";
-import { RequestUserId } from "../types/common.type";
+import { Auth, RequestUserId } from "../types/auth.type";
 
 export class UserController {
   private userService: UserService;
@@ -11,11 +11,7 @@ export class UserController {
     this.userService = new UserService();
   }
 
-  async getUserInfo(
-    req: Request & { authInfo?: RequestUserId },
-    res: Response,
-    next: NextFunction,
-  ) {
+  async getUserInfo(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { userId, reissuedAccessToken } = this.validateAuthInfo(
         req.authInfo,
@@ -78,16 +74,8 @@ export class UserController {
     }
   }
 
-  async logoutUser(
-    req: Request & { authInfo?: RequestUserId },
-    res: Response,
-    next: NextFunction,
-  ) {
+  async logoutUser(req: Request & Auth, res: Response, next: NextFunction) {
     try {
-      const { userId } = this.validateAuthInfo(req.authInfo);
-
-      await this.userService.logoutUser(userId);
-
       res.clearCookie("refreshToken");
 
       return res.json({
@@ -99,18 +87,14 @@ export class UserController {
     }
   }
 
-  async updateUser(
-    req: Request & { authInfo?: RequestUserId },
-    res: Response,
-    next: NextFunction,
-  ) {
+  async updateUser(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const { userId, reissuedAccessToken } = this.validateAuthInfo(
         req.authInfo,
       );
-
       if (id !== userId) throw new CustomError(400, "User not identical.");
+
       const updates: TUpdateUser = req.body;
       const updatedUser = await this.userService.updateUser(id, updates);
 
@@ -124,11 +108,7 @@ export class UserController {
     }
   }
 
-  async deleteUser(
-    req: Request & { authInfo?: RequestUserId },
-    res: Response,
-    next: NextFunction,
-  ) {
+  async deleteUser(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const { userId, reissuedAccessToken } = this.validateAuthInfo(

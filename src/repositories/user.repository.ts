@@ -12,7 +12,6 @@ import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 import { CustomError } from "../middlewares/error.middleware";
 
-// WIP : remove unused check later
 export class UserRepository {
   private user: Repository<User>;
 
@@ -35,8 +34,8 @@ export class UserRepository {
     id: string,
   ): Promise<PossibleNull<TUserWithoutPassword>> {
     const foundUser = await this.user.findOneBy({ id });
-
     if (!foundUser) throw new CustomError(404, "User not found");
+
     const userWithoutPassword = await this.excludePassword(foundUser);
 
     return userWithoutPassword;
@@ -49,13 +48,11 @@ export class UserRepository {
     return userWithPassword;
   }
 
-  // o
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
     const foundUser = await this.user.findOneBy({ nickname });
     return foundUser;
   }
 
-  // o
   async createUser(newUserInfo: TCreateUser): Promise<TUserWithoutPassword> {
     const { nickname, password, profileImg, introduction } = newUserInfo;
 
@@ -79,14 +76,12 @@ export class UserRepository {
     return createdUserWithoutPassword;
   }
 
-  // o
   async excludePassword(user: User) {
     const { password, ...restUserInfo } = user;
     return restUserInfo;
   }
 
-  // o
-  async updateUser(id: string, updates: TUpdateUser) {
+  updateUser(id: string, updates: TUpdateUser) {
     const isPasswordUpdate = Object.keys(updates).includes("password");
 
     if (isPasswordUpdate) {
@@ -98,14 +93,10 @@ export class UserRepository {
       updates.password = hashedPassword;
     }
 
-    await this.user.update(id, updates);
-
-    const updatedUserWithoutPassword = await this.findOneUserById(id);
-
-    return updatedUserWithoutPassword;
+    return this.user.update(id, updates);
   }
 
-  async deleteUser(id: string) {
-    return this.user.delete({ id });
+  deleteUser(id: string) {
+    return this.user.delete(id);
   }
 }

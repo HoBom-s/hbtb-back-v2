@@ -9,7 +9,7 @@ function paramValidateMiddleware(target: string) {
     const params = req.params;
     const isParamValidate = validateHelper.asJoiSchema(target).validate(params);
     if (!isParamValidate)
-      throw new CustomError(400, "Request param validation failed.");
+      throw new CustomError(400, "Req.param validation failed.");
     next();
   };
 }

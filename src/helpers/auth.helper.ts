@@ -1,36 +1,22 @@
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { CustomError } from "../middlewares/error.middleware";
+import { TokenType } from "../types/auth.type";
 
 class AuthHelper {
   constructor() {}
 
-  createAccessToken(userId: string) {
-    const accessToken = jwt.sign(
-      { userId },
-      process.env.ACCESS_TOKEN_SECRET_KEY as string,
-      {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME,
-      },
-    );
+  createToken(userId: string, tokenType: TokenType) {
+    const secretKey = this.getSecretKey(tokenType);
+    const exp = this.getExp(tokenType);
 
-    return accessToken;
+    const token = jwt.sign({ userId }, secretKey, {
+      expiresIn: exp,
+    });
+
+    return token;
   }
 
-  createRefreshToken(userId: string) {
-    const refreshToken = jwt.sign(
-      {
-        userId,
-      },
-      process.env.REFRESH_TOKEN_SECRET_KEY as string,
-      {
-        expiresIn: process.env.REFRESH_TOKEN_EXPIRE_TIME,
-      },
-    );
-
-    return refreshToken;
-  }
-
-  getUserIdFromToken(validToken: string, tokenType: string) {
+  getUserIdFromToken(validToken: string, tokenType: TokenType) {
     try {
       const secretKey = this.getSecretKey(tokenType);
       const decodedToken = jwt.verify(validToken, secretKey);
@@ -48,12 +34,11 @@ class AuthHelper {
     }
   }
 
-  verifyToken(token: string, tokenType: string) {
+  verifyToken(token: string, tokenType: TokenType) {
     try {
       const secretKey = this.getSecretKey(tokenType);
       const decodedToken = jwt.verify(token, secretKey);
 
-      // Question : type string?
       if (typeof decodedToken === "string") return false;
 
       const currentTime = Math.floor(Date.now() / 1000);
@@ -65,13 +50,22 @@ class AuthHelper {
     }
   }
 
-  getSecretKey(tokenType: string) {
+  getSecretKey(tokenType: TokenType) {
     const secretKey =
       tokenType === "access"
         ? (process.env.ACCESS_TOKEN_SECRET_KEY as string)
         : (process.env.REFRESH_TOKEN_SECRET_KEY as string);
 
     return secretKey;
+  }
+
+  getExp(tokenType: TokenType) {
+    const exp =
+      tokenType === "access"
+        ? (process.env.ACCESS_TOKEN_EXPIRE_TIME as string)
+        : (process.env.REFRESH_TOKEN_EXPIRE_TIME as string);
+
+    return exp;
   }
 }
 

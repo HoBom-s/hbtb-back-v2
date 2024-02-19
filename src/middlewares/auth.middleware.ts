@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { CustomError } from "./error.middleware";
 import AuthHelper from "../helpers/auth.helper";
-import { RequestUserId } from "../types/common.type";
+import { RequestUserId } from "../types/auth.type";
 
 const authHelper = new AuthHelper();
 
@@ -34,7 +34,7 @@ async function authValidateMiddleware(
     if (!isAccessTokenValid) {
       const userId = authHelper.getUserIdFromToken(refreshToken, "refresh");
       // Question: reissuing process from backend? or frontend?
-      const reissuedAccessToken = authHelper.createAccessToken(userId);
+      const reissuedAccessToken = authHelper.createToken(userId, "access");
       req.authInfo = { userId, reissuedAccessToken };
       next();
       return;

@@ -11,17 +11,16 @@ import { PossibleNull } from "../types/common.type";
 import User from "../entities/user.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
-import { AuthService } from "./auth.service";
 import { TTokens } from "../types/auth.type";
+import AuthHelper from "../helpers/auth.helper";
 
-// WIP : remove unused check later
 export class UserService {
   private userRepository: UserRepository;
-  private authServcie: AuthService;
+  private authHelper: AuthHelper;
 
   constructor() {
     this.userRepository = new UserRepository();
-    this.authServcie = new AuthService();
+    this.authHelper = new AuthHelper();
   }
 
   async findOneUserByNicknameAndRole(
@@ -49,13 +48,11 @@ export class UserService {
     return foundUser;
   }
 
-  // o
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
     return foundUser;
   }
 
-  // o
   async createUser(newUserInfo: TCreateUser): Promise<TUserWithoutPassword> {
     const { nickname, ...restInfo } = newUserInfo;
 
@@ -69,7 +66,6 @@ export class UserService {
     return createdUser;
   }
 
-  // o
   async loginUser(loginInfo: TLoginUser): Promise<TTokens> {
     const { nickname, password } = loginInfo;
 
@@ -82,26 +78,26 @@ export class UserService {
       throw new CustomError(400, "Please check password.");
 
     const userId = foundUser.id;
-    const accessToken = this.authServcie.createAccessToken(userId);
-    const refreshToken = await this.authServcie.getRefreshToken(userId);
+
+    const accessToken = this.authHelper.createToken(userId, "access");
+    const refreshToken = this.authHelper.createToken(userId, "refresh");
 
     return { accessToken, refreshToken };
   }
 
-  async logoutUser(userId: string) {
-    return this.authServcie.removeRefreshToken(userId);
-  }
-
   async updateUser(id: string, updates: TUpdateUser) {
-    const foundUser = await this.findOneUserById(id);
-    if (!foundUser) throw new CustomError(400, "User not found");
-    const updatedUser = await this.userRepository.updateUser(id, updates);
-    return updatedUser;
+    await this.findOneUserById(id);
+
+    await this.userRepository.updateUser(id, updates);
+
+    const updatedUserWithoutPassword = await this.findOneUserById(id);
+
+    return updatedUserWithoutPassword;
   }
 
   async deleteUser(id: string) {
-    const foundUser = await this.findOneUserById(id);
-    if (!foundUser) throw new CustomError(400, "User not found");
+    await this.findOneUserById(id);
+
     return this.userRepository.deleteUser(id);
   }
 }
