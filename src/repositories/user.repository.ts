@@ -96,7 +96,7 @@ export class UserRepository {
     return this.user.update(id, updates);
   }
 
-  deleteUser(id: string) {
+  removeUser(id: string) {
     return this.user.delete(id);
   }
 }

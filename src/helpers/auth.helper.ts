@@ -1,6 +1,6 @@
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { CustomError } from "../middlewares/error.middleware";
-import { TokenType } from "../types/auth.type";
+import { RequestUserId, TokenType } from "../types/auth.type";
 
 class AuthHelper {
   constructor() {}
@@ -66,6 +66,13 @@ class AuthHelper {
         : (process.env.REFRESH_TOKEN_EXPIRE_TIME as string);
 
     return exp;
+  }
+
+  validateAuthInfo(authInfo?: RequestUserId) {
+    if (!authInfo) throw new CustomError(401, "Missing req.authInfo.");
+    const { userId, reissuedAccessToken } = authInfo;
+    if (!userId) throw new CustomError(401, "Please check the UserID.");
+    return { userId, reissuedAccessToken };
   }
 }
 

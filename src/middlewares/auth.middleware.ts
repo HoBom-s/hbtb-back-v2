@@ -33,9 +33,10 @@ async function authValidateMiddleware(
 
     if (!isAccessTokenValid) {
       const userId = authHelper.getUserIdFromToken(refreshToken, "refresh");
-      // Question: reissuing process from backend? or frontend?
       const reissuedAccessToken = authHelper.createToken(userId, "access");
+
       req.authInfo = { userId, reissuedAccessToken };
+
       next();
       return;
     }
