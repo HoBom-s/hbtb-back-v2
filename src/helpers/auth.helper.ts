@@ -1,66 +1,71 @@
-import jwt from "jsonwebtoken";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
+import { CustomError } from "../middlewares/error.middleware";
+import { TokenType } from "../types/auth.type";
 
 class AuthHelper {
   constructor() {}
 
-  createAccessToken(userId: string) {
-    const accessToken = jwt.sign(
-      { userId },
-      process.env.ACCESS_TOKEN_SECRET_KEY as string,
-      {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME,
-      },
-    );
+  createToken(userId: string, tokenType: TokenType) {
+    const secretKey = this.getSecretKey(tokenType);
+    const exp = this.getExp(tokenType);
 
-    return accessToken;
+    const token = jwt.sign({ userId }, secretKey, {
+      expiresIn: exp,
+    });
+
+    return token;
   }
 
-  createRefreshToken(userId: string) {
-    const refreshToken = jwt.sign(
-      {
-        userId,
-      },
-      process.env.REFRESH_TOKEN_SECRET_KEY as string,
-      {
-        expiresIn: process.env.REFRESH_TOKEN_EXPIRE_TIME,
-      },
-    );
-
-    return refreshToken;
-  }
-
-  verifyRefreshToken(token: string) {
+  getUserIdFromToken(validToken: string, tokenType: TokenType) {
     try {
-      const decodedRefreshToken = jwt.verify(
-        token,
-        process.env.REFRESH_TOKEN_SECRET_KEY as string,
-      );
+      const secretKey = this.getSecretKey(tokenType);
+      const decodedToken = jwt.verify(validToken, secretKey);
 
-      if (typeof decodedRefreshToken === "object") {
-        const currentTime = Math.floor(Date.now() / 1000);
-        const tokenExpirationTime = decodedRefreshToken.exp || 0;
-        return tokenExpirationTime > currentTime;
-      } else {
-        return false;
-      }
+      if (typeof decodedToken === "string") return false;
+
+      return decodedToken.userId;
     } catch (error) {
-      return false;
+      if (error instanceof TokenExpiredError) {
+        throw new CustomError(
+          401,
+          `Get userId from ${tokenType} token failed.`,
+        );
+      }
     }
   }
 
-  verifyAccessToken(token: string) {
+  verifyToken(token: string, tokenType: TokenType) {
     try {
-      const decodedAccessToken = jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN_SECRET_KEY as string,
-      );
-      if (typeof decodedAccessToken === "object") {
-        return decodedAccessToken.userId;
-      }
-      return false;
+      const secretKey = this.getSecretKey(tokenType);
+      const decodedToken = jwt.verify(token, secretKey);
+
+      if (typeof decodedToken === "string") return false;
+
+      const currentTime = Math.floor(Date.now() / 1000);
+      const tokenExpirationTime = decodedToken.exp!;
+
+      return tokenExpirationTime > currentTime;
     } catch (error) {
-      return false;
+      if (error instanceof TokenExpiredError) return null;
     }
+  }
+
+  getSecretKey(tokenType: TokenType) {
+    const secretKey =
+      tokenType === "access"
+        ? (process.env.ACCESS_TOKEN_SECRET_KEY as string)
+        : (process.env.REFRESH_TOKEN_SECRET_KEY as string);
+
+    return secretKey;
+  }
+
+  getExp(tokenType: TokenType) {
+    const exp =
+      tokenType === "access"
+        ? (process.env.ACCESS_TOKEN_EXPIRE_TIME as string)
+        : (process.env.REFRESH_TOKEN_EXPIRE_TIME as string);
+
+    return exp;
   }
 }
 

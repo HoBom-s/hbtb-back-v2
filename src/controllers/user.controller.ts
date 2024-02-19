@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { TCreateUser, TLoginUser, TUpdateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middlewares/error.middleware";
+import { Auth, RequestUserId } from "../types/auth.type";
 
 export class UserController {
   private userService: UserService;
@@ -10,20 +11,18 @@ export class UserController {
     this.userService = new UserService();
   }
 
-  async getUserInfo(
-    req: Request & { userId?: string },
-    res: Response,
-    next: NextFunction,
-  ) {
+  async getUserInfo(req: Request & Auth, res: Response, next: NextFunction) {
     try {
-      const userId = req.userId;
-      if (!userId) throw new CustomError(400, "Please check the UserID.");
+      const { userId, reissuedAccessToken } = this.validateAuthInfo(
+        req.authInfo,
+      );
+
       const foundUser = await this.userService.findOneUserById(userId);
 
       return res.json({
         status: 200,
         message: "Get user info success.",
-        data: foundUser,
+        data: { foundUser, reissuedAccessToken },
       });
     } catch (error) {
       next(error);
@@ -32,17 +31,12 @@ export class UserController {
 
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { nickname, password, profileImg, introduction }: TCreateUser =
-        req.body;
-      if (!nickname || !password || !introduction)
-        throw new CustomError(400, "Please insert all required inputs.");
-      console.log(this);
-      const createdUser = await this.userService.createUser({
-        nickname,
-        password,
-        profileImg,
-        introduction,
-      });
+      const newUserInfo: TCreateUser = req.body;
+
+      if (!newUserInfo) throw new CustomError(400, "Missing req.body.");
+
+      const createdUser = await this.userService.createUser(newUserInfo);
+
       return res.json({
         status: 201,
         message: "Create user success.",
@@ -55,21 +49,19 @@ export class UserController {
 
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { nickname, password }: TLoginUser = req.body;
+      const loginInfo: TLoginUser = req.body;
 
-      if (!nickname || !password)
-        throw new CustomError(400, "Please check nickname and password.");
+      if (!loginInfo)
+        throw new CustomError(400, "Please check login nickname and password.");
 
-      const { accessToken, refreshToken } = await this.userService.loginUser(
-        nickname,
-        password,
-      );
+      const { accessToken, refreshToken } =
+        await this.userService.loginUser(loginInfo);
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: "strict",
-        maxAge: 3 * 24 * 60 * 60 * 1000, // 3days in milliseconds
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14days in milliseconds
       });
 
       return res.json({
@@ -82,15 +74,8 @@ export class UserController {
     }
   }
 
-  async logoutUser(
-    req: Request & { userId?: string },
-    res: Response,
-    next: NextFunction,
-  ) {
+  async logoutUser(req: Request & Auth, res: Response, next: NextFunction) {
     try {
-      const userId = req.userId;
-      if (!userId) throw new CustomError(400, "Please check the UserID.");
-      await this.userService.logoutUser(userId);
       res.clearCookie("refreshToken");
 
       return res.json({
@@ -102,44 +87,52 @@ export class UserController {
     }
   }
 
-  async updateUser(
-    req: Request & { userId?: string },
-    res: Response,
-    next: NextFunction,
-  ) {
+  async updateUser(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const userId = req.userId;
+      const { userId, reissuedAccessToken } = this.validateAuthInfo(
+        req.authInfo,
+      );
       if (id !== userId) throw new CustomError(400, "User not identical.");
+
       const updates: TUpdateUser = req.body;
       const updatedUser = await this.userService.updateUser(id, updates);
 
       return res.json({
         status: 201,
         message: "User udate success.",
-        data: updatedUser,
+        data: { updatedUser, reissuedAccessToken },
       });
     } catch (error) {
       next(error);
     }
   }
 
-  async deleteUser(
-    req: Request & { userId?: string },
-    res: Response,
-    next: NextFunction,
-  ) {
+  async deleteUser(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const userId = req.userId;
+      const { userId, reissuedAccessToken } = this.validateAuthInfo(
+        req.authInfo,
+      );
+
       if (id !== userId) throw new CustomError(400, "User not identical.");
+
       await this.userService.deleteUser(id);
+
       return res.json({
         status: 201,
         message: "Delete user success",
+        data: { reissuedAccessToken },
       });
     } catch (error) {
       next(error);
     }
+  }
+
+  validateAuthInfo(authInfo?: RequestUserId) {
+    if (!authInfo) throw new CustomError(401, "Missing req.authInfo.");
+    const { userId, reissuedAccessToken } = authInfo;
+    if (!userId) throw new CustomError(401, "Please check the UserID.");
+    return { userId, reissuedAccessToken };
   }
 }

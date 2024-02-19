@@ -1,7 +1,6 @@
 import { Repository } from "typeorm";
 import { myDataSource } from "../data-source";
 import User from "../entities/user.entity";
-import { v4 as uuid4 } from "uuid";
 import {
   TRole,
   TCreateUser,
@@ -34,10 +33,11 @@ export class UserRepository {
   async findOneUserById(
     id: string,
   ): Promise<PossibleNull<TUserWithoutPassword>> {
-    const userWithoutPassword = await this.excludePassword(id);
-    if (!userWithoutPassword) {
-      throw new CustomError(400, "User does not exist.");
-    }
+    const foundUser = await this.user.findOneBy({ id });
+    if (!foundUser) throw new CustomError(404, "User not found");
+
+    const userWithoutPassword = await this.excludePassword(foundUser);
+
     return userWithoutPassword;
   }
 
@@ -55,41 +55,35 @@ export class UserRepository {
 
   async createUser(newUserInfo: TCreateUser): Promise<TUserWithoutPassword> {
     const { nickname, password, profileImg, introduction } = newUserInfo;
-    const id = uuid4();
+
     const hashedPassword = bcrypt.hashSync(
       password,
       parseInt(process.env.SALT!),
     );
+
     const userInfo = {
-      id,
       nickname,
       password: hashedPassword,
       profileImg,
       introduction,
     };
-    await this.user.save(userInfo);
-    const userWithoutPassword = await this.excludePassword(id);
-    return userWithoutPassword!;
+    const createdUser = this.user.create(userInfo);
+    if (!createdUser) throw new CustomError(404, "Create user failed.");
+    await this.user.save(createdUser);
+
+    const createdUserWithoutPassword = await this.excludePassword(createdUser);
+
+    return createdUserWithoutPassword;
   }
 
-  async excludePassword(id: string) {
-    return this.user
-      .createQueryBuilder("user")
-      .select([
-        "user.id",
-        "user.nickname",
-        "user.profileImg",
-        "user.introduction",
-        "user.role",
-        "user.createdAt",
-        "user.updatedAt",
-      ])
-      .where({ id })
-      .getOne();
+  async excludePassword(user: User) {
+    const { password, ...restUserInfo } = user;
+    return restUserInfo;
   }
 
-  async updateUser(id: string, updates: TUpdateUser) {
+  updateUser(id: string, updates: TUpdateUser) {
     const isPasswordUpdate = Object.keys(updates).includes("password");
+
     if (isPasswordUpdate) {
       const password: string = updates.password!;
       const hashedPassword = bcrypt.hashSync(
@@ -98,12 +92,11 @@ export class UserRepository {
       );
       updates.password = hashedPassword;
     }
-    await this.user.update(id, updates);
-    const updatedUserWithoutPassword = await this.excludePassword(id);
-    return updatedUserWithoutPassword;
+
+    return this.user.update(id, updates);
   }
 
-  async deleteUser(id: string) {
-    return this.user.delete({ id });
+  deleteUser(id: string) {
+    return this.user.delete(id);
   }
 }

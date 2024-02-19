@@ -1,13 +1,14 @@
 import express from "express";
 import { Express } from "express";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
-import userRouter from "./routes/user.router";
 import { myDataSource } from "./data-source";
 import { errorMiddleware } from "./middlewares/error.middleware";
-import articleRouter from "./routes/article.router";
+import userRouter from "./routes/user.router";
 import tagRouter from "./routes/tag.router";
+import articleRouter from "./routes/article.router";
 import categoryRouter from "./routes/category.router";
 
 dotenv.config();
@@ -23,11 +24,12 @@ const corsOptions = {
 };
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(cors(corsOptions));
 
-app.use("/user", userRouter);
+app.use("/api/v2/users", userRouter);
 app.use("/article", articleRouter);
 app.use("/tag", tagRouter);
 app.use("/category", categoryRouter);

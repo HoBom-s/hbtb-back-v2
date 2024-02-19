@@ -8,11 +8,14 @@ function bodyValidateMiddleware(target: string) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const bodies = req.body;
+      if (!bodies) throw new CustomError(400, "Missing req.body.");
+
       const isBodyValidate = await validateHelper
         .asJoiSchema(target)
         .validateAsync(bodies);
       if (!isBodyValidate)
-        throw new CustomError(400, "Request body validation failed.");
+        throw new CustomError(400, "Req.body validation failed.");
+
       next();
     } catch (error) {
       next(error);
