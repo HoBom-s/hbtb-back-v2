@@ -70,8 +70,10 @@ class AuthHelper {
 
   validateAuthInfo(authInfo?: RequestUserId) {
     if (!authInfo) throw new CustomError(401, "Missing req.authInfo.");
+
     const { userId, reissuedAccessToken } = authInfo;
     if (!userId) throw new CustomError(401, "Please check the UserID.");
+
     return { userId, reissuedAccessToken };
   }
 }

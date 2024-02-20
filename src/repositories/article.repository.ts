@@ -28,7 +28,9 @@ export class ArticleRepository {
         user: true,
       },
     });
-    if (!allArticles) throw new CustomError(400, "Get all articles failed.");
+    if (allArticles === undefined)
+      throw new CustomError(400, "Get all articles failed.");
+
     return allArticles;
   }
 
