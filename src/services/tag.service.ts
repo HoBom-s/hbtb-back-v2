@@ -12,33 +12,28 @@ export class TagService {
   async createTag(newTagInfo: TCreateTag): Promise<Tag> {
     const { title, path } = newTagInfo;
 
-    const foundTag = await this.tagRepository.getTagByTitle(title);
+    const foundTag = await this.tagRepository.getOneTagByTitle(title);
     if (foundTag) throw new CustomError(400, "Tag already exists.");
 
     return this.tagRepository.createTag(newTagInfo);
   }
 
-  async updateTag(tagId: string, updatedTagInfo: TUpdateTag) {
-    await this.tagRepository.getTagById(tagId);
+  async updateTag(tagId: string, updatedTagInfo: TUpdateTag): Promise<Tag> {
+    await this.tagRepository.getOneTagById(tagId);
+    await this.tagRepository.updateTag(tagId, updatedTagInfo);
 
-    // WIP : UpdateResult _ update 전면수정
+    const updatedTag = await this.tagRepository.getOneTagById(tagId);
 
-    return this.tagRepository.updateTag(tagId, updatedTagInfo);
+    return updatedTag;
   }
 
   async removeTag(tagId: string) {
-    await this.tagRepository.getTagById(tagId);
+    await this.tagRepository.getOneTagById(tagId);
     return this.tagRepository.removeTag(tagId);
   }
 
-  getAllTag() {
+  getAllTag(): Promise<Tag[]> {
     return this.tagRepository.getAllTag();
-  }
-
-  async getOneTagByTitle(title: string): Promise<Tag | boolean> {
-    const foundTag = await this.tagRepository.getOneTagByTitle(title);
-    if (typeof foundTag === "boolean") return false;
-    return foundTag;
   }
 
   async saveArticleId(tags: string[], createdArticleId: string) {

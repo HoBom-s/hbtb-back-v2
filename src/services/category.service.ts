@@ -1,9 +1,7 @@
-import { DeleteResult } from "typeorm";
 import Category from "../entities/category.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { CategoryRepository } from "../repositories/category.repository";
 import { TCreateCategory, TUpdateCategoryWithId } from "../types/category.type";
-import { PossibleNull } from "../types/common.type";
 
 export class CategoryService {
   private categoryRepository: CategoryRepository;
@@ -11,7 +9,7 @@ export class CategoryService {
     this.categoryRepository = new CategoryRepository();
   }
 
-  getAllCategories(): Promise<PossibleNull<Category[]>> {
+  getAllCategories(): Promise<Category[]> {
     return this.categoryRepository.getAllCategories();
   }
 
@@ -49,7 +47,7 @@ export class CategoryService {
     return updatedCategory;
   }
 
-  async removeCategory(categoryId: string): Promise<DeleteResult> {
+  async removeCategory(categoryId: string) {
     const foundCategory =
       await this.categoryRepository.findCategoryById(categoryId);
     if (!foundCategory) throw new CustomError(404, "Category does not exist.");
