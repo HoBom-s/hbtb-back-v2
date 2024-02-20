@@ -1,4 +1,4 @@
-import { DeleteResult, Repository, UpdateResult } from "typeorm";
+import { Repository } from "typeorm";
 import Category from "../entities/category.entity";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
@@ -15,16 +15,18 @@ export class CategoryRepository {
     this.category = myDataSource.getRepository(Category);
   }
 
-  async getAllCategories(): Promise<PossibleNull<Category[]>> {
+  async getAllCategories(): Promise<Category[]> {
     const allCategories = await this.category.find();
     if (allCategories === undefined)
       throw new CustomError(404, "Get all categories failed.");
+
     return allCategories;
   }
 
   async findCategoryByTitle(title: string): Promise<PossibleNull<Category>> {
     const foundCategory = await this.category.findOneBy({ title });
     if (!foundCategory) return null;
+
     return foundCategory;
   }
 
@@ -39,6 +41,7 @@ export class CategoryRepository {
   ): Promise<Category> {
     const createdCategory = this.category.create(newCategoryInfo);
     if (!createdCategory) throw new CustomError(404, "Create category failed.");
+
     await this.category.save(createdCategory);
 
     return createdCategory;
@@ -54,11 +57,15 @@ export class CategoryRepository {
     return;
   }
 
-  removeCategory(id: string): Promise<DeleteResult> {
-    return this.category.delete(id);
+  async removeCategory(id: string) {
+    const deleteResult = await this.category.delete(id);
+    if (!deleteResult.affected)
+      throw new CustomError(404, "Category delete failed: 0 affected.");
+
+    return;
   }
 
-  async getMaxIndex() {
+  async getMaxIndex(): Promise<number> {
     const maxIndex = await this.category.maximum("sortIndex", {});
     if (!maxIndex) return 0;
     return maxIndex;

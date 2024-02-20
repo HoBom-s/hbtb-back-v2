@@ -11,14 +11,14 @@ const tagController = new TagController();
 tagRouter.get("/", tagController.getAllTag.bind(tagController));
 
 tagRouter.post(
-  "/create",
+  "/",
   authValidateMiddleware,
   bodyValidateMiddleware(TAG_CREATE),
   tagController.createTag.bind(tagController),
 );
 
 tagRouter.patch(
-  "/update/:id",
+  "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
   bodyValidateMiddleware(TAG_UPDATE),
@@ -26,7 +26,7 @@ tagRouter.patch(
 );
 
 tagRouter.delete(
-  "/delete/:id",
+  "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
   tagController.removeTag.bind(tagController),

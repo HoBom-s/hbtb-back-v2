@@ -1,18 +1,16 @@
 import { UserRepository } from "../repositories/user.repository";
 import {
-  TRole,
   TCreateUser,
   TUpdateUser,
   TUserWithoutPassword,
-  TUserWithPassword,
   TLoginUser,
 } from "../types/user.type";
-import { PossibleNull } from "../types/common.type";
-import User from "../entities/user.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
 import { TTokens } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import { PossibleNull } from "../types/common.type";
+import User from "../entities/user.entity";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -23,34 +21,9 @@ export class UserService {
     this.authHelper = new AuthHelper();
   }
 
-  async findOneUserByNicknameAndRole(
-    nickname: string,
-    role: TRole,
-  ): Promise<PossibleNull<User>> {
-    const foundUser = await this.userRepository.findOneUserByNicknameAndRole(
-      nickname,
-      role,
-    );
-    return foundUser;
-  }
-
-  async findOneUserById(
-    id: string,
-  ): Promise<PossibleNull<TUserWithoutPassword>> {
-    const foundUser = await this.userRepository.findOneUserById(id);
-    return foundUser;
-  }
-
-  async findOneUserByIdWithPassword(
-    id: string,
-  ): Promise<PossibleNull<TUserWithPassword>> {
-    const foundUser = await this.userRepository.findOneUserByIdWithPassword(id);
-    return foundUser;
-  }
-
-  async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
-    const foundUser = await this.userRepository.findOneUserByNickname(nickname);
-    return foundUser;
+  excludePassword(user: User): TUserWithoutPassword {
+    const { password, ...restUserInfo } = user;
+    return restUserInfo;
   }
 
   async createUser(newUserInfo: TCreateUser): Promise<TUserWithoutPassword> {
@@ -61,15 +34,17 @@ export class UserService {
       throw new CustomError(403, "User already exists.");
     }
 
-    const createdUser = this.userRepository.createUser(newUserInfo);
+    const createdUser = await this.userRepository.createUser(newUserInfo);
 
-    return createdUser;
+    const createdUserWithoutPassword = this.excludePassword(createdUser);
+
+    return createdUserWithoutPassword;
   }
 
   async loginUser(loginInfo: TLoginUser): Promise<TTokens> {
     const { nickname, password } = loginInfo;
 
-    const foundUser = await this.findOneUserByNickname(nickname);
+    const foundUser = await this.userRepository.findOneUserByNickname(nickname);
     if (!foundUser) throw new CustomError(404, "User not found.");
 
     const hashedPassword = foundUser.password;
@@ -85,19 +60,25 @@ export class UserService {
     return { accessToken, refreshToken };
   }
 
-  async updateUser(id: string, updates: TUpdateUser) {
-    await this.findOneUserById(id);
+  async findOneUserById(id: string): Promise<TUserWithoutPassword> {
+    const foundUser = await this.userRepository.findOneUserById(id);
+    const userWithoutPassword = this.excludePassword(foundUser);
 
+    return userWithoutPassword;
+  }
+
+  async updateUser(
+    id: string,
+    updates: TUpdateUser,
+  ): Promise<TUserWithoutPassword> {
+    await this.userRepository.findOneUserById(id);
     await this.userRepository.updateUser(id, updates);
 
-    const updatedUserWithoutPassword = await this.findOneUserById(id);
-
-    return updatedUserWithoutPassword;
+    return this.findOneUserById(id);
   }
 
   async removeUser(id: string) {
     await this.findOneUserById(id);
-
     return this.userRepository.removeUser(id);
   }
 }

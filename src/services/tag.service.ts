@@ -11,31 +11,29 @@ export class TagService {
 
   async createTag(newTagInfo: TCreateTag): Promise<Tag> {
     const { title, path } = newTagInfo;
-    const foundTag = await this.tagRepository.getTagByTitle(title);
+
+    const foundTag = await this.tagRepository.getOneTagByTitle(title);
     if (foundTag) throw new CustomError(400, "Tag already exists.");
+
     return this.tagRepository.createTag(newTagInfo);
   }
 
-  async updateTag(tagId: string, updatedTagInfo: TUpdateTag) {
-    const foundTag = await this.tagRepository.getTagById(tagId);
-    if (!foundTag) throw new CustomError(400, "Original tag not found.");
-    return this.tagRepository.updateTag(tagId, updatedTagInfo);
+  async updateTag(tagId: string, updatedTagInfo: TUpdateTag): Promise<Tag> {
+    await this.tagRepository.getOneTagById(tagId);
+    await this.tagRepository.updateTag(tagId, updatedTagInfo);
+
+    const updatedTag = await this.tagRepository.getOneTagById(tagId);
+
+    return updatedTag;
   }
 
   async removeTag(tagId: string) {
-    const foundTag = await this.tagRepository.getTagById(tagId);
-    if (!foundTag) throw new CustomError(400, "Original tag not found.");
+    await this.tagRepository.getOneTagById(tagId);
     return this.tagRepository.removeTag(tagId);
   }
 
-  getAllTag() {
+  getAllTag(): Promise<Tag[]> {
     return this.tagRepository.getAllTag();
-  }
-
-  async getOneTagByTitle(title: string): Promise<Tag | boolean> {
-    const foundTag = await this.tagRepository.getOneTagByTitle(title);
-    if (typeof foundTag === "boolean") return false;
-    return foundTag;
   }
 
   async saveArticleId(tags: string[], createdArticleId: string) {
