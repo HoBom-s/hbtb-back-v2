@@ -59,6 +59,7 @@ export class ArticleController {
   async getAllArticles(req: Request, res: Response, next: NextFunction) {
     try {
       const allArticles = await this.articleService.getAllArticles();
+
       return res.json({
         status: 200,
         message: "Get article success.",
