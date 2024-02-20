@@ -1,5 +1,7 @@
 const ID_PARAM = "idParam";
 
+const PATH_PARAM = "pathParam";
+
 const ARTICLE_CREATE = "articleCreate";
 const ARTICLE_UPDATE = "articleUpdate";
 
@@ -15,6 +17,7 @@ const USER_UPDATE = "userUpdate";
 
 export {
   ID_PARAM,
+  PATH_PARAM,
   ARTICLE_CREATE,
   ARTICLE_UPDATE,
   CATEGORY_CREATE,

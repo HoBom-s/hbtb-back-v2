@@ -5,6 +5,7 @@ import {
   ARTICLE_CREATE,
   ARTICLE_UPDATE,
   ID_PARAM,
+  PATH_PARAM,
 } from "../static/validate.const";
 import bodyValidateMiddleware from "../middlewares/body.middleware";
 import paramValidateMiddleware from "../middlewares/param.middleware";
@@ -18,7 +19,8 @@ articleRouter.get(
 );
 
 articleRouter.get(
-  "/find/:path",
+  "/:path",
+  paramValidateMiddleware(PATH_PARAM),
   articleController.getArticleFindByPath.bind(articleController),
 );
 
@@ -33,14 +35,14 @@ articleRouter.get(
 );
 
 articleRouter.post(
-  "/create",
+  "/",
   authValidateMiddleware,
   bodyValidateMiddleware(ARTICLE_CREATE),
   articleController.createArticle.bind(articleController),
 );
 
 articleRouter.patch(
-  "/update/:id",
+  "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
   bodyValidateMiddleware(ARTICLE_UPDATE),
@@ -48,7 +50,7 @@ articleRouter.patch(
 );
 
 articleRouter.delete(
-  "/delete/:id",
+  "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
   articleController.removeArticle.bind(articleController),
