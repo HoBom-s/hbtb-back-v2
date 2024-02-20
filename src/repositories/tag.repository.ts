@@ -50,7 +50,7 @@ export class TagRepository {
     return;
   }
 
-  async getAllTag(): Promise<Tag[]> {
+  async getAllTags(): Promise<Tag[]> {
     const foundTags = await this.tag.find();
     if (foundTags === undefined)
       throw new CustomError(404, "Get all tags failed");

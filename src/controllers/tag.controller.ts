@@ -71,9 +71,9 @@ export class TagController {
     }
   }
 
-  async getAllTag(req: Request, res: Response, next: NextFunction) {
+  async getAllTags(req: Request, res: Response, next: NextFunction) {
     try {
-      const foundTags = await this.tagService.getAllTag();
+      const foundTags = await this.tagService.getAllTags();
 
       return res.json({
         status: 200,

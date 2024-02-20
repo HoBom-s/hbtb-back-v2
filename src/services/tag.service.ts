@@ -32,8 +32,8 @@ export class TagService {
     return this.tagRepository.removeTag(tagId);
   }
 
-  getAllTag(): Promise<Tag[]> {
-    return this.tagRepository.getAllTag();
+  getAllTags(): Promise<Tag[]> {
+    return this.tagRepository.getAllTags();
   }
 
   async saveArticleId(tags: string[], createdArticleId: string) {

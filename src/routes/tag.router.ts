@@ -8,7 +8,7 @@ import paramValidateMiddleware from "../middlewares/param.middleware";
 const tagRouter = Router();
 const tagController = new TagController();
 
-tagRouter.get("/", tagController.getAllTag.bind(tagController));
+tagRouter.get("/", tagController.getAllTags.bind(tagController));
 
 tagRouter.post(
   "/",
