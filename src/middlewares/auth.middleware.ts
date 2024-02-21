@@ -13,10 +13,17 @@ async function authValidateMiddleware(
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader)
-      throw new CustomError(401, "Missing Authorization header.");
+      throw new CustomError(
+        401,
+        "Error: Authorization header missing. Please include the 'Authorization' header with valid authentication credentials.",
+      );
 
     const isBearerExists = authHeader.startsWith("Bearer");
-    if (!isBearerExists) throw new CustomError(401, "Missing Bearer.");
+    if (!isBearerExists)
+      throw new CustomError(
+        401,
+        "Error: `Bearer` missing in Authorization header.",
+      );
 
     const accessToken = authHeader.split(" ")[1];
     const refreshToken = req.cookies.refreshToken;
@@ -27,7 +34,7 @@ async function authValidateMiddleware(
     if (!isAccessTokenValid && !isRefreshTokenValid) {
       throw new CustomError(
         401,
-        "Access & Refresh token both expired. Please login again.",
+        "Error: Access and Refresh tokens both expired. Please login again to continue accessing the resources.",
       );
     }
 

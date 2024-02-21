@@ -40,7 +40,10 @@ export class CategoryController {
 
       const newCategoryInfo: TCreateCategory = req.body;
       if (!newCategoryInfo)
-        throw new CustomError(400, "Missing required fields.");
+        throw new CustomError(
+          400,
+          "Error: Request body missing. Please provide the necessary data in the request body.",
+        );
 
       const createdCategory =
         await this.categoryService.createCategory(newCategoryInfo);
@@ -64,7 +67,10 @@ export class CategoryController {
       const updatedInfo: TUpdateCategory = req.body;
 
       if (!id || !updatedInfo)
-        throw new CustomError(400, "Missing required fields");
+        throw new CustomError(
+          400,
+          "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
+        );
 
       const updatedInfoWithId: TUpdateCategoryWithId = { id, ...updatedInfo };
 
@@ -87,7 +93,11 @@ export class CategoryController {
         req.authInfo,
       );
       const { id } = req.params;
-      if (!id) throw new CustomError(400, "Missing req.params.");
+      if (!id)
+        throw new CustomError(
+          400,
+          "Error: Required parameter missing. Please ensure that all required parameters are provided.",
+        );
 
       await this.categoryService.removeCategory(id);
 

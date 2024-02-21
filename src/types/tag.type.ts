@@ -1,9 +1,9 @@
-export type TCreateTag = {
+export interface TCreateTag {
   title: string;
   path: string;
-};
+}
 
-export type TUpdateTag = {
+export interface TUpdateTag {
   title?: string;
   path?: string;
-};
+}

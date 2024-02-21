@@ -26,7 +26,10 @@ export class ArticleController {
 
       const newArticleInfo: TNewArticleInfo = req.body;
       if (!newArticleInfo)
-        throw new CustomError(400, "Please check req.body fields.");
+        throw new CustomError(
+          400,
+          "Error: Request body missing. Please provide the necessary data in the request body.",
+        );
 
       const newArticleInfoWithUser: TCreateArticle = {
         ...newArticleInfo,
@@ -50,7 +53,11 @@ export class ArticleController {
   async getArticleFindByPath(req: Request, res: Response, next: NextFunction) {
     try {
       const { path } = req.params;
-      if (!path) throw new CustomError(400, "Missing req.params.");
+      if (!path)
+        throw new CustomError(
+          400,
+          "Error: Required parameter missing. Please ensure that all required parameters are provided.",
+        );
 
       const foundArticle = this.articleService.getArticleFindByPath(path);
 
@@ -86,7 +93,10 @@ export class ArticleController {
       const { id } = req.params;
       const updatedInfo: TUpdateArticle = req.body;
       if (!id || !updatedInfo)
-        throw new CustomError(400, "Please check req.params and req.body.");
+        throw new CustomError(
+          400,
+          "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
+        );
 
       await this.articleService.updateArticle(id, userId, updatedInfo);
 
@@ -106,7 +116,11 @@ export class ArticleController {
         req.authInfo,
       );
       const { id } = req.params;
-      if (!id) throw new CustomError(400, "Missing req.params.");
+      if (!id)
+        throw new CustomError(
+          400,
+          "Error: Required parameter missing. Please ensure that all required parameters are provided.",
+        );
 
       await this.articleService.removeArticle(id, userId);
 
@@ -123,7 +137,11 @@ export class ArticleController {
   async searchArticle(req: Request, res: Response, next: NextFunction) {
     try {
       const { keyword } = req.query;
-      if (!keyword) throw new CustomError(400, "Missing keyword.");
+      if (!keyword)
+        throw new CustomError(
+          400,
+          "Error: Required query parameter 'keyword' missing. Please include the 'keyword' parameter in your request query.",
+        );
 
       const foundArticles = await this.articleService.searchArticle(
         keyword as string,
@@ -143,7 +161,10 @@ export class ArticleController {
     try {
       const { pageNumber, perPage } = req.query;
       if (!pageNumber || !perPage)
-        throw new CustomError(400, "Please check pageNumber & perPage.");
+        throw new CustomError(
+          400,
+          "Error: Required query parameter 'pageNumber' or 'perPage' missing. Please include the 'pageNumber' or 'perPage' parameter in your request query.",
+        );
 
       const articlesAndPageCount = await this.articleService.getArticlePerPage(
         pageNumber as string,

@@ -1,14 +1,14 @@
 import { Router } from "express";
-import authValidateMiddleware from "../middlewares/auth.middleware";
 import { ArticleController } from "../controllers/article.controller";
 import {
-  ARTICLE_CREATE,
-  ARTICLE_UPDATE,
   ID_PARAM,
   PATH_PARAM,
+  ARTICLE_CREATE,
+  ARTICLE_UPDATE,
 } from "../static/validate.const";
-import bodyValidateMiddleware from "../middlewares/body.middleware";
+import authValidateMiddleware from "../middlewares/auth.middleware";
 import paramValidateMiddleware from "../middlewares/param.middleware";
+import bodyValidateMiddleware from "../middlewares/body.middleware";
 
 const articleRouter = Router();
 const articleController = new ArticleController();

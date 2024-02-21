@@ -1,12 +1,17 @@
 import { Tag } from "../entities/tag.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { TagRepository } from "../repositories/tag.repository";
+import { PossibleNull } from "../types/common.type";
 import { TCreateTag, TUpdateTag } from "../types/tag.type";
 
 export class TagService {
   private tagRepository: TagRepository;
   constructor() {
     this.tagRepository = new TagRepository();
+  }
+
+  getOneTagByTitle(title: string): Promise<PossibleNull<Tag>> {
+    return this.tagRepository.getOneTagByTitle(title);
   }
 
   async createTag(newTagInfo: TCreateTag): Promise<Tag> {
@@ -40,5 +45,7 @@ export class TagService {
     for (const tag of tags) {
       await this.tagRepository.saveArticleId(tag, createdArticleId);
     }
+
+    return;
   }
 }

@@ -3,6 +3,7 @@ import { Article } from "../entities/article.entity";
 import { TCreateArticleWithTagId, TUpdateArticle } from "../types/article.type";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
+import { PossibleNull } from "../types/common.type";
 
 export class ArticleRepository {
   private article: Repository<Article>;
@@ -11,14 +12,14 @@ export class ArticleRepository {
     this.article = myDataSource.getRepository(Article);
   }
 
-  async getArticlesWithTagIncluded() {}
-
   async createArticle(
     newArticleInfoWithTagId: TCreateArticleWithTagId,
   ): Promise<Article> {
     const createdArticle = this.article.create(newArticleInfoWithTagId);
-    if (!createdArticle) throw new CustomError(400, "Create article failed.");
+    if (!createdArticle) throw new CustomError(404, "Create article failed.");
+
     await this.article.save(createdArticle);
+
     return createdArticle;
   }
 
@@ -29,42 +30,48 @@ export class ArticleRepository {
       },
     });
     if (allArticles === undefined)
-      throw new CustomError(400, "Get all articles failed.");
+      throw new CustomError(404, "Get all articles failed.");
 
     return allArticles;
   }
 
-  async getArticleFindByPath(path: string): Promise<Article | boolean> {
+  async getArticleFindByPath(path: string): Promise<PossibleNull<Article>> {
     const foundArticle = await this.article.findOne({
       where: { path },
       relations: { user: true },
     });
-    if (!foundArticle) return false;
+    if (!foundArticle) return null;
+
     return foundArticle;
   }
 
-  async getArticleById(id: string) {
+  async getArticleById(id: string): Promise<Article> {
     const foundArticle = await this.article.findOne({
       where: { id },
       relations: { user: true },
     });
-    if (!foundArticle) return false;
+    if (!foundArticle) throw new CustomError(404, "Original aticle not found.");
+
     return foundArticle;
   }
 
   async updateArticle(id: string, updatedInfo: TUpdateArticle) {
-    const updatedResult = await this.article.update({ id }, updatedInfo);
-    if (!updatedResult) throw new CustomError(400, "Update article failed.");
-    return true;
+    const updateResult = await this.article.update(id, updatedInfo);
+    if (!updateResult.affected)
+      throw new CustomError(404, "Update article failed: 0 affected.");
+
+    return;
   }
 
   async removeArticle(articleId: string) {
-    const deletedResult = await this.article.delete(articleId);
-    if (!deletedResult) throw new CustomError(400, "Delete article failed.");
-    return true;
+    const deleteResult = await this.article.delete(articleId);
+    if (!deleteResult.affected)
+      throw new CustomError(404, "Delete article failed: 0 affected.");
+
+    return;
   }
 
-  async searchArticle(keyword: string) {
+  async searchArticle(keyword: string): Promise<Article[]> {
     const foundArticles = await this.article.find({
       where: [
         { title: Like(`%${keyword}%`) },
@@ -72,29 +79,43 @@ export class ArticleRepository {
       ],
       relations: { user: true },
     });
-    if (!foundArticles) return "No article with the keyword.";
+
+    if (foundArticles === undefined)
+      throw new CustomError(404, "Search article failed.");
+
     return foundArticles;
   }
 
-  async getArticlePerPage(pageNumber: number, perPage: number) {
+  async getArticlePerPage(
+    pageNumber: number,
+    perPage: number,
+  ): Promise<Article[]> {
     const foundArticles = await this.article.find({
       order: { createdAt: "DESC" },
       skip: (pageNumber - 1) * perPage,
       take: perPage,
     });
+
+    if (foundArticles === undefined)
+      throw new CustomError(404, "Get Article per page failed.");
+
     return foundArticles;
   }
 
-  async getArticleCount() {
-    return await this.article.count({});
+  getArticleCount(): Promise<number> {
+    return this.article.count({});
   }
 
-  async getTotalPageCount(perPage: number) {
+  async getTotalPageCount(perPage: number): Promise<number> {
     const totalArticleCount = await this.getArticleCount();
+
     let totalPageCount: number;
-    if (totalArticleCount % perPage === 0)
+    if (totalArticleCount % perPage === 0) {
       totalPageCount = totalArticleCount / perPage;
-    else totalPageCount = totalArticleCount / perPage + 1;
+    } else {
+      totalPageCount = totalArticleCount / perPage + 1;
+    }
+
     return totalPageCount;
   }
 }

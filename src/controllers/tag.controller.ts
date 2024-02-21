@@ -20,7 +20,10 @@ export class TagController {
       );
       const newTagInfo: TCreateTag = req.body;
       if (!newTagInfo)
-        throw new CustomError(400, "Please check the req.body fields.");
+        throw new CustomError(
+          400,
+          "Error: Request body missing. Please provide the necessary data in the request body.",
+        );
 
       const createdTag = await this.tagService.createTag(newTagInfo);
 
@@ -43,7 +46,10 @@ export class TagController {
       const { id } = req.params;
       const updateTagInfo: TUpdateTag = req.body;
       if (!id || !updateTagInfo)
-        throw new CustomError(400, "Please check req.params and req.body.");
+        throw new CustomError(
+          400,
+          "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
+        );
 
       await this.tagService.updateTag(id, updateTagInfo);
 
@@ -60,7 +66,11 @@ export class TagController {
   async removeTag(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      if (!id) throw new CustomError(400, "Please check the req.params.");
+      if (!id)
+        throw new CustomError(
+          400,
+          "Error: Required parameter missing. Please ensure that all required parameters are provided.",
+        );
       await this.tagService.removeTag(id);
       return res.json({
         status: 201,
