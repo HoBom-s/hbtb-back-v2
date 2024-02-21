@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { UserController } from "../controllers/user.controller";
-import authValidateMiddleware from "../middlewares/auth.middleware";
 import {
   ID_PARAM,
-  USER_CREATE,
   USER_LOGIN,
+  USER_CREATE,
   USER_UPDATE,
 } from "../static/validate.const";
-import bodyValidateMiddleware from "../middlewares/body.middleware";
+import authValidateMiddleware from "../middlewares/auth.middleware";
 import paramValidateMiddleware from "../middlewares/param.middleware";
+import bodyValidateMiddleware from "../middlewares/body.middleware";
 
 const userRouter = Router();
 const userController = new UserController();

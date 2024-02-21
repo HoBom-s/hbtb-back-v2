@@ -2,26 +2,26 @@ import { Article } from "../entities/article.entity";
 
 export type TRole = "user" | "admin";
 
-export type TCreateUser = {
+export interface TCreateUser {
   nickname: string;
   password: string;
   profileImg?: string;
   introduction: string;
-};
+}
 
-export type TLoginUser = {
+export interface TLoginUser {
   nickname: string;
   password: string;
-};
+}
 
-export type TUpdateUser = {
+export interface TUpdateUser {
   nickname?: string;
   password?: string;
   profileImg?: string;
   introduction?: string;
-};
+}
 
-export type TUserWithoutPassword = {
+export interface TUserWithoutPassword {
   id: string;
   nickname: string;
   profileImg: string;
@@ -29,9 +29,9 @@ export type TUserWithoutPassword = {
   introduction: string;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
-export type TUserWithPassword = {
+export interface TUserWithPassword {
   id: string;
   password: string;
   nickname: string;
@@ -41,4 +41,4 @@ export type TUserWithPassword = {
   createdAt: Date;
   updatedAt: Date;
   articles: Article[];
-};
+}

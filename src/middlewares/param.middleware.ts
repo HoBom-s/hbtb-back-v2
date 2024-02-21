@@ -6,11 +6,28 @@ function paramValidateMiddleware(target: string) {
   const validateHelper = new ValidateHelper();
 
   return function (req: Request, res: Response, next: NextFunction) {
-    const params = req.params;
-    const isParamValidate = validateHelper.asJoiSchema(target).validate(params);
-    if (!isParamValidate)
-      throw new CustomError(400, "Req.param validation failed.");
-    next();
+    try {
+      const params = req.params;
+      if (!params)
+        throw new CustomError(
+          400,
+          "Error: Required parameter missing. Please ensure that all required parameters are provided.",
+        );
+
+      const isParamValidate = validateHelper
+        .asJoiSchema(target)
+        .validateAsync(params);
+
+      if (!isParamValidate)
+        throw new CustomError(
+          400,
+          "Error: Required parameter missing. Please ensure that all required parameters are provided.",
+        );
+
+      next();
+    } catch (error) {
+      next(error);
+    }
   };
 }
 

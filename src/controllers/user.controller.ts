@@ -36,7 +36,11 @@ export class UserController {
     try {
       const newUserInfo: TCreateUser = req.body;
 
-      if (!newUserInfo) throw new CustomError(400, "Missing req.body.");
+      if (!newUserInfo)
+        throw new CustomError(
+          400,
+          "Error: Request body missing. Please provide the necessary data in the request body.",
+        );
 
       const createdUser = await this.userService.createUser(newUserInfo);
 
@@ -55,7 +59,10 @@ export class UserController {
       const loginInfo: TLoginUser = req.body;
 
       if (!loginInfo)
-        throw new CustomError(400, "Please check login nickname and password.");
+        throw new CustomError(
+          400,
+          "Error: Request body missing. Please provide the necessary data in the request body.",
+        );
 
       const { accessToken, refreshToken } =
         await this.userService.loginUser(loginInfo);
@@ -96,7 +103,9 @@ export class UserController {
       const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
-      if (id !== userId) throw new CustomError(400, "User not identical.");
+
+      if (id !== userId)
+        throw new CustomError(401, "Error: User not identical.");
 
       const updates: TUpdateUser = req.body;
       const updatedUser = await this.userService.updateUser(id, updates);
@@ -118,7 +127,8 @@ export class UserController {
         req.authInfo,
       );
 
-      if (id !== userId) throw new CustomError(400, "User not identical.");
+      if (id !== userId)
+        throw new CustomError(401, "Error: User not identical.");
 
       await this.userService.removeUser(id);
 

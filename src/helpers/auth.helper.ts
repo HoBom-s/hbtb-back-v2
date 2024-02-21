@@ -28,7 +28,7 @@ class AuthHelper {
       if (error instanceof TokenExpiredError) {
         throw new CustomError(
           401,
-          `Get userId from ${tokenType} token failed.`,
+          `Error: Get userId from ${tokenType} token failed.`,
         );
       }
     }
@@ -69,9 +69,16 @@ class AuthHelper {
   }
 
   validateAuthInfo(authInfo?: RequestUserId) {
-    if (!authInfo) throw new CustomError(401, "Missing req.authInfo.");
+    if (!authInfo)
+      throw new CustomError(
+        401,
+        "Error: request `authInfo` missing. Please provide valid userId or reissuedToken.",
+      );
+
     const { userId, reissuedAccessToken } = authInfo;
-    if (!userId) throw new CustomError(401, "Please check the UserID.");
+    if (!userId)
+      throw new CustomError(401, "Error: userId missing in req.authInfo.");
+
     return { userId, reissuedAccessToken };
   }
 }

@@ -1,15 +1,16 @@
-import User from "../entities/user.entity";
+import { Article } from "../entities/article.entity";
+import { TUserWithoutPassword } from "./user.type";
 
-export type TNewArticleInfo = {
+export interface TNewArticleInfo {
   thumbnail?: string;
   title: string;
   subtitle: string;
   contents: string;
   path: string;
   tags: string[];
-};
+}
 
-export type TCreateArticle = {
+export interface TCreateArticle {
   thumbnail?: string;
   title: string;
   subtitle: string;
@@ -17,22 +18,27 @@ export type TCreateArticle = {
   userId: string;
   path: string;
   tags: string[];
-};
+}
 
-export type TCreateArticleWithTagId = {
+export interface TCreateArticleWithTagId {
   thumbnail?: string;
   title: string;
   subtitle: string;
   contents: string;
-  user: User;
+  user: TUserWithoutPassword;
   path: string;
   tags: string[];
-};
+}
 
-export type TUpdateArticle = {
+export interface TUpdateArticle {
   thumbnail?: string;
   title?: string;
   subtitle?: string;
   contents?: string;
   path?: string;
-};
+}
+
+export interface ArticlePagination {
+  foundArticles: Article[];
+  totalPageCount: number;
+}

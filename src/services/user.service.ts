@@ -9,7 +9,6 @@ import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
 import { TTokens } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
-import { PossibleNull } from "../types/common.type";
 import User from "../entities/user.entity";
 
 export class UserService {
@@ -31,7 +30,7 @@ export class UserService {
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
     if (foundUser) {
-      throw new CustomError(403, "User already exists.");
+      throw new CustomError(400, "User already exists.");
     }
 
     const createdUser = await this.userRepository.createUser(newUserInfo);
@@ -50,7 +49,7 @@ export class UserService {
     const hashedPassword = foundUser.password;
     const isPasswordCorrect = bcrypt.compareSync(password, hashedPassword);
     if (!isPasswordCorrect)
-      throw new CustomError(400, "Please check password.");
+      throw new CustomError(400, "Please check the password again.");
 
     const userId = foundUser.id;
 

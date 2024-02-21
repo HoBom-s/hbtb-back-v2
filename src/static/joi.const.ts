@@ -4,6 +4,10 @@ const idParam = {
   id: Joi.string().required(),
 };
 
+const pathParam = {
+  path: Joi.string().required(),
+};
+
 const articleCreate = {
   thumbnail: Joi.string().optional(),
   title: Joi.string().required(),
@@ -64,6 +68,7 @@ const userUpdate = {
 
 export {
   idParam,
+  pathParam,
   articleCreate,
   articleUpdate,
   categoryCreate,

@@ -30,7 +30,7 @@ app.use(helmet());
 app.use(cors(corsOptions));
 
 app.use("/api/v2/users", userRouter);
-app.use("/article", articleRouter);
+app.use("/api/v2/articles", articleRouter);
 app.use("/api/v2/tags", tagRouter);
 app.use("/api/v2/categories", categoryRouter);
 app.use(errorMiddleware);

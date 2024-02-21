@@ -13,7 +13,7 @@ export class TagRepository {
 
   async getOneTagById(id: string): Promise<Tag> {
     const foundTag = await this.tag.findOneBy({ id });
-    if (!foundTag) throw new CustomError(400, "Original tag not found.");
+    if (!foundTag) throw new CustomError(404, "Original tag not found.");
 
     return foundTag;
   }
@@ -50,7 +50,7 @@ export class TagRepository {
     return;
   }
 
-  async getAllTag(): Promise<Tag[]> {
+  async getAllTags(): Promise<Tag[]> {
     const foundTags = await this.tag.find();
     if (foundTags === undefined)
       throw new CustomError(404, "Get all tags failed");
@@ -65,5 +65,7 @@ export class TagRepository {
     foundTag.articles.push(articleId);
 
     await this.tag.save(foundTag);
+
+    return;
   }
 }

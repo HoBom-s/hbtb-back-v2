@@ -1,25 +1,25 @@
-export type TCreateCategory = {
+export interface TCreateCategory {
   title: string;
   path: string;
   spot: string;
-};
+}
 
-export type TCreateCategoryWithIndex = {
+export interface TCreateCategoryWithIndex {
   title: string;
   path: string;
   spot: string;
   sortIndex: number;
-};
+}
 
-export type TUpdateCategory = {
+export interface TUpdateCategory {
   title?: string;
   path?: string;
   spot?: string;
-};
+}
 
-export type TUpdateCategoryWithId = {
+export interface TUpdateCategoryWithId {
   id: string;
   title?: string;
   path?: string;
   spot?: string;
-};
+}

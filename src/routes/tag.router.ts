@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { TagController } from "../controllers/tag.controller";
+import { ID_PARAM, TAG_CREATE, TAG_UPDATE } from "../static/validate.const";
 import authValidateMiddleware from "../middlewares/auth.middleware";
-import { TAG_CREATE, ID_PARAM, TAG_UPDATE } from "../static/validate.const";
-import bodyValidateMiddleware from "../middlewares/body.middleware";
 import paramValidateMiddleware from "../middlewares/param.middleware";
+import bodyValidateMiddleware from "../middlewares/body.middleware";
 
 const tagRouter = Router();
 const tagController = new TagController();
 
-tagRouter.get("/", tagController.getAllTag.bind(tagController));
+tagRouter.get("/", tagController.getAllTags.bind(tagController));
 
 tagRouter.post(
   "/",
