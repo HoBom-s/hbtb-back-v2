@@ -9,6 +9,7 @@ import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
 import { TTokens } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import { UserWithoutPasswordResponseDto } from "../dtos/user.dto";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -23,13 +24,15 @@ export class UserService {
     const { nickname, ...restInfo } = newUserInfo;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
-    if (foundUser) {
-      throw new CustomError(400, "User already exists.");
-    }
+    if (foundUser) throw new CustomError(400, "User already exists.");
 
     const createdUser = await this.userRepository.createUser(newUserInfo);
 
-    return createdUser;
+    const createUserResponseDto = new UserWithoutPasswordResponseDto(
+      createdUser,
+    ).excludePassword();
+
+    return createUserResponseDto;
   }
 
   async loginUser(loginInfo: TLoginUser): Promise<TTokens> {
@@ -51,8 +54,14 @@ export class UserService {
     return { accessToken, refreshToken };
   }
 
-  findOneUserById(id: string): Promise<TUserWithoutPassword> {
-    return this.userRepository.findOneUserById(id);
+  async findOneUserById(id: string): Promise<TUserWithoutPassword> {
+    const foundUser = await this.userRepository.findOneUserById(id);
+
+    const foundUserRespoonseDto = new UserWithoutPasswordResponseDto(
+      foundUser,
+    ).excludePassword();
+
+    return foundUserRespoonseDto;
   }
 
   async updateUser(
@@ -62,7 +71,9 @@ export class UserService {
     await this.userRepository.findOneUserById(id);
     await this.userRepository.updateUser(id, updates);
 
-    return this.findOneUserById(id);
+    const updatedUser = await this.findOneUserById(id);
+
+    return updatedUser;
   }
 
   async removeUser(id: string) {
