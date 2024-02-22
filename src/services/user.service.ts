@@ -9,7 +9,6 @@ import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
 import { TTokens } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
-import User from "../entities/user.entity";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -18,11 +17,6 @@ export class UserService {
   constructor() {
     this.userRepository = new UserRepository();
     this.authHelper = new AuthHelper();
-  }
-
-  excludePassword(user: User): TUserWithoutPassword {
-    const { password, ...restUserInfo } = user;
-    return restUserInfo;
   }
 
   async createUser(newUserInfo: TCreateUser): Promise<TUserWithoutPassword> {
@@ -35,9 +29,7 @@ export class UserService {
 
     const createdUser = await this.userRepository.createUser(newUserInfo);
 
-    const createdUserWithoutPassword = this.excludePassword(createdUser);
-
-    return createdUserWithoutPassword;
+    return createdUser;
   }
 
   async loginUser(loginInfo: TLoginUser): Promise<TTokens> {
@@ -59,11 +51,8 @@ export class UserService {
     return { accessToken, refreshToken };
   }
 
-  async findOneUserById(id: string): Promise<TUserWithoutPassword> {
-    const foundUser = await this.userRepository.findOneUserById(id);
-    const userWithoutPassword = this.excludePassword(foundUser);
-
-    return userWithoutPassword;
+  findOneUserById(id: string): Promise<TUserWithoutPassword> {
+    return this.userRepository.findOneUserById(id);
   }
 
   async updateUser(
