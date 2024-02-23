@@ -58,14 +58,14 @@ export class TagRepository {
     return foundTags;
   }
 
-  async saveArticleId(title: string, articleId: string) {
-    const foundTag = await this.getOneTagByTitle(title);
-    if (!foundTag) throw new CustomError(404, "Tag not found.");
+  // async saveArticleId(title: string, articleId: string) {
+  //   const foundTag = await this.getOneTagByTitle(title);
+  //   if (!foundTag) throw new CustomError(404, "Tag not found.");
 
-    foundTag.articles.push(articleId);
+  //   foundTag.articles.push(articleId);
 
-    await this.tag.save(foundTag);
+  //   await this.tag.save(foundTag);
 
-    return;
-  }
+  //   return;
+  // }
 }

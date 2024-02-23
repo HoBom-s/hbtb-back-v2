@@ -28,7 +28,7 @@ export interface TCreateArticleWithTagId {
   contents: string;
   user: TUserWithoutPassword;
   path: string;
-  tags: string[];
+  tags: Tag[];
 }
 
 export interface TUpdateArticle {

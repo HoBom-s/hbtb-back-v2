@@ -13,4 +13,5 @@ export const myDataSource = new DataSource({
   entities: ["src/**/*.entity.ts"],
   logging: true,
   synchronize: true,
+  // dropSchema: true,
 });

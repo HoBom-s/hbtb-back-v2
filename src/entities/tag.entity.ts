@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import Article from "./article.entity";
 
 @Entity()
 class Tag {
@@ -30,10 +32,8 @@ class Tag {
   })
   count: number;
 
-  @Column({
-    type: "simple-array",
-  })
-  articles: string[];
+  @ManyToMany(() => Article, (articles) => articles.tags)
+  articles: Article[];
 
   @CreateDateColumn()
   createdAt: Date;
