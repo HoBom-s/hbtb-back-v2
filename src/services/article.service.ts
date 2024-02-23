@@ -53,8 +53,6 @@ export class ArticleService {
       newArticleInfoWithTagId,
     );
 
-    // await this.tagService.saveArticleId(tags, createdArticle.id);
-
     return createdArticle;
   }
 
