@@ -2,14 +2,17 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import User from "./user.entity";
+import Tag from "./tag.entity";
 
 @Entity()
-export class Article {
+class Article {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -59,3 +62,5 @@ export class Article {
   @UpdateDateColumn()
   updatedAt: Date;
 }
+
+export default Article;

@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { TRole } from "../types/user.type";
-import { Article } from "./article.entity";
+import Article from "./article.entity";
 
 @Entity()
 class User {

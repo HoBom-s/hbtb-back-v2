@@ -1,5 +1,5 @@
 import { Repository, Like } from "typeorm";
-import { Article } from "../entities/article.entity";
+import Article from "../entities/article.entity";
 import { TCreateArticleWithTagId, TUpdateArticle } from "../types/article.type";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";

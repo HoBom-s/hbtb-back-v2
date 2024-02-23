@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Tag } from "../entities/tag.entity";
+import Tag from "../entities/tag.entity";
 import { myDataSource } from "../data-source";
 import { TCreateTag, TUpdateTag } from "../types/tag.type";
 import { CustomError } from "../middlewares/error.middleware";

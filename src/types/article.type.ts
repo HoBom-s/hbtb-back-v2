@@ -1,4 +1,5 @@
 import { Article } from "../entities/article.entity";
+import { Tag } from "../entities/tag.entity";
 import { TUserWithoutPassword } from "./user.type";
 
 export interface TNewArticleInfo {

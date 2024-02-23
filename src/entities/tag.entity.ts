@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 
 @Entity()
-export class Tag {
+class Tag {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -41,3 +41,5 @@ export class Tag {
   @UpdateDateColumn()
   updatedAt: Date;
 }
+
+export default Tag;
