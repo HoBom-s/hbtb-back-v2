@@ -8,6 +8,7 @@ import {
   TCreateArticleWithTagId,
   TUpdateArticle,
 } from "../types/article.type";
+import { PossibleNull } from "../types/common.type";
 import { TagService } from "./tag.service";
 import { UserService } from "./user.service";
 
@@ -56,11 +57,11 @@ export class ArticleService {
     return createdArticle;
   }
 
-  getAllArticles() {
+  getAllArticles(): Promise<Article[]> {
     return this.articleRepository.getAllArticles();
   }
 
-  getArticleFindByPath(path: string) {
+  getArticleFindByPath(path: string): Promise<PossibleNull<Article>> {
     return this.articleRepository.getArticleFindByPath(path);
   }
 
