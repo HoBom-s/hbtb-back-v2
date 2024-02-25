@@ -1,4 +1,5 @@
-import { Article } from "../entities/article.entity";
+import Article from "../entities/article.entity";
+import Tag from "../entities/tag.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
 import {
@@ -7,6 +8,7 @@ import {
   TCreateArticleWithTagId,
   TUpdateArticle,
 } from "../types/article.type";
+import { PossibleNull } from "../types/common.type";
 import { TagService } from "./tag.service";
 import { UserService } from "./user.service";
 
@@ -28,11 +30,12 @@ export class ArticleService {
     const foundArticle = await this.getArticleFindByPath(path);
     if (foundArticle) throw new CustomError(400, "Article already exists.");
 
-    const tagIds: string[] = [];
+    const tagArr: Tag[] = [];
     for (const tag of tags) {
       const foundTag = await this.tagService.getOneTagByTitle(tag);
       if (!foundTag) throw new CustomError(404, "Tag not found.");
-      tagIds.push(foundTag.id);
+
+      tagArr.push(foundTag);
     }
 
     const articleWriter = await this.userService.findOneUserById(userId);
@@ -44,23 +47,21 @@ export class ArticleService {
       contents,
       user: articleWriter,
       path,
-      tags: tagIds,
+      tags: tagArr,
     };
 
     const createdArticle = await this.articleRepository.createArticle(
       newArticleInfoWithTagId,
     );
 
-    await this.tagService.saveArticleId(tags, createdArticle.id);
-
     return createdArticle;
   }
 
-  getAllArticles() {
+  getAllArticles(): Promise<Article[]> {
     return this.articleRepository.getAllArticles();
   }
 
-  getArticleFindByPath(path: string) {
+  getArticleFindByPath(path: string): Promise<PossibleNull<Article>> {
     return this.articleRepository.getArticleFindByPath(path);
   }
 

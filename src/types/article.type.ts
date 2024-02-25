@@ -1,4 +1,5 @@
-import { Article } from "../entities/article.entity";
+import Article from "../entities/article.entity";
+import Tag from "../entities/tag.entity";
 import { TUserWithoutPassword } from "./user.type";
 
 export interface TNewArticleInfo {
@@ -27,7 +28,7 @@ export interface TCreateArticleWithTagId {
   contents: string;
   user: TUserWithoutPassword;
   path: string;
-  tags: string[];
+  tags: Tag[];
 }
 
 export interface TUpdateArticle {

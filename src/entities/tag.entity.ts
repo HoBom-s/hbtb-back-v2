@@ -2,12 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import Article from "./article.entity";
 
 @Entity()
-export class Tag {
+class Tag {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -30,10 +32,8 @@ export class Tag {
   })
   count: number;
 
-  @Column({
-    type: "simple-array",
-  })
-  articles: string[];
+  @ManyToMany(() => Article, (articles) => articles.tags)
+  articles: Article[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -41,3 +41,5 @@ export class Tag {
   @UpdateDateColumn()
   updatedAt: Date;
 }
+
+export default Tag;

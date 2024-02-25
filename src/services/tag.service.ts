@@ -1,4 +1,4 @@
-import { Tag } from "../entities/tag.entity";
+import Tag from "../entities/tag.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { TagRepository } from "../repositories/tag.repository";
 import { PossibleNull } from "../types/common.type";
@@ -39,13 +39,5 @@ export class TagService {
 
   getAllTags(): Promise<Tag[]> {
     return this.tagRepository.getAllTags();
-  }
-
-  async saveArticleId(tags: string[], createdArticleId: string) {
-    for (const tag of tags) {
-      await this.tagRepository.saveArticleId(tag, createdArticleId);
-    }
-
-    return;
   }
 }

@@ -1,5 +1,5 @@
 import { Repository, Like } from "typeorm";
-import { Article } from "../entities/article.entity";
+import Article from "../entities/article.entity";
 import { TCreateArticleWithTagId, TUpdateArticle } from "../types/article.type";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
@@ -27,6 +27,7 @@ export class ArticleRepository {
     const allArticles = await this.article.find({
       relations: {
         user: true,
+        tags: true,
       },
     });
     if (allArticles === undefined)
@@ -38,7 +39,7 @@ export class ArticleRepository {
   async getArticleFindByPath(path: string): Promise<PossibleNull<Article>> {
     const foundArticle = await this.article.findOne({
       where: { path },
-      relations: { user: true },
+      relations: { user: true, tags: true },
     });
     if (!foundArticle) return null;
 
@@ -48,7 +49,7 @@ export class ArticleRepository {
   async getArticleById(id: string): Promise<Article> {
     const foundArticle = await this.article.findOne({
       where: { id },
-      relations: { user: true },
+      relations: { user: true, tags: true },
     });
     if (!foundArticle) throw new CustomError(404, "Original aticle not found.");
 

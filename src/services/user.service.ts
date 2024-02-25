@@ -9,6 +9,10 @@ import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
 import { TTokens } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import {
+  TokenResponseDto,
+  UserWithoutPasswordResponseDto,
+} from "../dtos/user.dto";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -23,13 +27,15 @@ export class UserService {
     const { nickname, ...restInfo } = newUserInfo;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
-    if (foundUser) {
-      throw new CustomError(400, "User already exists.");
-    }
+    if (foundUser) throw new CustomError(400, "User already exists.");
 
     const createdUser = await this.userRepository.createUser(newUserInfo);
 
-    return createdUser;
+    const createUserResponseDto = new UserWithoutPasswordResponseDto(
+      createdUser,
+    ).excludePassword();
+
+    return createUserResponseDto;
   }
 
   async loginUser(loginInfo: TLoginUser): Promise<TTokens> {
@@ -48,11 +54,21 @@ export class UserService {
     const accessToken = this.authHelper.createToken(userId, "access");
     const refreshToken = this.authHelper.createToken(userId, "refresh");
 
-    return { accessToken, refreshToken };
+    const tokens = { accessToken, refreshToken };
+
+    const tokenResponseDto = new TokenResponseDto(tokens).toResponse();
+
+    return tokenResponseDto;
   }
 
-  findOneUserById(id: string): Promise<TUserWithoutPassword> {
-    return this.userRepository.findOneUserById(id);
+  async findOneUserById(id: string): Promise<TUserWithoutPassword> {
+    const foundUser = await this.userRepository.findOneUserById(id);
+
+    const foundUserResponseDto = new UserWithoutPasswordResponseDto(
+      foundUser,
+    ).excludePassword();
+
+    return foundUserResponseDto;
   }
 
   async updateUser(
@@ -62,7 +78,9 @@ export class UserService {
     await this.userRepository.findOneUserById(id);
     await this.userRepository.updateUser(id, updates);
 
-    return this.findOneUserById(id);
+    const updatedUser = await this.findOneUserById(id);
+
+    return updatedUser;
   }
 
   async removeUser(id: string) {
