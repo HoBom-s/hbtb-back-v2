@@ -19,6 +19,7 @@
     "@types/node": "^20.9.3",
     "@types/uuid": "^9.0.7",
     "axios": "^1.6.7",
+    "axios-retry": "^4.0.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

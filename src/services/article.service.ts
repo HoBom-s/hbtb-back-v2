@@ -40,6 +40,8 @@ export class ArticleService {
 
     const articleWriter = await this.userService.findOneUserById(userId);
 
+    // WIP : thumbnail axios <> image server
+
     const newArticleInfoWithTagId: TCreateArticleWithTagId = {
       thumbnail,
       title,
