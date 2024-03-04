@@ -8,7 +8,6 @@ import {
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
-import axiosInstance from "../api/image.api";
 
 export class ArticleController {
   private articleService: ArticleService;
