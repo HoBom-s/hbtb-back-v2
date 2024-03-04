@@ -8,6 +8,7 @@ import {
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import axiosInstance from "../api/image.api";
 
 export class ArticleController {
   private articleService: ArticleService;
@@ -16,6 +17,27 @@ export class ArticleController {
   constructor() {
     this.articleService = new ArticleService();
     this.authHelper = new AuthHelper();
+  }
+
+  async uploadImages(req: Request, res: Response, next: NextFunction) {
+    try {
+      const uploadedImages = req.files;
+      if (!uploadedImages)
+        throw new CustomError(
+          401,
+          "Error: Request files(multer) missing. Please check image files.",
+        );
+
+      const imageURL = await this.articleService.uploadImages(uploadedImages);
+
+      return res.json({
+        status: 201,
+        message: "Create article success.",
+        data: imageURL,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   async createArticle(req: Request & Auth, res: Response, next: NextFunction) {
