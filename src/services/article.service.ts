@@ -1,3 +1,4 @@
+import axiosInstance from "../api/image.api";
 import Article from "../entities/article.entity";
 import Tag from "../entities/tag.entity";
 import { CustomError } from "../middlewares/error.middleware";
@@ -21,6 +22,17 @@ export class ArticleService {
     this.articleRepository = new ArticleRepository();
     this.tagService = new TagService();
     this.userService = new UserService();
+  }
+
+  // WIP : uploadedImages type
+  async uploadImages(uploadedImages: any) {
+    const uploadedImagesData = Object.values(uploadedImages);
+    try {
+      const response = await axiosInstance.post("/images", uploadedImagesData);
+      return response.data;
+    } catch (error) {
+      throw new CustomError(400, `Error: ${error}`);
+    }
   }
 
   async createArticle(newArticleInfo: TCreateArticle): Promise<Article> {
