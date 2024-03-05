@@ -1,42 +1,42 @@
-import { Article } from "../entities/article.entity";
+import Article from "../entities/article.entity";
 
-export type TRole = "user" | "admin";
+export type Role = "user" | "admin";
 
-export interface TCreateUser {
+export interface CreateUser {
   nickname: string;
   password: string;
   profileImg?: string;
   introduction: string;
 }
 
-export interface TLoginUser {
+export interface LoginUser {
   nickname: string;
   password: string;
 }
 
-export interface TUpdateUser {
+export interface UpdateUser {
   nickname?: string;
   password?: string;
   profileImg?: string;
   introduction?: string;
 }
 
-export interface TUserWithoutPassword {
+export interface UserWithoutPassword {
   id: string;
   nickname: string;
   profileImg: string;
-  role: TRole;
+  role: Role;
   introduction: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface TUserWithPassword {
+export interface UserWithPassword {
   id: string;
   password: string;
   nickname: string;
   profileImg: string;
-  role: TRole;
+  role: Role;
   introduction: string;
   createdAt: Date;
   updatedAt: Date;

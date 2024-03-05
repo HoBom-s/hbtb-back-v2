@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import Tag from "../entities/tag.entity";
 import { myDataSource } from "../data-source";
-import { TCreateTag, TUpdateTag } from "../types/tag.type";
+import { CreateTag, UpdateTag } from "../types/tag.type";
 import { CustomError } from "../middlewares/error.middleware";
 import { PossibleNull } from "../types/common.type";
 
@@ -25,7 +25,7 @@ export class TagRepository {
     return foundTag;
   }
 
-  async createTag(newTagInfo: TCreateTag): Promise<Tag> {
+  async createTag(newTagInfo: CreateTag): Promise<Tag> {
     const createdTag = this.tag.create(newTagInfo);
     if (!createdTag) throw new CustomError(404, "Create tag failed.");
 
@@ -34,7 +34,7 @@ export class TagRepository {
     return createdTag;
   }
 
-  async updateTag(id: string, updatedTagInfo: TUpdateTag) {
+  async updateTag(id: string, updatedTagInfo: UpdateTag) {
     const updateResult = await this.tag.update(id, updatedTagInfo);
     if (!updateResult.affected)
       throw new CustomError(404, "Update tag failed: 0 affected.");

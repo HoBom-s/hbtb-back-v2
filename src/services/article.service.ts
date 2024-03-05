@@ -5,9 +5,9 @@ import { CustomError } from "../middlewares/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
 import {
   ArticlePagination,
-  TCreateArticle,
-  TCreateArticleWithTagId,
-  TUpdateArticle,
+  CreateArticle,
+  CreateArticleWithTagId,
+  UpdateArticle,
 } from "../types/article.type";
 import { PossibleNull } from "../types/common.type";
 import { TagService } from "./tag.service";
@@ -35,7 +35,7 @@ export class ArticleService {
     }
   }
 
-  async createArticle(newArticleInfo: TCreateArticle): Promise<Article> {
+  async createArticle(newArticleInfo: CreateArticle): Promise<Article> {
     const { thumbnail, title, subtitle, contents, userId, path, tags } =
       newArticleInfo;
 
@@ -52,7 +52,7 @@ export class ArticleService {
 
     const articleWriter = await this.userService.findOneUserById(userId);
 
-    const newArticleInfoWithTagId: TCreateArticleWithTagId = {
+    const newArticleInfoWithTagId: CreateArticleWithTagId = {
       thumbnail,
       title,
       subtitle,
@@ -80,7 +80,7 @@ export class ArticleService {
   async updateArticle(
     articleId: string,
     userId: string,
-    updatedInfo: TUpdateArticle,
+    updatedInfo: UpdateArticle,
   ): Promise<Article> {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
 

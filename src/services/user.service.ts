@@ -1,13 +1,13 @@
 import { UserRepository } from "../repositories/user.repository";
 import {
-  TCreateUser,
-  TUpdateUser,
-  TUserWithoutPassword,
-  TLoginUser,
+  CreateUser,
+  UpdateUser,
+  UserWithoutPassword,
+  LoginUser,
 } from "../types/user.type";
 import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
-import { TTokens } from "../types/auth.type";
+import { Tokens } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import {
   TokenResponseDto,
@@ -23,7 +23,7 @@ export class UserService {
     this.authHelper = new AuthHelper();
   }
 
-  async createUser(newUserInfo: TCreateUser): Promise<TUserWithoutPassword> {
+  async createUser(newUserInfo: CreateUser): Promise<UserWithoutPassword> {
     const { nickname, ...restInfo } = newUserInfo;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
@@ -38,7 +38,7 @@ export class UserService {
     return createUserResponseDto;
   }
 
-  async loginUser(loginInfo: TLoginUser): Promise<TTokens> {
+  async loginUser(loginInfo: LoginUser): Promise<Tokens> {
     const { nickname, password } = loginInfo;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
@@ -61,7 +61,7 @@ export class UserService {
     return tokenResponseDto;
   }
 
-  async findOneUserById(id: string): Promise<TUserWithoutPassword> {
+  async findOneUserById(id: string): Promise<UserWithoutPassword> {
     const foundUser = await this.userRepository.findOneUserById(id);
 
     const foundUserResponseDto = new UserWithoutPasswordResponseDto(
@@ -73,8 +73,8 @@ export class UserService {
 
   async updateUser(
     id: string,
-    updates: TUpdateUser,
-  ): Promise<TUserWithoutPassword> {
+    updates: UpdateUser,
+  ): Promise<UserWithoutPassword> {
     await this.userRepository.findOneUserById(id);
     await this.userRepository.updateUser(id, updates);
 

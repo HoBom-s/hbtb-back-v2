@@ -2,7 +2,7 @@ import Tag from "../entities/tag.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { TagRepository } from "../repositories/tag.repository";
 import { PossibleNull } from "../types/common.type";
-import { TCreateTag, TUpdateTag } from "../types/tag.type";
+import { CreateTag, UpdateTag } from "../types/tag.type";
 
 export class TagService {
   private tagRepository: TagRepository;
@@ -14,7 +14,7 @@ export class TagService {
     return this.tagRepository.getOneTagByTitle(title);
   }
 
-  async createTag(newTagInfo: TCreateTag): Promise<Tag> {
+  async createTag(newTagInfo: CreateTag): Promise<Tag> {
     const { title, path } = newTagInfo;
 
     const foundTag = await this.tagRepository.getOneTagByTitle(title);
@@ -23,7 +23,7 @@ export class TagService {
     return this.tagRepository.createTag(newTagInfo);
   }
 
-  async updateTag(tagId: string, updatedTagInfo: TUpdateTag): Promise<Tag> {
+  async updateTag(tagId: string, updatedTagInfo: UpdateTag): Promise<Tag> {
     await this.tagRepository.getOneTagById(tagId);
     await this.tagRepository.updateTag(tagId, updatedTagInfo);
 

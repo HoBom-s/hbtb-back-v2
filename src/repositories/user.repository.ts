@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { myDataSource } from "../data-source";
 import User from "../entities/user.entity";
-import { TCreateUser, TUpdateUser } from "../types/user.type";
+import { CreateUser, UpdateUser } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 import { CustomError } from "../middlewares/error.middleware";
@@ -27,7 +27,7 @@ export class UserRepository {
     return foundUser;
   }
 
-  async createUser(newUserInfo: TCreateUser): Promise<User> {
+  async createUser(newUserInfo: CreateUser): Promise<User> {
     const { nickname, password, profileImg, introduction } = newUserInfo;
 
     const hashedPassword = bcrypt.hashSync(
@@ -50,7 +50,7 @@ export class UserRepository {
     return createdUser;
   }
 
-  async updateUser(id: string, updates: TUpdateUser) {
+  async updateUser(id: string, updates: UpdateUser) {
     const isPasswordUpdate = Object.keys(updates).includes("password");
 
     if (isPasswordUpdate) {

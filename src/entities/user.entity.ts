@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { TRole } from "../types/user.type";
+import { Role } from "../types/user.type";
 import Article from "./article.entity";
 
 @Entity()
@@ -38,9 +38,9 @@ class User {
   @Column({
     type: "varchar",
     nullable: false,
-    default: "user" as TRole,
+    default: "user" as Role,
   })
-  role: TRole;
+  role: Role;
 
   @Column({
     type: "nvarchar",

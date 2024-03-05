@@ -1,7 +1,7 @@
 import { Request, NextFunction, Response } from "express";
 import { TagService } from "../services/tag.service";
 import { CustomError } from "../middlewares/error.middleware";
-import { TCreateTag, TUpdateTag } from "../types/tag.type";
+import { CreateTag, UpdateTag } from "../types/tag.type";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 
@@ -18,7 +18,7 @@ export class TagController {
       const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
-      const newTagInfo: TCreateTag = req.body;
+      const newTagInfo: CreateTag = req.body;
       if (!newTagInfo)
         throw new CustomError(
           400,
@@ -44,7 +44,7 @@ export class TagController {
       );
 
       const { id } = req.params;
-      const updateTagInfo: TUpdateTag = req.body;
+      const updateTagInfo: UpdateTag = req.body;
       if (!id || !updateTagInfo)
         throw new CustomError(
           400,

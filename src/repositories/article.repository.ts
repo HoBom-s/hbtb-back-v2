@@ -1,6 +1,6 @@
 import { Repository, Like } from "typeorm";
 import Article from "../entities/article.entity";
-import { TCreateArticleWithTagId, TUpdateArticle } from "../types/article.type";
+import { CreateArticleWithTagId, UpdateArticle } from "../types/article.type";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
 import { PossibleNull } from "../types/common.type";
@@ -13,7 +13,7 @@ export class ArticleRepository {
   }
 
   async createArticle(
-    newArticleInfoWithTagId: TCreateArticleWithTagId,
+    newArticleInfoWithTagId: CreateArticleWithTagId,
   ): Promise<Article> {
     const createdArticle = this.article.create(newArticleInfoWithTagId);
     if (!createdArticle) throw new CustomError(404, "Create article failed.");
@@ -56,7 +56,7 @@ export class ArticleRepository {
     return foundArticle;
   }
 
-  async updateArticle(id: string, updatedInfo: TUpdateArticle) {
+  async updateArticle(id: string, updatedInfo: UpdateArticle) {
     const updateResult = await this.article.update(id, updatedInfo);
     if (!updateResult.affected)
       throw new CustomError(404, "Update article failed: 0 affected.");

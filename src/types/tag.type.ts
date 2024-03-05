@@ -1,9 +1,9 @@
-export interface TCreateTag {
+export interface CreateTag {
   title: string;
   path: string;
 }
 
-export interface TUpdateTag {
+export interface UpdateTag {
   title?: string;
   path?: string;
 }
