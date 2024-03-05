@@ -8,6 +8,7 @@ import {
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import { MulterFileArray } from "../types/image.type";
 
 export class ArticleController {
   private articleService: ArticleService;
@@ -20,10 +21,10 @@ export class ArticleController {
 
   async uploadImages(req: Request, res: Response, next: NextFunction) {
     try {
-      const uploadedImages = req.files;
+      const uploadedImages = req.files as MulterFileArray;
       if (!uploadedImages)
         throw new CustomError(
-          401,
+          400,
           "Error: Request files(multer) missing. Please check image files.",
         );
 

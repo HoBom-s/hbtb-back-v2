@@ -10,6 +10,7 @@ import {
   UpdateArticle,
 } from "../types/article.type";
 import { PossibleNull } from "../types/common.type";
+import { MulterFileArray, UploadImageBodyData } from "../types/image.type";
 import { TagService } from "./tag.service";
 import { UserService } from "./user.service";
 
@@ -24,11 +25,18 @@ export class ArticleService {
     this.userService = new UserService();
   }
 
-  // WIP : uploadedImages type
-  async uploadImages(uploadedImages: any) {
+  async uploadImages(uploadedImages: MulterFileArray) {
     const uploadedImagesData = Object.values(uploadedImages);
+
+    const imageDataArr: UploadImageBodyData = uploadedImagesData.map(
+      (image) => {
+        const { originalname, buffer, ...restInfo } = image;
+        return { originalname, buffer };
+      },
+    );
+
     try {
-      const response = await axiosInstance.post("/images", uploadedImagesData);
+      const response = await axiosInstance.post("/images", imageDataArr);
       return response.data;
     } catch (error) {
       throw new CustomError(400, `Error: ${error}`);
