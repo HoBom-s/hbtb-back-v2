@@ -19,26 +19,6 @@ export class ArticleController {
     this.authHelper = new AuthHelper();
   }
 
-  // WIP : delete uploadImages
-  async uploadImages(req: Request, res: Response, next: NextFunction) {
-    try {
-      const uploadedImages = req.files as MulterFileArray;
-      if (!uploadedImages)
-        throw new CustomError(
-          400,
-          "Error: Request files(multer) missing. Please check image files.",
-        );
-      const imageURL = await this.articleService.uploadImages(uploadedImages);
-      return res.json({
-        status: 201,
-        message: "Create article success.",
-        data: imageURL,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async createArticle(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(

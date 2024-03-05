@@ -32,11 +32,10 @@ export class ArticleService {
     const foundArticle = await this.getArticleFindByPath(path);
     if (foundArticle) throw new CustomError(400, "Article already exists.");
 
-    const tagsArr: string[] = tags.replace(" ", "").split(",");
-    console.log(tagsArr);
+    const tagsStringToArr: string[] = tags.replace(" ", "").split(",");
 
     const tagArr: Tag[] = [];
-    for (const tag of tagsArr) {
+    for (const tag of tagsStringToArr) {
       const foundTag = await this.tagService.getOneTagByTitle(tag);
       if (!foundTag) throw new CustomError(404, "Tag not found.");
       tagArr.push(foundTag);
@@ -73,8 +72,6 @@ export class ArticleService {
         const { originalname, buffer, ...restInfo } = file;
         return { originalname, buffer };
       });
-
-    console.log("🍕", thumbnailInfo);
 
     const response = await axiosInstance.post("/images", thumbnailInfo);
 

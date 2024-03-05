@@ -38,12 +38,12 @@ articleRouter.get(
   articleController.getArticlePerPage.bind(articleController),
 );
 
-// WIP : merge image upload router
+// WIP
 articleRouter.post(
   "/",
   authValidateMiddleware,
-  // bodyValidateMiddleware(ARTICLE_CREATE),
   upload.fields(createArticleFields),
+  // bodyValidateMiddleware(ARTICLE_CREATE),
   articleController.createArticle.bind(articleController),
 );
 
