@@ -19,6 +19,7 @@ export class ArticleController {
     this.authHelper = new AuthHelper();
   }
 
+  // WIP : delete uploadImages
   async uploadImages(req: Request, res: Response, next: NextFunction) {
     try {
       const uploadedImages = req.files as MulterFileArray;
@@ -27,9 +28,7 @@ export class ArticleController {
           400,
           "Error: Request files(multer) missing. Please check image files.",
         );
-
       const imageURL = await this.articleService.uploadImages(uploadedImages);
-
       return res.json({
         status: 201,
         message: "Create article success.",
@@ -46,7 +45,9 @@ export class ArticleController {
         req.authInfo,
       );
 
+      const thumbnail = req.files as MulterFileArray;
       const newArticleInfo: NewArticleInfo = req.body;
+
       if (!newArticleInfo)
         throw new CustomError(
           400,
@@ -54,8 +55,9 @@ export class ArticleController {
         );
 
       const newArticleInfoWithUser: CreateArticle = {
-        ...newArticleInfo,
+        thumbnail,
         userId,
+        ...newArticleInfo,
       };
 
       const createdArticle = await this.articleService.createArticle(

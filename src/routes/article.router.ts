@@ -10,6 +10,7 @@ import authValidateMiddleware from "../middlewares/auth.middleware";
 import paramValidateMiddleware from "../middlewares/param.middleware";
 import bodyValidateMiddleware from "../middlewares/body.middleware";
 import multer from "multer";
+import { createArticleFields } from "../types/image.type";
 
 const upload = multer();
 
@@ -37,18 +38,12 @@ articleRouter.get(
   articleController.getArticlePerPage.bind(articleController),
 );
 
-articleRouter.post(
-  "/images",
-  // authValidateMiddleware,
-  // bodyValidateMiddleware(),
-  upload.array("images", 5),
-  articleController.uploadImages.bind(articleController),
-);
-
+// WIP : merge image upload router
 articleRouter.post(
   "/",
   authValidateMiddleware,
-  bodyValidateMiddleware(ARTICLE_CREATE),
+  // bodyValidateMiddleware(ARTICLE_CREATE),
+  upload.fields(createArticleFields),
   articleController.createArticle.bind(articleController),
 );
 

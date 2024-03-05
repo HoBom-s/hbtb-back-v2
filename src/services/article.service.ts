@@ -25,24 +25,6 @@ export class ArticleService {
     this.userService = new UserService();
   }
 
-  async uploadImages(uploadedImages: MulterFileArray) {
-    const uploadedImagesData = Object.values(uploadedImages);
-
-    const imageDataArr: UploadImageBodyData = uploadedImagesData.map(
-      (image) => {
-        const { originalname, buffer, ...restInfo } = image;
-        return { originalname, buffer };
-      },
-    );
-
-    try {
-      const response = await axiosInstance.post("/images", imageDataArr);
-      return response.data;
-    } catch (error) {
-      throw new CustomError(400, `Error: ${error}`);
-    }
-  }
-
   async createArticle(newArticleInfo: CreateArticle): Promise<Article> {
     const { thumbnail, title, subtitle, contents, userId, path, tags } =
       newArticleInfo;
@@ -50,18 +32,23 @@ export class ArticleService {
     const foundArticle = await this.getArticleFindByPath(path);
     if (foundArticle) throw new CustomError(400, "Article already exists.");
 
+    const tagsArr: string[] = tags.replace(" ", "").split(",");
+    console.log(tagsArr);
+
     const tagArr: Tag[] = [];
-    for (const tag of tags) {
+    for (const tag of tagsArr) {
       const foundTag = await this.tagService.getOneTagByTitle(tag);
       if (!foundTag) throw new CustomError(404, "Tag not found.");
-
       tagArr.push(foundTag);
     }
 
     const articleWriter = await this.userService.findOneUserById(userId);
+    if (!articleWriter) throw new CustomError(404, "User(writer) not found.");
+
+    const thumbnailUrl = await this.uploadImages(thumbnail);
 
     const newArticleInfoWithTagId: CreateArticleWithTagId = {
-      thumbnail,
+      thumbnail: thumbnailUrl,
       title,
       subtitle,
       contents,
@@ -75,6 +62,23 @@ export class ArticleService {
     );
 
     return createdArticle;
+  }
+
+  async uploadImages(thumbnail: PossibleNull<MulterFileArray>) {
+    if (!thumbnail) return null;
+
+    const thumbnailInfo: UploadImageBodyData = Object.values(thumbnail)
+      .flat()
+      .map((file) => {
+        const { originalname, buffer, ...restInfo } = file;
+        return { originalname, buffer };
+      });
+
+    console.log("🍕", thumbnailInfo);
+
+    const response = await axiosInstance.post("/images", thumbnailInfo);
+
+    return response.data;
   }
 
   getAllArticles(): Promise<Article[]> {
