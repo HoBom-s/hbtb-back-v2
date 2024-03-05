@@ -1,6 +1,6 @@
 import BaseResponseDto from "./common.dto";
 import User from "../entities/user.entity";
-import { TTokens } from "../types/auth.type";
+import { Tokens } from "../types/auth.type";
 
 export class UserWithoutPasswordResponseDto extends BaseResponseDto<User> {
   constructor(body: User) {
@@ -13,8 +13,8 @@ export class UserWithoutPasswordResponseDto extends BaseResponseDto<User> {
   }
 }
 
-export class TokenResponseDto extends BaseResponseDto<TTokens> {
-  constructor(tokens: TTokens) {
+export class TokenResponseDto extends BaseResponseDto<Tokens> {
+  constructor(tokens: Tokens) {
     super(tokens);
   }
 }

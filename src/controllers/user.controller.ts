@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { TCreateUser, TLoginUser, TUpdateUser } from "../types/user.type";
+import { CreateUser, LoginUser, UpdateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
@@ -34,7 +34,7 @@ export class UserController {
 
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const newUserInfo: TCreateUser = req.body;
+      const newUserInfo: CreateUser = req.body;
 
       if (!newUserInfo)
         throw new CustomError(
@@ -56,7 +56,7 @@ export class UserController {
 
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const loginInfo: TLoginUser = req.body;
+      const loginInfo: LoginUser = req.body;
 
       if (!loginInfo)
         throw new CustomError(
@@ -107,7 +107,7 @@ export class UserController {
       if (id !== userId)
         throw new CustomError(401, "Error: User not identical.");
 
-      const updates: TUpdateUser = req.body;
+      const updates: UpdateUser = req.body;
       const updatedUser = await this.userService.updateUser(id, updates);
 
       return res.json({

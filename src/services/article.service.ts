@@ -5,11 +5,12 @@ import { CustomError } from "../middlewares/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
 import {
   ArticlePagination,
-  TCreateArticle,
-  TCreateArticleWithTagId,
-  TUpdateArticle,
+  CreateArticle,
+  CreateArticleWithTagId,
+  UpdateArticle,
 } from "../types/article.type";
 import { PossibleNull } from "../types/common.type";
+import { MulterFileArray, UploadImageBodyData } from "../types/image.type";
 import { TagService } from "./tag.service";
 import { UserService } from "./user.service";
 
@@ -24,18 +25,25 @@ export class ArticleService {
     this.userService = new UserService();
   }
 
-  // WIP : uploadedImages type
-  async uploadImages(uploadedImages: any) {
+  async uploadImages(uploadedImages: MulterFileArray) {
     const uploadedImagesData = Object.values(uploadedImages);
+
+    const imageDataArr: UploadImageBodyData = uploadedImagesData.map(
+      (image) => {
+        const { originalname, buffer, ...restInfo } = image;
+        return { originalname, buffer };
+      },
+    );
+
     try {
-      const response = await axiosInstance.post("/images", uploadedImagesData);
+      const response = await axiosInstance.post("/images", imageDataArr);
       return response.data;
     } catch (error) {
       throw new CustomError(400, `Error: ${error}`);
     }
   }
 
-  async createArticle(newArticleInfo: TCreateArticle): Promise<Article> {
+  async createArticle(newArticleInfo: CreateArticle): Promise<Article> {
     const { thumbnail, title, subtitle, contents, userId, path, tags } =
       newArticleInfo;
 
@@ -52,7 +60,7 @@ export class ArticleService {
 
     const articleWriter = await this.userService.findOneUserById(userId);
 
-    const newArticleInfoWithTagId: TCreateArticleWithTagId = {
+    const newArticleInfoWithTagId: CreateArticleWithTagId = {
       thumbnail,
       title,
       subtitle,
@@ -80,7 +88,7 @@ export class ArticleService {
   async updateArticle(
     articleId: string,
     userId: string,
-    updatedInfo: TUpdateArticle,
+    updatedInfo: UpdateArticle,
   ): Promise<Article> {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
 

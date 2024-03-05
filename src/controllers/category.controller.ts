@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { CategoryService } from "../services/category.service";
 import { CustomError } from "../middlewares/error.middleware";
 import {
-  TCreateCategory,
-  TUpdateCategory,
-  TUpdateCategoryWithId,
+  CreateCategory,
+  UpdateCategory,
+  UpdateCategoryWithId,
 } from "../types/category.type";
 import AuthHelper from "../helpers/auth.helper";
 import { Auth } from "../types/auth.type";
@@ -38,7 +38,7 @@ export class CategoryController {
         req.authInfo,
       );
 
-      const newCategoryInfo: TCreateCategory = req.body;
+      const newCategoryInfo: CreateCategory = req.body;
       if (!newCategoryInfo)
         throw new CustomError(
           400,
@@ -64,7 +64,7 @@ export class CategoryController {
         req.authInfo,
       );
       const { id } = req.params;
-      const updatedInfo: TUpdateCategory = req.body;
+      const updatedInfo: UpdateCategory = req.body;
 
       if (!id || !updatedInfo)
         throw new CustomError(
@@ -72,7 +72,7 @@ export class CategoryController {
           "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
         );
 
-      const updatedInfoWithId: TUpdateCategoryWithId = { id, ...updatedInfo };
+      const updatedInfoWithId: UpdateCategoryWithId = { id, ...updatedInfo };
 
       const updatedCategory =
         await this.categoryService.updateCategory(updatedInfoWithId);

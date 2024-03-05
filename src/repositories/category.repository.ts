@@ -3,8 +3,8 @@ import Category from "../entities/category.entity";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
 import {
-  TCreateCategoryWithIndex,
-  TUpdateCategoryWithId,
+  CreateCategoryWithIndex,
+  UpdateCategoryWithId,
 } from "../types/category.type";
 import { PossibleNull } from "../types/common.type";
 
@@ -37,7 +37,7 @@ export class CategoryRepository {
   }
 
   async createCategory(
-    newCategoryInfo: TCreateCategoryWithIndex,
+    newCategoryInfo: CreateCategoryWithIndex,
   ): Promise<Category> {
     const createdCategory = this.category.create(newCategoryInfo);
     if (!createdCategory) throw new CustomError(404, "Create category failed.");
@@ -47,7 +47,7 @@ export class CategoryRepository {
     return createdCategory;
   }
 
-  async updateCategory(updatedInfoWithId: TUpdateCategoryWithId) {
+  async updateCategory(updatedInfoWithId: UpdateCategoryWithId) {
     const { id, ...updatedInfo } = updatedInfoWithId;
 
     const updateResult = await this.category.update(id, updatedInfo);

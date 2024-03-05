@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
 import {
-  TCreateArticle,
-  TNewArticleInfo,
-  TUpdateArticle,
+  CreateArticle,
+  NewArticleInfo,
+  UpdateArticle,
 } from "../types/article.type";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import { MulterFileArray } from "../types/image.type";
 
 export class ArticleController {
   private articleService: ArticleService;
@@ -20,10 +21,10 @@ export class ArticleController {
 
   async uploadImages(req: Request, res: Response, next: NextFunction) {
     try {
-      const uploadedImages = req.files;
+      const uploadedImages = req.files as MulterFileArray;
       if (!uploadedImages)
         throw new CustomError(
-          401,
+          400,
           "Error: Request files(multer) missing. Please check image files.",
         );
 
@@ -45,14 +46,14 @@ export class ArticleController {
         req.authInfo,
       );
 
-      const newArticleInfo: TNewArticleInfo = req.body;
+      const newArticleInfo: NewArticleInfo = req.body;
       if (!newArticleInfo)
         throw new CustomError(
           400,
           "Error: Request body missing. Please provide the necessary data in the request body.",
         );
 
-      const newArticleInfoWithUser: TCreateArticle = {
+      const newArticleInfoWithUser: CreateArticle = {
         ...newArticleInfo,
         userId,
       };
@@ -112,7 +113,7 @@ export class ArticleController {
         req.authInfo,
       );
       const { id } = req.params;
-      const updatedInfo: TUpdateArticle = req.body;
+      const updatedInfo: UpdateArticle = req.body;
       if (!id || !updatedInfo)
         throw new CustomError(
           400,
