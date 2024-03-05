@@ -64,7 +64,7 @@ export class ArticleService {
   }
 
   async uploadImages(thumbnail: MulterFileArray) {
-    if (!thumbnail) return null;
+    if (!thumbnail.length) return null;
 
     const thumbnailInfo: UploadImageBodyData = Object.values(thumbnail)
       .flat()

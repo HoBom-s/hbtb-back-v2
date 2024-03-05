@@ -11,10 +11,9 @@ import paramValidateMiddleware from "../middlewares/param.middleware";
 import bodyValidateMiddleware from "../middlewares/body.middleware";
 import multer from "multer";
 
-const upload = multer();
-
 const articleRouter = Router();
 const articleController = new ArticleController();
+const upload = multer();
 
 articleRouter.get(
   "/",
@@ -37,7 +36,6 @@ articleRouter.get(
   articleController.getArticlePerPage.bind(articleController),
 );
 
-// WIP: upload thumbnail undefined
 articleRouter.post(
   "/",
   authValidateMiddleware,

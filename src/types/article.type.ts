@@ -12,7 +12,7 @@ export interface NewArticleInfo {
 }
 
 export interface CreateArticle {
-  thumbnail?: MulterFileArray;
+  thumbnail: MulterFileArray;
   title: string;
   subtitle: string;
   contents: string;
