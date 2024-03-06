@@ -9,16 +9,14 @@ const pathParam = {
 };
 
 const articleCreate = {
-  thumbnail: Joi.string().optional(),
   title: Joi.string().required(),
   subtitle: Joi.string().required(),
   contents: Joi.string().required(),
   path: Joi.string().required(),
-  tags: Joi.array().items(Joi.string().required()),
+  tags: Joi.string().required(),
 };
 
 const articleUpdate = {
-  thumbnail: Joi.string().optional(),
   title: Joi.string().optional(),
   subtitle: Joi.string().optional(),
   contents: Joi.string().optional(),

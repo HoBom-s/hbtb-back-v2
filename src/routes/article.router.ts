@@ -11,10 +11,9 @@ import paramValidateMiddleware from "../middlewares/param.middleware";
 import bodyValidateMiddleware from "../middlewares/body.middleware";
 import multer from "multer";
 
-const upload = multer();
-
 const articleRouter = Router();
 const articleController = new ArticleController();
+const upload = multer();
 
 articleRouter.get(
   "/",
@@ -38,16 +37,9 @@ articleRouter.get(
 );
 
 articleRouter.post(
-  "/images",
-  // authValidateMiddleware,
-  // bodyValidateMiddleware(),
-  upload.array("images", 5),
-  articleController.uploadImages.bind(articleController),
-);
-
-articleRouter.post(
   "/",
   authValidateMiddleware,
+  upload.any(),
   bodyValidateMiddleware(ARTICLE_CREATE),
   articleController.createArticle.bind(articleController),
 );
@@ -56,6 +48,7 @@ articleRouter.patch(
   "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
+  upload.any(),
   bodyValidateMiddleware(ARTICLE_UPDATE),
   articleController.updateArticle.bind(articleController),
 );

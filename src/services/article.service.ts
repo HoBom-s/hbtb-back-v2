@@ -7,7 +7,8 @@ import {
   ArticlePagination,
   CreateArticle,
   CreateArticleWithTagId,
-  UpdateArticle,
+  UpdateArticleInfo,
+  UpdateArticleInfoWithThumbnailUrl,
 } from "../types/article.type";
 import { PossibleNull } from "../types/common.type";
 import { MulterFileArray, UploadImageBodyData } from "../types/image.type";
@@ -25,24 +26,6 @@ export class ArticleService {
     this.userService = new UserService();
   }
 
-  async uploadImages(uploadedImages: MulterFileArray) {
-    const uploadedImagesData = Object.values(uploadedImages);
-
-    const imageDataArr: UploadImageBodyData = uploadedImagesData.map(
-      (image) => {
-        const { originalname, buffer, ...restInfo } = image;
-        return { originalname, buffer };
-      },
-    );
-
-    try {
-      const response = await axiosInstance.post("/images", imageDataArr);
-      return response.data;
-    } catch (error) {
-      throw new CustomError(400, `Error: ${error}`);
-    }
-  }
-
   async createArticle(newArticleInfo: CreateArticle): Promise<Article> {
     const { thumbnail, title, subtitle, contents, userId, path, tags } =
       newArticleInfo;
@@ -50,18 +33,22 @@ export class ArticleService {
     const foundArticle = await this.getArticleFindByPath(path);
     if (foundArticle) throw new CustomError(400, "Article already exists.");
 
+    const tagsStringToArr: string[] = tags.replace(" ", "").split(",");
+
     const tagArr: Tag[] = [];
-    for (const tag of tags) {
+    for (const tag of tagsStringToArr) {
       const foundTag = await this.tagService.getOneTagByTitle(tag);
       if (!foundTag) throw new CustomError(404, "Tag not found.");
-
       tagArr.push(foundTag);
     }
 
     const articleWriter = await this.userService.findOneUserById(userId);
+    if (!articleWriter) throw new CustomError(404, "User(writer) not found.");
+
+    const thumbnailUrl = await this.uploadImages(thumbnail);
 
     const newArticleInfoWithTagId: CreateArticleWithTagId = {
-      thumbnail,
+      thumbnail: thumbnailUrl,
       title,
       subtitle,
       contents,
@@ -77,6 +64,21 @@ export class ArticleService {
     return createdArticle;
   }
 
+  async uploadImages(thumbnail: MulterFileArray): Promise<string> {
+    if (!thumbnail.length) return process.env.DEFAULT_THUMBNAIL as string;
+
+    const thumbnailInfo: UploadImageBodyData = Object.values(thumbnail)
+      .flat()
+      .map((file) => {
+        const { originalname, buffer, ...restInfo } = file;
+        return { originalname, buffer };
+      });
+
+    const response = await axiosInstance.post("/images", thumbnailInfo);
+
+    return response.data;
+  }
+
   getAllArticles(): Promise<Article[]> {
     return this.articleRepository.getAllArticles();
   }
@@ -88,7 +90,7 @@ export class ArticleService {
   async updateArticle(
     articleId: string,
     userId: string,
-    updatedInfo: UpdateArticle,
+    updatedInfo: UpdateArticleInfo,
   ): Promise<Article> {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
 
@@ -96,7 +98,15 @@ export class ArticleService {
 
     this.validateUser(writerId, userId, "update");
 
-    await this.articleRepository.updateArticle(articleId, updatedInfo);
+    const { updatedThumbnail, ...updatedBodyInfo } = updatedInfo;
+    const updatedThumbnailUrl = await this.uploadImages(updatedThumbnail);
+
+    const updatedInfoWithUrl: UpdateArticleInfoWithThumbnailUrl = {
+      thumbnail: updatedThumbnailUrl,
+      ...updatedBodyInfo,
+    };
+
+    await this.articleRepository.updateArticle(articleId, updatedInfoWithUrl);
 
     const updatedArticle = this.articleRepository.getArticleById(articleId);
 

@@ -3,7 +3,8 @@ import { ArticleService } from "../services/article.service";
 import {
   CreateArticle,
   NewArticleInfo,
-  UpdateArticle,
+  UpdateArticleBody,
+  UpdateArticleInfo,
 } from "../types/article.type";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
@@ -19,34 +20,15 @@ export class ArticleController {
     this.authHelper = new AuthHelper();
   }
 
-  async uploadImages(req: Request, res: Response, next: NextFunction) {
-    try {
-      const uploadedImages = req.files as MulterFileArray;
-      if (!uploadedImages)
-        throw new CustomError(
-          400,
-          "Error: Request files(multer) missing. Please check image files.",
-        );
-
-      const imageURL = await this.articleService.uploadImages(uploadedImages);
-
-      return res.json({
-        status: 201,
-        message: "Create article success.",
-        data: imageURL,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async createArticle(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
 
+      const thumbnail = req.files as MulterFileArray;
       const newArticleInfo: NewArticleInfo = req.body;
+
       if (!newArticleInfo)
         throw new CustomError(
           400,
@@ -54,8 +36,9 @@ export class ArticleController {
         );
 
       const newArticleInfoWithUser: CreateArticle = {
-        ...newArticleInfo,
+        thumbnail,
         userId,
+        ...newArticleInfo,
       };
 
       const createdArticle = await this.articleService.createArticle(
@@ -113,12 +96,18 @@ export class ArticleController {
         req.authInfo,
       );
       const { id } = req.params;
-      const updatedInfo: UpdateArticle = req.body;
-      if (!id || !updatedInfo)
+      const updatedThumbnail = req.files as MulterFileArray;
+      const updatedBody: UpdateArticleBody = req.body;
+      if (!id || !updatedBody)
         throw new CustomError(
           400,
           "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
         );
+
+      const updatedInfo: UpdateArticleInfo = {
+        updatedThumbnail,
+        ...updatedBody,
+      };
 
       await this.articleService.updateArticle(id, userId, updatedInfo);
 

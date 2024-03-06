@@ -1,24 +1,24 @@
 import Article from "../entities/article.entity";
 import Tag from "../entities/tag.entity";
+import { MulterFileArray } from "./image.type";
 import { UserWithoutPassword } from "./user.type";
 
 export interface NewArticleInfo {
-  thumbnail?: string;
   title: string;
   subtitle: string;
   contents: string;
   path: string;
-  tags: string[];
+  tags: string;
 }
 
 export interface CreateArticle {
-  thumbnail?: string;
+  thumbnail: MulterFileArray;
   title: string;
   subtitle: string;
   contents: string;
   userId: string;
   path: string;
-  tags: string[];
+  tags: string;
 }
 
 export interface CreateArticleWithTagId {
@@ -31,8 +31,23 @@ export interface CreateArticleWithTagId {
   tags: Tag[];
 }
 
-export interface UpdateArticle {
-  thumbnail?: string;
+export interface UpdateArticleBody {
+  title?: string;
+  subtitle?: string;
+  contents?: string;
+  path?: string;
+}
+
+export interface UpdateArticleInfo {
+  updatedThumbnail: MulterFileArray;
+  title?: string;
+  subtitle?: string;
+  contents?: string;
+  path?: string;
+}
+
+export interface UpdateArticleInfoWithThumbnailUrl {
+  thumbnail: string;
   title?: string;
   subtitle?: string;
   contents?: string;
