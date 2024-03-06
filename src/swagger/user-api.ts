@@ -2,7 +2,7 @@ const userApi = {
   paths: {
     "/users/": {
       get: {
-        description: "Get one user information by userID",
+        description: "get one user information by userID",
         tags: ["User"],
         produces: ["application/json"],
         parameters: [
@@ -13,15 +13,15 @@ const userApi = {
               type: "string",
             },
             required: true,
-            description: "Starting with `Bearer ` followed by the token value",
+            description: "starting with `Bearer ` followed by the token value",
           },
         ],
         responses: {
           "200": {
-            description: "Get one user information success",
+            description: "get one user information success",
             schema: {
               type: "object",
-              $ref: "#/definitions/GetOneUserByUserID",
+              $ref: "#/definitions/userInfo",
             },
           },
         },
@@ -30,13 +30,13 @@ const userApi = {
 
     "/users/signup": {
       post: {
-        description: "Sign up user",
+        description: "sign up user",
         tags: ["User"],
         produces: ["application/json"],
         parameters: [
           {
             in: "body",
-            name: "body",
+            name: "req.body",
             schema: {
               type: "object",
               properties: {
@@ -59,24 +59,187 @@ const userApi = {
               },
             },
             required: true,
-            description: "example object",
+            description: "req.body object",
           },
         ],
         responses: {
           "201": {
-            description: "Create(signup) one user success",
+            description: "create(signup) one user success",
             schema: {
               type: "object",
-              $ref: "#/definitions/GetOneUserByUserID",
+              $ref: "#/definitions/userInfo",
+            },
+          },
+        },
+      },
+    },
+
+    "/users/login": {
+      post: {
+        description: "login user",
+        tags: ["User"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "body",
+            name: "req.body",
+            schema: {
+              type: "object",
+              properties: {
+                nickname: {
+                  type: "string",
+                  required: true,
+                },
+                password: {
+                  type: "string",
+                  required: true,
+                },
+              },
+            },
+            required: true,
+            description: "req.body object",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "login success",
+            schema: {
+              type: "object",
+              $ref: "#/definitions/accessToken",
+            },
+          },
+        },
+      },
+    },
+
+    "/users/logout": {
+      post: {
+        description: "logout one user",
+        tags: ["User"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "header",
+            name: "Authorization",
+            schema: {
+              type: "string",
+            },
+            required: true,
+            description: "starting with `Bearer ` followed by the token value",
+          },
+        ],
+        responses: {
+          "201": {
+            description: "logout one user success",
+            schema: {
+              type: "string",
+            },
+          },
+        },
+      },
+    },
+
+    "/users/{userId}": {
+      patch: {
+        description: "update one user information by userID",
+        tags: ["User"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "header",
+            name: "Authorization",
+            schema: {
+              type: "string",
+            },
+            required: true,
+            description: "starting with `Bearer ` followed by the token value",
+          },
+          {
+            in: "path",
+            name: "userId",
+            schema: {
+              type: "string",
+            },
+            required: true,
+            description: "req.params userId",
+          },
+          {
+            in: "body",
+            name: "req.body",
+            schema: {
+              type: "object",
+              properties: {
+                nickname: {
+                  type: "string",
+                  required: false,
+                },
+                password: {
+                  type: "string",
+                  required: false,
+                },
+                profileImg: {
+                  type: "string",
+                  required: false,
+                },
+                introduction: {
+                  type: "string",
+                  required: false,
+                },
+              },
+            },
+            required: true,
+            description: "req.body object",
+          },
+        ],
+        responses: {
+          "201": {
+            description: "update one user information success",
+            schema: {
+              type: "object",
+              $ref: "#/definitions/userInfo",
+            },
+          },
+        },
+      },
+      delete: {
+        description: "remove one user by userID",
+        tags: ["User"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "header",
+            name: "Authorization",
+            schema: {
+              type: "string",
+            },
+            required: true,
+            description: "starting with `Bearer ` followed by the token value",
+          },
+          {
+            in: "path",
+            name: "userId",
+            schema: {
+              type: "string",
+            },
+            required: true,
+            description: "req.params userId",
+          },
+        ],
+        responses: {
+          "201": {
+            description: "remove one user information success",
+            schema: {
+              type: "object",
+              $ref: "#/definitions/userInfo",
             },
           },
         },
       },
     },
   },
+
   definitions: {
-    GetOneUserByUserID: {
-      required: ["userID"],
+    userInfo: {
       properties: {
         id: {
           type: "string",
@@ -94,23 +257,16 @@ const userApi = {
           type: "string",
         },
         createdAt: {
-          type: "datetime",
+          type: "date",
         },
         updatedAt: {
-          type: "datetime",
+          type: "date",
         },
       },
     },
-    Login: {
-      required: ["username", "password"],
+    accessToken: {
       properties: {
-        username: {
-          type: "string",
-        },
-        password: {
-          type: "string",
-        },
-        path: {
+        accessToken: {
           type: "string",
         },
       },
@@ -118,10 +274,10 @@ const userApi = {
   },
   responses: {},
   parameters: {
-    nickname: {
-      name: "nickname",
-      description: "nickname to use for signup.",
-      in: "Body",
+    userId: {
+      name: "userId",
+      description: "req.params userId",
+      in: "params",
       required: true,
       type: "string",
     },

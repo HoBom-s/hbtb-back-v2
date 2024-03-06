@@ -77,7 +77,7 @@ export class UserController {
       return res.json({
         status: 200,
         message: "Login success.",
-        accessToken,
+        data: { accessToken },
       });
     } catch (error) {
       next(error);
