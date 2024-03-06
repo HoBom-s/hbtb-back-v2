@@ -31,8 +31,23 @@ export interface CreateArticleWithTagId {
   tags: Tag[];
 }
 
-export interface UpdateArticle {
-  thumbnail?: string;
+export interface UpdateArticleBody {
+  title?: string;
+  subtitle?: string;
+  contents?: string;
+  path?: string;
+}
+
+export interface UpdateArticleInfo {
+  updatedThumbnail: MulterFileArray;
+  title?: string;
+  subtitle?: string;
+  contents?: string;
+  path?: string;
+}
+
+export interface UpdateArticleInfoWithThumbnailUrl {
+  thumbnail: string;
   title?: string;
   subtitle?: string;
   contents?: string;

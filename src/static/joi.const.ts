@@ -17,7 +17,6 @@ const articleCreate = {
 };
 
 const articleUpdate = {
-  thumbnail: Joi.string().optional(),
   title: Joi.string().optional(),
   subtitle: Joi.string().optional(),
   contents: Joi.string().optional(),

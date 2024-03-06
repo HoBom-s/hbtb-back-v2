@@ -3,7 +3,8 @@ import { ArticleService } from "../services/article.service";
 import {
   CreateArticle,
   NewArticleInfo,
-  UpdateArticle,
+  UpdateArticleBody,
+  UpdateArticleInfo,
 } from "../types/article.type";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
@@ -95,12 +96,18 @@ export class ArticleController {
         req.authInfo,
       );
       const { id } = req.params;
-      const updatedInfo: UpdateArticle = req.body;
-      if (!id || !updatedInfo)
+      const updatedThumbnail = req.files as MulterFileArray;
+      const updatedBody: UpdateArticleBody = req.body;
+      if (!id || !updatedBody)
         throw new CustomError(
           400,
           "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
         );
+
+      const updatedInfo: UpdateArticleInfo = {
+        updatedThumbnail,
+        ...updatedBody,
+      };
 
       await this.articleService.updateArticle(id, userId, updatedInfo);
 

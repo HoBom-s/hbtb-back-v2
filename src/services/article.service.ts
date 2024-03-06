@@ -7,7 +7,8 @@ import {
   ArticlePagination,
   CreateArticle,
   CreateArticleWithTagId,
-  UpdateArticle,
+  UpdateArticleInfo,
+  UpdateArticleInfoWithThumbnailUrl,
 } from "../types/article.type";
 import { PossibleNull } from "../types/common.type";
 import { MulterFileArray, UploadImageBodyData } from "../types/image.type";
@@ -63,8 +64,8 @@ export class ArticleService {
     return createdArticle;
   }
 
-  async uploadImages(thumbnail: MulterFileArray) {
-    if (!thumbnail.length) return null;
+  async uploadImages(thumbnail: MulterFileArray): Promise<string> {
+    if (!thumbnail.length) return process.env.DEFAULT_THUMBNAIL as string;
 
     const thumbnailInfo: UploadImageBodyData = Object.values(thumbnail)
       .flat()
@@ -89,7 +90,7 @@ export class ArticleService {
   async updateArticle(
     articleId: string,
     userId: string,
-    updatedInfo: UpdateArticle,
+    updatedInfo: UpdateArticleInfo,
   ): Promise<Article> {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
 
@@ -97,7 +98,15 @@ export class ArticleService {
 
     this.validateUser(writerId, userId, "update");
 
-    await this.articleRepository.updateArticle(articleId, updatedInfo);
+    const { updatedThumbnail, ...updatedBodyInfo } = updatedInfo;
+    const updatedThumbnailUrl = await this.uploadImages(updatedThumbnail);
+
+    const updatedInfoWithUrl: UpdateArticleInfoWithThumbnailUrl = {
+      thumbnail: updatedThumbnailUrl,
+      ...updatedBodyInfo,
+    };
+
+    await this.articleRepository.updateArticle(articleId, updatedInfoWithUrl);
 
     const updatedArticle = this.articleRepository.getArticleById(articleId);
 
