@@ -69,7 +69,7 @@ export class ArticleController {
       return res.json({
         status: 200,
         message: "Get article by path success.",
-        data: foundArticle,
+        data: { foundArticle },
       });
     } catch (error) {
       next(error);
@@ -83,7 +83,7 @@ export class ArticleController {
       return res.json({
         status: 200,
         message: "Get article success.",
-        data: allArticles,
+        data: { allArticles },
       });
     } catch (error) {
       next(error);
@@ -165,7 +165,7 @@ export class ArticleController {
       return res.json({
         status: 200,
         message: "Get searched articles success.",
-        data: foundArticles,
+        data: { foundArticles },
       });
     } catch (error) {
       next(error);
@@ -189,7 +189,7 @@ export class ArticleController {
       return res.json({
         status: 200,
         message: "Get articles per page success.",
-        data: articlesAndPageCount,
+        data: { articlesAndPageCount },
       });
     } catch (error) {
       next(error);

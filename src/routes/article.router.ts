@@ -21,7 +21,7 @@ articleRouter.get(
 );
 
 articleRouter.get(
-  "/:path",
+  "/list/:path",
   paramValidateMiddleware(PATH_PARAM),
   articleController.getArticleFindByPath.bind(articleController),
 );

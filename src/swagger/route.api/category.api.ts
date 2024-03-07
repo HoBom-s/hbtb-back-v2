@@ -2,7 +2,7 @@ const categoryApi = {
   "/categories/": {
     get: {
       description: "get all categories information",
-      categories: ["category"],
+      tags: ["Category"],
       produces: ["application/json"],
 
       responses: {
@@ -17,7 +17,7 @@ const categoryApi = {
     },
     post: {
       description: "create one category",
-      categories: ["category"],
+      tags: ["Category"],
       produces: ["application/json"],
       parameters: [
         {
@@ -71,7 +71,7 @@ const categoryApi = {
   "/categories/{categoryId}": {
     patch: {
       description: "update one category information by categoryID",
-      categories: ["category"],
+      tags: ["Category"],
       produces: ["application/json"],
       parameters: [
         {
@@ -126,7 +126,7 @@ const categoryApi = {
     },
     delete: {
       description: "delete one category information by categoryID",
-      categories: ["category"],
+      tags: ["Category"],
       produces: ["application/json"],
       parameters: [
         {
