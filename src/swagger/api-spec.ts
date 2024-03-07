@@ -1,7 +1,9 @@
-import userApi from "./user.api";
-import tagApi from "./tag.api";
-import definitions from "./definitions";
-import parameters from "./parameters";
+import routerApi from "./route.api";
+import definitions from "./config/definitions";
+import parameters from "./config/parameters";
+import { config } from "dotenv";
+
+config();
 
 const apiSpec = {
   info: {
@@ -9,12 +11,11 @@ const apiSpec = {
     version: "2.0.0",
     description: "HBTB-version2 api docs.",
   },
-  host: "localhost:3306",
+  host: `localhost:${process.env.DB_PORT}`,
   basePath: "/api/v2",
   swagger: "2.0",
   paths: {
-    ...userApi,
-    ...tagApi,
+    ...routerApi,
   },
   ...definitions,
   ...parameters,
