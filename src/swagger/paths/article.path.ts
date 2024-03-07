@@ -95,7 +95,7 @@ const articlePath = {
       parameters: [
         {
           in: "path",
-          name: "articleId",
+          name: "path",
           schema: {
             type: "string",
           },
