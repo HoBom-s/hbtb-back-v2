@@ -101,6 +101,7 @@ export class ArticleRepository {
       order: { createdAt: "DESC" },
       skip: (pageNumber - 1) * perPage,
       take: perPage,
+      relations: { user: true, tags: true },
     });
 
     if (foundArticles === undefined)
