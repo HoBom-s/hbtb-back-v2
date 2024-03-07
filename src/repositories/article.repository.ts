@@ -120,7 +120,7 @@ export class ArticleRepository {
     if (totalArticleCount % perPage === 0) {
       totalPageCount = totalArticleCount / perPage;
     } else {
-      totalPageCount = totalArticleCount / perPage + 1;
+      totalPageCount = Math.floor(totalArticleCount / perPage) + 1;
     }
 
     return totalPageCount;

@@ -25,7 +25,7 @@ export class CategoryController {
       return res.json({
         status: 200,
         message: "Get all categories success.",
-        data: allCategories,
+        data: { allCategories },
       });
     } catch (error) {
       next(error);

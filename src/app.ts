@@ -1,6 +1,6 @@
 import express from "express";
 import { Express } from "express";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
@@ -10,8 +10,10 @@ import userRouter from "./routes/user.router";
 import tagRouter from "./routes/tag.router";
 import articleRouter from "./routes/article.router";
 import categoryRouter from "./routes/category.router";
+import swaggerUi from "swagger-ui-express";
+import apiSpec from "./swagger/api-spec";
 
-dotenv.config();
+config();
 
 myDataSource
   .initialize()
@@ -29,6 +31,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(cors(corsOptions));
 
+app.use("/api/v2/docs", swaggerUi.serve, swaggerUi.setup(apiSpec));
 app.use("/api/v2/users", userRouter);
 app.use("/api/v2/articles", articleRouter);
 app.use("/api/v2/tags", tagRouter);
