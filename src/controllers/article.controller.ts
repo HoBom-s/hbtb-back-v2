@@ -64,7 +64,7 @@ export class ArticleController {
           "Error: Required parameter missing. Please ensure that all required parameters are provided.",
         );
 
-      const foundArticle = this.articleService.getArticleFindByPath(path);
+      const foundArticle = await this.articleService.getArticleFindByPath(path);
 
       return res.json({
         status: 200,
