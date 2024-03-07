@@ -51,12 +51,12 @@ export class TagController {
           "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
         );
 
-      await this.tagService.updateTag(id, updateTagInfo);
+      const updatedTag = await this.tagService.updateTag(id, updateTagInfo);
 
       return res.json({
         status: 201,
         message: "Update tag success.",
-        data: { reissuedAccessToken },
+        data: { updatedTag, reissuedAccessToken },
       });
     } catch (error) {
       next(error);
@@ -88,7 +88,7 @@ export class TagController {
       return res.json({
         status: 200,
         message: "Get all tags success.",
-        data: foundTags,
+        data: { foundTags },
       });
     } catch (error) {
       next(error);

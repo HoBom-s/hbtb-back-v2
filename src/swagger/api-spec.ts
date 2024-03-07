@@ -1,4 +1,7 @@
-import userApi from "./user-api";
+import userApi from "./user.api";
+import tagApi from "./tag.api";
+import definitions from "./definitions";
+import parameters from "./parameters";
 
 const apiSpec = {
   info: {
@@ -9,7 +12,12 @@ const apiSpec = {
   host: "localhost:3306",
   basePath: "/api/v2",
   swagger: "2.0",
-  ...userApi,
+  paths: {
+    ...userApi,
+    ...tagApi,
+  },
+  ...definitions,
+  ...parameters,
   tags: [
     {
       name: "User",
