@@ -108,7 +108,8 @@ export class ArticleService {
 
     await this.articleRepository.updateArticle(articleId, updatedInfoWithUrl);
 
-    const updatedArticle = this.articleRepository.getArticleById(articleId);
+    const updatedArticle =
+      await this.articleRepository.getArticleById(articleId);
 
     return updatedArticle;
   }

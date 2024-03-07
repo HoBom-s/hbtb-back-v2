@@ -109,12 +109,16 @@ export class ArticleController {
         ...updatedBody,
       };
 
-      await this.articleService.updateArticle(id, userId, updatedInfo);
+      const updatedArticle = await this.articleService.updateArticle(
+        id,
+        userId,
+        updatedInfo,
+      );
 
       return res.json({
         status: 201,
         message: "Update article success.",
-        data: { reissuedAccessToken },
+        data: { updatedArticle, reissuedAccessToken },
       });
     } catch (error) {
       next(error);
