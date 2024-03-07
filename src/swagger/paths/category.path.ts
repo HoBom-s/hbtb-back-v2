@@ -1,23 +1,24 @@
-const categoryApi = {
+const categoryPath = {
   "/categories/": {
     get: {
       description: "get all categories information",
       tags: ["Category"],
       produces: ["application/json"],
-
       responses: {
         "200": {
-          description: "get all categories success",
+          description: "`data` get all categories success",
           schema: {
             type: "object",
-            $ref: "#/definitions/foundCategories",
+            $ref: "#/definitions/allCategories",
           },
         },
       },
     },
+
     post: {
       description: "create one category",
       tags: ["Category"],
+      consumes: ["application/json"],
       produces: ["application/json"],
       parameters: [
         {
@@ -58,10 +59,10 @@ const categoryApi = {
       ],
       responses: {
         "201": {
-          description: "create one category success",
+          description: "`data` create one category success",
           schema: {
             type: "object",
-            $ref: "#/definitions/categoryInfo",
+            $ref: "#/definitions/createdCategory",
           },
         },
       },
@@ -116,14 +117,15 @@ const categoryApi = {
       ],
       responses: {
         "201": {
-          description: "update one category information success",
+          description: "`data` update one category information success",
           schema: {
             type: "object",
-            $ref: "#/definitions/categoryInfo",
+            $ref: "#/definitions/updatedCategory",
           },
         },
       },
     },
+
     delete: {
       description: "delete one category information by categoryID",
       tags: ["Category"],
@@ -152,8 +154,8 @@ const categoryApi = {
         "201": {
           description: "delete one category information success",
           schema: {
-            type: "object",
-            $ref: "#/definitions/categoryInfo",
+            type: "string",
+            example: "Delete category success.",
           },
         },
       },
@@ -161,4 +163,4 @@ const categoryApi = {
   },
 };
 
-export default categoryApi;
+export default categoryPath;

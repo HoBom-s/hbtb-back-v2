@@ -1,38 +1,85 @@
 const definitions = {
   definitions: {
-    userInfo: {
+    foundUser: {
+      type: "object",
       properties: {
-        id: {
-          type: "string",
-          example: "1111111-23a4-5bc-6789-d8a36gw854d9",
+        foundUser: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              example: "1111111-23a4-5bc-6789-d8a36gw854d9",
+            },
+            nickname: {
+              type: "string",
+              example: "Samho",
+            },
+            profileImg: {
+              type: "string",
+              example:
+                "https://hobom.s3.ap-northeast-2.amazonaws.com/samho.jpg",
+            },
+            role: {
+              type: "string",
+              example: "user",
+            },
+            introduction: {
+              type: "string",
+              example: "More Churu",
+            },
+            createdAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+            updatedAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+          },
         },
-        nickname: {
-          type: "string",
-          example: "Samho",
-        },
-        profileImg: {
-          type: "string",
-          example: "https://hobom.s3.ap-northeast-2.amazonaws.com/samho.jpg",
-        },
-        role: {
-          type: "string",
-          example: "user",
-        },
-        introduction: {
-          type: "string",
-          example: "More Churu",
-        },
-        createdAt: {
-          type: "date",
-          example: "2023-07-18T03:22:39.803Z",
-        },
-        updatedAt: {
-          type: "date",
-          example: "2023-07-18T03:22:39.803Z",
+      },
+    },
+    createdUser: {
+      type: "object",
+      properties: {
+        createdUser: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              example: "1111111-23a4-5bc-6789-d8a36gw854d9",
+            },
+            nickname: {
+              type: "string",
+              example: "Samho",
+            },
+            profileImg: {
+              type: "string",
+              example:
+                "https://hobom.s3.ap-northeast-2.amazonaws.com/samho.jpg",
+            },
+            role: {
+              type: "string",
+              example: "user",
+            },
+            introduction: {
+              type: "string",
+              example: "More Churu",
+            },
+            createdAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+            updatedAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+          },
         },
       },
     },
     accessToken: {
+      type: "object",
       properties: {
         accessToken: {
           type: "string",
@@ -41,6 +88,46 @@ const definitions = {
         },
       },
     },
+    updatedUser: {
+      type: "object",
+      properties: {
+        updatedUser: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              example: "1111111-23a4-5bc-6789-d8a36gw854d9",
+            },
+            nickname: {
+              type: "string",
+              example: "Samho",
+            },
+            profileImg: {
+              type: "string",
+              example:
+                "https://hobom.s3.ap-northeast-2.amazonaws.com/samho.jpg",
+            },
+            role: {
+              type: "string",
+              example: "user",
+            },
+            introduction: {
+              type: "string",
+              example: "More Churu",
+            },
+            createdAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+            updatedAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+          },
+        },
+      },
+    },
+
     foundTags: {
       type: "object",
       properties: {
@@ -78,38 +165,79 @@ const definitions = {
         },
       },
     },
-    tagInfo: {
+    createdTag: {
+      type: "object",
       properties: {
-        id: {
-          type: "string",
-          example: "1111111-23a4-5bc-6789-d8a36gw854d9",
-        },
-        title: {
-          type: "string",
-          example: "Laphoo",
-        },
-        path: {
-          type: "string",
-          example: "/laphoo",
-        },
-        count: {
-          type: "number",
-          example: 0,
-        },
-        createdAt: {
-          type: "date",
-          example: "2023-07-18T03:22:39.803Z",
-        },
-        updatedAt: {
-          type: "date",
-          example: "2023-07-18T03:22:39.803Z",
+        createdTag: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              example: "1111111-23a4-5bc-6789-d8a36gw854d9",
+            },
+            title: {
+              type: "string",
+              example: "Laphoo",
+            },
+            path: {
+              type: "string",
+              example: "/laphoo",
+            },
+            count: {
+              type: "number",
+              example: 0,
+            },
+            createdAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+            updatedAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+          },
         },
       },
     },
-    foundCategories: {
+    updatedTag: {
       type: "object",
       properties: {
-        foundTags: {
+        updatedTag: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              example: "1111111-23a4-5bc-6789-d8a36gw854d9",
+            },
+            title: {
+              type: "string",
+              example: "Laphoo",
+            },
+            path: {
+              type: "string",
+              example: "/laphoo",
+            },
+            count: {
+              type: "number",
+              example: 0,
+            },
+            createdAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+            updatedAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+          },
+        },
+      },
+    },
+
+    allCategories: {
+      type: "object",
+      properties: {
+        allCategories: {
           type: "array",
           items: {
             type: "object",
@@ -148,39 +276,85 @@ const definitions = {
         },
       },
     },
-    categoryInfo: {
+    createdCategory: {
+      type: "object",
       properties: {
-        id: {
-          type: "string",
-          example: "1111111-23a4-5bc-6789-d8a36gw854d9",
-        },
-        title: {
-          type: "string",
-          example: "PROFILE",
-        },
-        path: {
-          type: "string",
-          example: "/profile",
-        },
-        sortIndex: {
-          type: "number",
-          example: 3,
-        },
-        spot: {
-          type: "string",
-          required: true,
-          example: "H",
-        },
-        createdAt: {
-          type: "date",
-          example: "2023-07-18T03:22:39.803Z",
-        },
-        updatedAt: {
-          type: "date",
-          example: "2023-07-18T03:22:39.803Z",
+        createdCategory: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              example: "1111111-23a4-5bc-6789-d8a36gw854d9",
+            },
+            title: {
+              type: "string",
+              example: "PROFILE",
+            },
+            path: {
+              type: "string",
+              example: "/profile",
+            },
+            sortIndex: {
+              type: "number",
+              example: 3,
+            },
+            spot: {
+              type: "string",
+              required: true,
+              example: "H",
+            },
+            createdAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+            updatedAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+          },
         },
       },
     },
+    updatedCategory: {
+      type: "object",
+      properties: {
+        updatedCategory: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              example: "1111111-23a4-5bc-6789-d8a36gw854d9",
+            },
+            title: {
+              type: "string",
+              example: "PROFILE",
+            },
+            path: {
+              type: "string",
+              example: "/profile",
+            },
+            sortIndex: {
+              type: "number",
+              example: 3,
+            },
+            spot: {
+              type: "string",
+              required: true,
+              example: "H",
+            },
+            createdAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+            updatedAt: {
+              type: "date",
+              example: "2023-07-18T03:22:39.803Z",
+            },
+          },
+        },
+      },
+    },
+
     allArticles: {
       type: "object",
       properties: {

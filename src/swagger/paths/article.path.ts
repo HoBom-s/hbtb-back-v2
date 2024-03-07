@@ -1,4 +1,4 @@
-const articleApi = {
+const articlePath = {
   "/articles/": {
     get: {
       description: "get all articles information",
@@ -7,7 +7,7 @@ const articleApi = {
 
       responses: {
         "200": {
-          description: "get all articles success",
+          description: "`data` get all articles success",
           schema: {
             type: "object",
             $ref: "#/definitions/allArticles",
@@ -77,7 +77,7 @@ const articleApi = {
       ],
       responses: {
         "201": {
-          description: "create one article success",
+          description: "`data` create one article success",
           schema: {
             type: "object",
             $ref: "#/definitions/createdArticle",
@@ -105,7 +105,8 @@ const articleApi = {
       ],
       responses: {
         "201": {
-          description: "get one article information by article path success",
+          description:
+            "`data` get one article information by article path success",
           schema: {
             type: "object",
             $ref: "#/definitions/foundArticle",
@@ -131,7 +132,7 @@ const articleApi = {
       ],
       responses: {
         "200": {
-          description: "get all searched articles success",
+          description: "`data` get all searched articles success",
           schema: {
             type: "object",
             $ref: "#/definitions/foundArticles",
@@ -164,7 +165,7 @@ const articleApi = {
       ],
       responses: {
         "200": {
-          description: "get pagination information success",
+          description: "`data` get pagination information success",
           schema: {
             type: "object",
             $ref: "#/definitions/articlesAndPageCount",
@@ -244,7 +245,7 @@ const articleApi = {
       ],
       responses: {
         "201": {
-          description: "update one article information success",
+          description: "`data` update one article information success",
           schema: {
             type: "object",
             $ref: "#/definitions/updatedArticle",
@@ -252,6 +253,7 @@ const articleApi = {
         },
       },
     },
+
     delete: {
       description: "delete one article information by articleID",
       tags: ["Article"],
@@ -280,7 +282,8 @@ const articleApi = {
         "201": {
           description: "delete one article information success",
           schema: {
-            type: "object",
+            type: "string",
+            example: "Delete article success.",
           },
         },
       },
@@ -288,4 +291,4 @@ const articleApi = {
   },
 };
 
-export default articleApi;
+export default articlePath;

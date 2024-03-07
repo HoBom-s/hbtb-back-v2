@@ -47,7 +47,7 @@ export class UserController {
       return res.json({
         status: 201,
         message: "Create user success.",
-        data: createdUser,
+        data: { createdUser },
       });
     } catch (error) {
       next(error);
@@ -135,7 +135,6 @@ export class UserController {
       return res.json({
         status: 201,
         message: "Delete user success",
-        data: { reissuedAccessToken },
       });
     } catch (error) {
       next(error);

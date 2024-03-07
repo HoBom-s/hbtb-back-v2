@@ -63,9 +63,13 @@ export class TagController {
     }
   }
 
-  async removeTag(req: Request, res: Response, next: NextFunction) {
+  async removeTag(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
+      const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
+        req.authInfo,
+      );
+
       if (!id)
         throw new CustomError(
           400,
@@ -75,6 +79,7 @@ export class TagController {
       return res.json({
         status: 201,
         message: "Delete tag success.",
+        data: { reissuedAccessToken },
       });
     } catch (error) {
       next(error);

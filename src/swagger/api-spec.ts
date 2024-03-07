@@ -1,4 +1,4 @@
-import routerApi from "./route.api";
+import routerApi from "./paths";
 import definitions from "./config/definitions";
 import parameters from "./config/parameters";
 import { config } from "dotenv";

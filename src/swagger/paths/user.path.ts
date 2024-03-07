@@ -1,4 +1,4 @@
-const userApi = {
+const userPath = {
   "/users/": {
     get: {
       description: "get one user information by userID",
@@ -17,10 +17,10 @@ const userApi = {
       ],
       responses: {
         "200": {
-          description: "get one user information success",
+          description: "`data` get one user information success",
           schema: {
             type: "object",
-            $ref: "#/definitions/userInfo",
+            $ref: "#/definitions/foundUser",
           },
         },
       },
@@ -31,6 +31,7 @@ const userApi = {
     post: {
       description: "sign up user",
       tags: ["User"],
+      consumes: ["application/json"],
       produces: ["application/json"],
       parameters: [
         {
@@ -68,10 +69,10 @@ const userApi = {
       ],
       responses: {
         "201": {
-          description: "create(signup) one user success",
+          description: "`data` create(signup) one user success",
           schema: {
             type: "object",
-            $ref: "#/definitions/userInfo",
+            $ref: "#/definitions/createdUser",
           },
         },
       },
@@ -82,6 +83,7 @@ const userApi = {
     post: {
       description: "login user",
       tags: ["User"],
+      consumes: ["application/json"],
       produces: ["application/json"],
       parameters: [
         {
@@ -108,7 +110,7 @@ const userApi = {
       ],
       responses: {
         "200": {
-          description: "login success",
+          description: "`data` login success",
           schema: {
             type: "object",
             $ref: "#/definitions/accessToken",
@@ -136,7 +138,7 @@ const userApi = {
       ],
       responses: {
         "201": {
-          description: "logout one user success",
+          description: "`data` logout one user success",
           schema: {
             type: "string",
           },
@@ -149,6 +151,7 @@ const userApi = {
     patch: {
       description: "update one user information by userID",
       tags: ["User"],
+      consumes: ["application/json"],
       produces: ["application/json"],
       parameters: [
         {
@@ -176,8 +179,9 @@ const userApi = {
             type: "object",
             properties: {
               nickname: {
-                type: "Laphoo",
+                type: "string",
                 required: false,
+                example: "Laphoo",
               },
               password: {
                 type: "string",
@@ -203,14 +207,15 @@ const userApi = {
       ],
       responses: {
         "201": {
-          description: "update one user information success",
+          description: "`data` update one user information success",
           schema: {
             type: "object",
-            $ref: "#/definitions/userInfo",
+            $ref: "#/definitions/updatedUser",
           },
         },
       },
     },
+
     delete: {
       description: "delete one user by userID",
       tags: ["User"],
@@ -239,8 +244,8 @@ const userApi = {
         "201": {
           description: "delete one user information success",
           schema: {
-            type: "object",
-            $ref: "#/definitions/userInfo",
+            type: "string",
+            example: "Delete user success.",
           },
         },
       },
@@ -248,4 +253,4 @@ const userApi = {
   },
 };
 
-export default userApi;
+export default userPath;

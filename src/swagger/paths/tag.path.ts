@@ -1,13 +1,12 @@
-const tagApi = {
+const tagPath = {
   "/tags/": {
     get: {
       description: "get all tags information",
       tags: ["Tag"],
       produces: ["application/json"],
-
       responses: {
         "200": {
-          description: "get all tags success",
+          description: "`data` get all tags success",
           schema: {
             type: "object",
             $ref: "#/definitions/foundTags",
@@ -15,9 +14,11 @@ const tagApi = {
         },
       },
     },
+
     post: {
       description: "create one tag",
       tags: ["Tag"],
+      consumes: ["application/json"],
       produces: ["application/json"],
       parameters: [
         {
@@ -53,10 +54,10 @@ const tagApi = {
       ],
       responses: {
         "201": {
-          description: "create one tag success",
+          description: "`data` create one tag success",
           schema: {
             type: "object",
-            $ref: "#/definitions/tagInfo",
+            $ref: "#/definitions/createdTag",
           },
         },
       },
@@ -67,6 +68,7 @@ const tagApi = {
     patch: {
       description: "update one tag information by tagID",
       tags: ["Tag"],
+      consumes: ["application/json"],
       produces: ["application/json"],
       parameters: [
         {
@@ -111,14 +113,15 @@ const tagApi = {
       ],
       responses: {
         "201": {
-          description: "update one tag information success",
+          description: "`data` update one tag information success",
           schema: {
             type: "object",
-            $ref: "#/definitions/tagInfo",
+            $ref: "#/definitions/updatedTag",
           },
         },
       },
     },
+
     delete: {
       description: "delete one tag information by tagID",
       tags: ["Tag"],
@@ -147,8 +150,8 @@ const tagApi = {
         "201": {
           description: "delete one tag information success",
           schema: {
-            type: "object",
-            $ref: "#/definitions/tagInfo",
+            type: "string",
+            example: "Delete tag success",
           },
         },
       },
@@ -156,4 +159,4 @@ const tagApi = {
   },
 };
 
-export default tagApi;
+export default tagPath;
