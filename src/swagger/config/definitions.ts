@@ -766,6 +766,35 @@ const definitions = {
                   },
                 },
               },
+              tags: {
+                type: "object",
+                properties: {
+                  id: {
+                    type: "string",
+                    example: "1111111-23a4-5bc-6789-d8a36gw854d9",
+                  },
+                  title: {
+                    type: "string",
+                    example: "Laphoo",
+                  },
+                  path: {
+                    type: "string",
+                    example: "/laphoo",
+                  },
+                  count: {
+                    type: "number",
+                    example: 0,
+                  },
+                  createdAt: {
+                    type: "date",
+                    example: "2023-07-18T03:22:39.803Z",
+                  },
+                  updatedAt: {
+                    type: "date",
+                    example: "2023-07-18T03:22:39.803Z",
+                  },
+                },
+              },
             },
           },
         },
