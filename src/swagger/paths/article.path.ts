@@ -100,7 +100,7 @@ const articlePath = {
             type: "string",
           },
           required: true,
-          description: "req.params articleId",
+          description: "req.params for article path (path without `/`)",
         },
       ],
       responses: {

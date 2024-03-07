@@ -84,6 +84,7 @@ export class ArticleService {
   }
 
   getArticleFindByPath(path: string): Promise<PossibleNull<Article>> {
+    path = "/" + path;
     return this.articleRepository.getArticleFindByPath(path);
   }
 
