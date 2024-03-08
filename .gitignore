@@ -1,3 +1,4 @@
 # basic configuration
 node_modules
 .env
+logs

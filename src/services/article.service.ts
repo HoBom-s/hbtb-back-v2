@@ -74,11 +74,12 @@ export class ArticleService {
         return { originalname, buffer };
       });
 
-    const config = { withCredentials: true };
-
-    const response = await axiosInstance.post("/images", thumbnailInfo, config);
-
-    return response.data;
+    try {
+      const response = await axiosInstance.post("/images", thumbnailInfo);
+      return response.data;
+    } catch (error) {
+      throw new CustomError(500, `Error : ${error}`);
+    }
   }
 
   getAllArticles(): Promise<Article[]> {

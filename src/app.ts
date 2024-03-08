@@ -12,6 +12,8 @@ import articleRouter from "./routes/article.router";
 import categoryRouter from "./routes/category.router";
 import swaggerUi from "swagger-ui-express";
 import apiSpec from "./swagger/api-spec";
+import winstonLogger from "./utils/winston.utils";
+import morgan from "morgan";
 
 config();
 
@@ -30,6 +32,12 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(cors(corsOptions));
+
+app.use(
+  morgan("combined", {
+    stream: { write: (message) => winstonLogger.info(message.trim()) },
+  }),
+);
 
 app.use("/api/v2/docs", swaggerUi.serve, swaggerUi.setup(apiSpec));
 app.use("/api/v2/users", userRouter);
