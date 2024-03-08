@@ -74,7 +74,9 @@ export class ArticleService {
         return { originalname, buffer };
       });
 
-    const response = await axiosInstance.post("/images", thumbnailInfo);
+    const config = { withCredentials: true };
+
+    const response = await axiosInstance.post("/images", thumbnailInfo, config);
 
     return response.data;
   }
