@@ -46,7 +46,7 @@ export interface UpdateArticleInfo {
   path?: string;
 }
 
-export interface UpdateArticleInfoWithThumbnailUrl {
+export interface UpdateArticleWithThumbnail {
   thumbnail: string;
   title?: string;
   subtitle?: string;

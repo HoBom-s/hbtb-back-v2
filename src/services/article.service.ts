@@ -8,7 +8,7 @@ import {
   CreateArticle,
   CreateArticleWithTagId,
   UpdateArticleInfo,
-  UpdateArticleInfoWithThumbnailUrl,
+  UpdateArticleWithThumbnail,
 } from "../types/article.type";
 import { PossibleNull } from "../types/common.type";
 import { MulterFileArray, UploadImageBodyData } from "../types/image.type";
@@ -45,7 +45,10 @@ export class ArticleService {
     const articleWriter = await this.userService.findOneUserById(userId);
     if (!articleWriter) throw new CustomError(404, "User(writer) not found.");
 
-    const thumbnailUrl = await this.uploadImages(thumbnail);
+    const thumbnailUrl = (await this.uploadImages(
+      thumbnail,
+      "create",
+    )) as string;
 
     const newArticleInfoWithTagId: CreateArticleWithTagId = {
       thumbnail: thumbnailUrl,
@@ -64,8 +67,12 @@ export class ArticleService {
     return createdArticle;
   }
 
-  async uploadImages(thumbnail: MulterFileArray): Promise<string> {
-    if (!thumbnail.length) return process.env.DEFAULT_THUMBNAIL as string;
+  async uploadImages(
+    thumbnail: MulterFileArray,
+    type: string,
+  ): Promise<string> {
+    if (type === "create" && !thumbnail.length)
+      return process.env.DEFAULT_THUMBNAIL as string;
 
     const thumbnailInfo: UploadImageBodyData = Object.values(thumbnail)
       .flat()
@@ -103,14 +110,22 @@ export class ArticleService {
     this.validateUser(writerId, userId, "update");
 
     const { updatedThumbnail, ...updatedBodyInfo } = updatedInfo;
-    const updatedThumbnailUrl = await this.uploadImages(updatedThumbnail);
 
-    const updatedInfoWithUrl: UpdateArticleInfoWithThumbnailUrl = {
-      thumbnail: updatedThumbnailUrl,
-      ...updatedBodyInfo,
-    };
+    if (!updatedThumbnail.length) {
+      await this.articleRepository.updateArticle(articleId, updatedBodyInfo);
+    } else {
+      const updatedThumbnailUrl = await this.uploadImages(
+        updatedThumbnail,
+        "update",
+      );
 
-    await this.articleRepository.updateArticle(articleId, updatedInfoWithUrl);
+      const updatedInfoWithUrl: UpdateArticleWithThumbnail = {
+        thumbnail: updatedThumbnailUrl,
+        ...updatedBodyInfo,
+      };
+
+      await this.articleRepository.updateArticle(articleId, updatedInfoWithUrl);
+    }
 
     const updatedArticle =
       await this.articleRepository.getArticleById(articleId);

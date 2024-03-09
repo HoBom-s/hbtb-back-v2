@@ -2,7 +2,8 @@ import { Repository, Like } from "typeorm";
 import Article from "../entities/article.entity";
 import {
   CreateArticleWithTagId,
-  UpdateArticleInfoWithThumbnailUrl,
+  UpdateArticleBody,
+  UpdateArticleWithThumbnail,
 } from "../types/article.type";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
@@ -61,7 +62,7 @@ export class ArticleRepository {
 
   async updateArticle(
     id: string,
-    updatedInfoWithUrl: UpdateArticleInfoWithThumbnailUrl,
+    updatedInfoWithUrl: UpdateArticleBody | UpdateArticleWithThumbnail,
   ) {
     const updateResult = await this.article.update(id, updatedInfoWithUrl);
     if (!updateResult.affected)
