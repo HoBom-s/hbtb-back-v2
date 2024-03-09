@@ -86,7 +86,11 @@ export class UserController {
 
   async logoutUser(req: Request, res: Response, next: NextFunction) {
     try {
-      res.clearCookie("refreshToken");
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      });
 
       return res.json({
         status: 201,
