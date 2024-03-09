@@ -29,11 +29,7 @@ const winstonLogger = createLogger({
     logFormat,
   ),
 
-  transports: [
-    new winstonDaily(dailyOptions("info")),
-    new winstonDaily(dailyOptions("warn")),
-    new winstonDaily(dailyOptions("error")),
-  ],
+  transports: [new winstonDaily(dailyOptions("info"))],
 });
 
 export default winstonLogger;

@@ -78,7 +78,7 @@ export class ArticleService {
       const response = await axiosInstance.post("/images", thumbnailInfo);
       return response.data;
     } catch (error) {
-      throw new CustomError(500, `Error : ${error}`);
+      throw new CustomError(500, `${error}`);
     }
   }
 
