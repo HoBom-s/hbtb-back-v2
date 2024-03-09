@@ -31,7 +31,7 @@ userRouter.post(
   userController.loginUser.bind(userController),
 );
 
-userRouter.post(
+userRouter.get(
   "/logout",
   authValidateMiddleware,
   userController.logoutUser.bind(userController),

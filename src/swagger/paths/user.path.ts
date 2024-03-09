@@ -121,7 +121,7 @@ const userPath = {
   },
 
   "/users/logout": {
-    post: {
+    get: {
       description: "logout one user",
       tags: ["User"],
       produces: ["application/json"],
