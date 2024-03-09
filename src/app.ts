@@ -23,6 +23,7 @@ myDataSource
 
 const app: Express = express();
 const corsOptions = {
+  origin: process.env.CLIENT_HOST,
   credentials: true,
 };
 
