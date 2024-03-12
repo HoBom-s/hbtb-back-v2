@@ -39,7 +39,7 @@ articleRouter.get(
 articleRouter.post(
   "/",
   authValidateMiddleware,
-  upload.any(),
+  upload.single("thumbnail"),
   bodyValidateMiddleware(ARTICLE_CREATE),
   articleController.createArticle.bind(articleController),
 );

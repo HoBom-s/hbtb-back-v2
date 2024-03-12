@@ -1,4 +1,3 @@
-import axiosInstance from "../api/image.api";
 import Article from "../entities/article.entity";
 import Tag from "../entities/tag.entity";
 import { CustomError } from "../middlewares/error.middleware";
@@ -11,7 +10,8 @@ import {
   UpdateArticleWithThumbnail,
 } from "../types/article.type";
 import { PossibleNull } from "../types/common.type";
-import { MulterFileArray, UploadImageBodyData } from "../types/image.type";
+
+import { ImageService } from "./image.service";
 import { TagService } from "./tag.service";
 import { UserService } from "./user.service";
 
@@ -19,11 +19,13 @@ export class ArticleService {
   private articleRepository: ArticleRepository;
   private tagService: TagService;
   private userService: UserService;
+  private imageService: ImageService;
 
   constructor() {
     this.articleRepository = new ArticleRepository();
     this.tagService = new TagService();
     this.userService = new UserService();
+    this.imageService = new ImageService();
   }
 
   async createArticle(newArticleInfo: CreateArticle): Promise<Article> {
@@ -45,9 +47,8 @@ export class ArticleService {
     const articleWriter = await this.userService.findOneUserById(userId);
     if (!articleWriter) throw new CustomError(404, "User(writer) not found.");
 
-    const thumbnailUrl = (await this.uploadImages(
+    const thumbnailUrl = (await this.imageService.uploadOneImage(
       thumbnail,
-      "create",
     )) as string;
 
     const newArticleInfoWithTagId: CreateArticleWithTagId = {
@@ -65,28 +66,6 @@ export class ArticleService {
     );
 
     return createdArticle;
-  }
-
-  async uploadImages(
-    thumbnail: MulterFileArray,
-    type: string,
-  ): Promise<string> {
-    if (type === "create" && !thumbnail.length)
-      return process.env.DEFAULT_THUMBNAIL as string;
-
-    const thumbnailInfo: UploadImageBodyData = Object.values(thumbnail)
-      .flat()
-      .map((file) => {
-        const { originalname, buffer, ...restInfo } = file;
-        return { originalname, buffer };
-      });
-
-    try {
-      const response = await axiosInstance.post("/images", thumbnailInfo);
-      return response.data;
-    } catch (error) {
-      throw new CustomError(500, `${error}`);
-    }
   }
 
   getAllArticles(): Promise<Article[]> {
@@ -114,7 +93,7 @@ export class ArticleService {
     if (!updatedThumbnail.length) {
       await this.articleRepository.updateArticle(articleId, updatedBodyInfo);
     } else {
-      const updatedThumbnailUrl = await this.uploadImages(
+      const updatedThumbnailUrl = await this.imageService.uploadImages(
         updatedThumbnail,
         "update",
       );

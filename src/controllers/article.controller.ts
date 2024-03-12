@@ -9,7 +9,7 @@ import {
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
-import { MulterFileArray } from "../types/image.type";
+import { MulterFile, MulterFileArray } from "../types/image.type";
 
 export class ArticleController {
   private articleService: ArticleService;
@@ -26,7 +26,7 @@ export class ArticleController {
         req.authInfo,
       );
 
-      const thumbnail = req.files as MulterFileArray;
+      const thumbnail = req.file as MulterFile;
       const newArticleInfo: NewArticleInfo = req.body;
 
       if (!newArticleInfo)

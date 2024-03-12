@@ -47,8 +47,7 @@ const tagUpdate = {
 
 const userCreate = {
   nickname: Joi.string().required(),
-  password: Joi.string().required(),
-  profileImg: Joi.string().optional(),
+  password: Joi.string().optional(),
   introduction: Joi.string().required(),
 };
 

@@ -1,9 +1,9 @@
 import { UserRepository } from "../repositories/user.repository";
 import {
-  CreateUser,
   UpdateUser,
   UserWithoutPassword,
   LoginUser,
+  CreateUserWithProfileImg,
 } from "../types/user.type";
 import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
@@ -23,7 +23,9 @@ export class UserService {
     this.authHelper = new AuthHelper();
   }
 
-  async createUser(newUserInfo: CreateUser): Promise<UserWithoutPassword> {
+  async createUser(
+    newUserInfo: CreateUserWithProfileImg,
+  ): Promise<UserWithoutPassword> {
     const { nickname, ...restInfo } = newUserInfo;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);

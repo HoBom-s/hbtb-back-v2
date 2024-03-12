@@ -1,11 +1,25 @@
 import Article from "../entities/article.entity";
+import { MulterFile } from "./image.type";
 
 export type Role = "user" | "admin";
 
-export interface CreateUser {
+export interface CreateUserBody {
   nickname: string;
   password: string;
-  profileImg?: string;
+  introduction: string;
+}
+
+export interface CreateUserWithProfileImg {
+  nickname: string;
+  password: string;
+  profileImg?: MulterFile;
+  introduction: string;
+}
+
+export interface CreateUserWithProfileImgUrl {
+  nickname: string;
+  password: string;
+  profileImg: string;
   introduction: string;
 }
 

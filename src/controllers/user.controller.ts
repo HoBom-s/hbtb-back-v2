@@ -1,9 +1,15 @@
 import { Request, Response, NextFunction } from "express";
-import { CreateUser, LoginUser, UpdateUser } from "../types/user.type";
+import {
+  CreateUserBody,
+  CreateUserWithProfileImg,
+  LoginUser,
+  UpdateUser,
+} from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import { MulterFile } from "../types/image.type";
 
 export class UserController {
   private userService: UserService;
@@ -34,7 +40,8 @@ export class UserController {
 
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const newUserInfo: CreateUser = req.body;
+      const profileImg = req.file as MulterFile;
+      const newUserInfo: CreateUserBody = req.body;
 
       if (!newUserInfo)
         throw new CustomError(
@@ -42,7 +49,13 @@ export class UserController {
           "Error: Request body missing. Please provide the necessary data in the request body.",
         );
 
-      const createdUser = await this.userService.createUser(newUserInfo);
+      const newUserInfoWithProfileImg: CreateUserWithProfileImg = {
+        profileImg,
+        ...newUserInfo,
+      };
+      const createdUser = await this.userService.createUser(
+        newUserInfoWithProfileImg,
+      );
 
       return res.json({
         status: 201,

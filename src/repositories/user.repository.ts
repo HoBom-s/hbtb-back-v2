@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { myDataSource } from "../data-source";
 import User from "../entities/user.entity";
-import { CreateUser, UpdateUser } from "../types/user.type";
+import { CreateUserWithProfileImg, UpdateUser } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 import { CustomError } from "../middlewares/error.middleware";
@@ -27,7 +27,7 @@ export class UserRepository {
     return foundUser;
   }
 
-  async createUser(newUserInfo: CreateUser): Promise<User> {
+  async createUser(newUserInfo: CreateUserWithProfileImg): Promise<User> {
     const { nickname, password, profileImg, introduction } = newUserInfo;
 
     const hashedPassword = bcrypt.hashSync(
