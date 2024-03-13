@@ -42,9 +42,11 @@ class Article {
   })
   contents: string;
 
+  // WIP: path unique
   @Column({
     type: "varchar",
     nullable: false,
+    unique: true,
   })
   path: string;
 

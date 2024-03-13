@@ -1,13 +1,20 @@
 import axiosInstance from "../api/image.api";
 import { CustomError } from "../middlewares/error.middleware";
-import { MulterFile, UploadOneImageData } from "../types/image.type";
+import {
+  ArticleInfoOnUploadImage,
+  UploadOneImageData,
+} from "../types/image.type";
 
 export class ImageService {
   constructor() {}
 
-  async uploadOneImage(image: MulterFile, path: string): Promise<string> {
-    const { originalname, buffer, ...restInfo } = image;
-    const imageInfo: UploadOneImageData = { originalname, buffer, path };
+  async uploadOneImage(
+    articleInfo: ArticleInfoOnUploadImage,
+    path: string,
+  ): Promise<string> {
+    const { thumbnail, articlePath } = articleInfo;
+    const { buffer, ...restInfo } = thumbnail;
+    const imageInfo: UploadOneImageData = { articlePath, buffer, path };
     try {
       const response = await axiosInstance.post("/images/single", imageInfo);
       return response.data;

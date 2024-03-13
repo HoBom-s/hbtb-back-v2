@@ -48,7 +48,7 @@ export class ArticleService {
     if (!articleWriter) throw new CustomError(404, "User(writer) not found.");
 
     const thumbnailUrl = await this.imageService.uploadOneImage(
-      thumbnail,
+      { thumbnail, articlePath: path },
       "thumbnail",
     );
 
@@ -84,6 +84,7 @@ export class ArticleService {
     updatedInfo: UpdateArticleInfo,
   ): Promise<Article> {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
+    const articlePath = foundArticle.path;
 
     const writerId = foundArticle.user.id;
     this.validateUser(writerId, userId, "update");
@@ -93,8 +94,9 @@ export class ArticleService {
     if (!thumbnail) {
       await this.articleRepository.updateArticle(articleId, updatedBodyInfo);
     } else {
+      // WIP
       const thumbnailUrl = await this.imageService.uploadOneImage(
-        thumbnail,
+        { thumbnail, articlePath },
         "thumbnail",
       );
 
