@@ -21,7 +21,6 @@ userRouter.get(
   userController.getUserInfo.bind(userController),
 );
 
-// WIP user profileImg
 userRouter.post(
   "/signup",
   upload.single("profileImg"),
@@ -45,6 +44,7 @@ userRouter.patch(
   "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
+  upload.single("profileImg"),
   bodyValidateMiddleware(USER_UPDATE),
   userController.updateUser.bind(userController),
 );

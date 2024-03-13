@@ -47,9 +47,10 @@ export class ArticleService {
     const articleWriter = await this.userService.findOneUserById(userId);
     if (!articleWriter) throw new CustomError(404, "User(writer) not found.");
 
-    const thumbnailUrl = (await this.imageService.uploadOneImage(
+    const thumbnailUrl = await this.imageService.uploadOneImage(
       thumbnail,
-    )) as string;
+      "thumbnail",
+    );
 
     const newArticleInfoWithTagId: CreateArticleWithTagId = {
       thumbnail: thumbnailUrl,
@@ -85,25 +86,22 @@ export class ArticleService {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
 
     const writerId = foundArticle.user.id;
-
     this.validateUser(writerId, userId, "update");
 
-    const { updatedThumbnail, ...updatedBodyInfo } = updatedInfo;
+    const { thumbnail, ...updatedBodyInfo } = updatedInfo;
 
-    if (!updatedThumbnail.length) {
+    if (!thumbnail) {
       await this.articleRepository.updateArticle(articleId, updatedBodyInfo);
     } else {
-      const updatedThumbnailUrl = await this.imageService.uploadImages(
-        updatedThumbnail,
-        "update",
+      const thumbnailUrl = await this.imageService.uploadOneImage(
+        thumbnail,
+        "thumbnail",
       );
 
-      const updatedInfoWithUrl: UpdateArticleWithThumbnail = {
-        thumbnail: updatedThumbnailUrl,
+      await this.articleRepository.updateArticle(articleId, {
+        thumbnail: thumbnailUrl,
         ...updatedBodyInfo,
-      };
-
-      await this.articleRepository.updateArticle(articleId, updatedInfoWithUrl);
+      });
     }
 
     const updatedArticle =

@@ -3,7 +3,8 @@ import {
   CreateUserBody,
   CreateUserWithProfileImg,
   LoginUser,
-  UpdateUser,
+  UpdateUserBody,
+  UpdateUserWithProfileImg,
 } from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middlewares/error.middleware";
@@ -120,12 +121,18 @@ export class UserController {
       const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
-
       if (id !== userId)
         throw new CustomError(401, "Error: User not identical.");
 
-      const updates: UpdateUser = req.body;
-      const updatedUser = await this.userService.updateUser(id, updates);
+      const updatedProfileImg = req.file as MulterFile;
+      const updatedBody: UpdateUserBody = req.body;
+
+      const updatedInfo: UpdateUserWithProfileImg = {
+        updatedProfileImg,
+        ...updatedBody,
+      };
+
+      const updatedUser = await this.userService.updateUser(id, updatedInfo);
 
       return res.json({
         status: 201,

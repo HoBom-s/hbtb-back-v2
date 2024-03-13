@@ -1,7 +1,10 @@
 import { Repository } from "typeorm";
 import { myDataSource } from "../data-source";
 import User from "../entities/user.entity";
-import { CreateUserWithProfileImg, UpdateUser } from "../types/user.type";
+import {
+  CreateUserWithProfileImgUrl,
+  UpdateUserWithProfileImgUrl,
+} from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 import { CustomError } from "../middlewares/error.middleware";
@@ -27,7 +30,7 @@ export class UserRepository {
     return foundUser;
   }
 
-  async createUser(newUserInfo: CreateUserWithProfileImg): Promise<User> {
+  async createUser(newUserInfo: CreateUserWithProfileImgUrl): Promise<User> {
     const { nickname, password, profileImg, introduction } = newUserInfo;
 
     const hashedPassword = bcrypt.hashSync(
@@ -50,7 +53,7 @@ export class UserRepository {
     return createdUser;
   }
 
-  async updateUser(id: string, updates: UpdateUser) {
+  async updateUser(id: string, updates: UpdateUserWithProfileImgUrl) {
     const isPasswordUpdate = Object.keys(updates).includes("password");
 
     if (isPasswordUpdate) {

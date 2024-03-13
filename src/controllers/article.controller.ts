@@ -9,7 +9,7 @@ import {
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
-import { MulterFile, MulterFileArray } from "../types/image.type";
+import { MulterFile } from "../types/image.type";
 
 export class ArticleController {
   private articleService: ArticleService;
@@ -96,7 +96,7 @@ export class ArticleController {
         req.authInfo,
       );
       const { id } = req.params;
-      const updatedThumbnail = req.files as MulterFileArray;
+      const thumbnail = req.file as MulterFile;
       const updatedBody: UpdateArticleBody = req.body;
       if (!id || !updatedBody)
         throw new CustomError(
@@ -105,7 +105,7 @@ export class ArticleController {
         );
 
       const updatedInfo: UpdateArticleInfo = {
-        updatedThumbnail,
+        thumbnail,
         ...updatedBody,
       };
 

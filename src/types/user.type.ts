@@ -28,10 +28,23 @@ export interface LoginUser {
   password: string;
 }
 
-export interface UpdateUser {
+export interface UpdateUserBody {
   nickname?: string;
   password?: string;
+  introduction?: string;
+}
+
+export interface UpdateUserWithProfileImg {
+  nickname?: string;
+  updatedProfileImg?: MulterFile;
+  password?: string;
+  introduction?: string;
+}
+
+export interface UpdateUserWithProfileImgUrl {
+  nickname?: string;
   profileImg?: string;
+  password?: string;
   introduction?: string;
 }
 

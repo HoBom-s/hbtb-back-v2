@@ -48,7 +48,7 @@ articleRouter.patch(
   "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
-  upload.any(),
+  upload.single("thumbnail"),
   bodyValidateMiddleware(ARTICLE_UPDATE),
   articleController.updateArticle.bind(articleController),
 );
