@@ -123,7 +123,11 @@ export class UserService {
   }
 
   async removeUser(id: string) {
-    await this.findOneUserById(id);
+    const foundUser = await this.findOneUserById(id);
+    const profileImgUrl = foundUser.profileImg;
+
+    await this.imageService.removeOneImage(profileImgUrl);
+
     return this.userRepository.removeUser(id);
   }
 }

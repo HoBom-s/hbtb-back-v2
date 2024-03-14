@@ -115,11 +115,11 @@ export class ArticleService {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
 
     const writerId = foundArticle.user.id;
-    const imageUrl = foundArticle.thumbnail;
+    const thumbnailUrl = foundArticle.thumbnail;
 
     this.validateUser(writerId, userId, "remove");
 
-    await this.imageService.removeOneImage(imageUrl);
+    await this.imageService.removeOneImage(thumbnailUrl);
 
     return this.articleRepository.removeArticle(articleId);
   }
