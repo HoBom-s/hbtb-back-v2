@@ -52,7 +52,7 @@ class Article {
   @ManyToOne(() => User)
   user: User;
 
-  @ManyToMany(() => Tag, (tags) => tags.articles)
+  @ManyToMany(() => Tag, { eager: true })
   @JoinTable()
   tags: Tag[];
 
