@@ -2,7 +2,6 @@ import { Repository, Like } from "typeorm";
 import Article from "../entities/article.entity";
 import {
   CreateArticleWithTagId,
-  UpdateArticleBody,
   UpdateArticleWithThumbnail,
 } from "../types/article.type";
 import { myDataSource } from "../data-source";
@@ -55,14 +54,15 @@ export class ArticleRepository {
       where: { id },
       relations: { user: true, tags: true },
     });
-    if (!foundArticle) throw new CustomError(404, "Original aticle not found.");
+    if (!foundArticle)
+      throw new CustomError(404, "Original article not found.");
 
     return foundArticle;
   }
 
   async updateArticle(
     id: string,
-    updatedInfoWithUrl: UpdateArticleBody | UpdateArticleWithThumbnail,
+    updatedInfoWithUrl: UpdateArticleWithThumbnail,
   ) {
     const updateResult = await this.article.update(id, updatedInfoWithUrl);
     if (!updateResult.affected)

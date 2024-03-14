@@ -1,6 +1,6 @@
 import Article from "../entities/article.entity";
 import Tag from "../entities/tag.entity";
-import { MulterFileArray } from "./image.type";
+import { MulterFile } from "./image.type";
 import { UserWithoutPassword } from "./user.type";
 
 export interface NewArticleInfo {
@@ -12,7 +12,7 @@ export interface NewArticleInfo {
 }
 
 export interface CreateArticle {
-  thumbnail: MulterFileArray;
+  thumbnail: MulterFile;
   title: string;
   subtitle: string;
   contents: string;
@@ -39,7 +39,7 @@ export interface UpdateArticleBody {
 }
 
 export interface UpdateArticleInfo {
-  updatedThumbnail: MulterFileArray;
+  thumbnail?: MulterFile;
   title?: string;
   subtitle?: string;
   contents?: string;
@@ -47,7 +47,7 @@ export interface UpdateArticleInfo {
 }
 
 export interface UpdateArticleWithThumbnail {
-  thumbnail: string;
+  thumbnail?: string;
   title?: string;
   subtitle?: string;
   contents?: string;

@@ -39,7 +39,7 @@ articleRouter.get(
 articleRouter.post(
   "/",
   authValidateMiddleware,
-  upload.any(),
+  upload.single("thumbnail"),
   bodyValidateMiddleware(ARTICLE_CREATE),
   articleController.createArticle.bind(articleController),
 );
@@ -48,7 +48,7 @@ articleRouter.patch(
   "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
-  upload.any(),
+  upload.single("thumbnail"),
   bodyValidateMiddleware(ARTICLE_UPDATE),
   articleController.updateArticle.bind(articleController),
 );

@@ -1,4 +1,3 @@
-import axiosInstance from "../api/image.api";
 import Article from "../entities/article.entity";
 import Tag from "../entities/tag.entity";
 import { CustomError } from "../middlewares/error.middleware";
@@ -8,10 +7,10 @@ import {
   CreateArticle,
   CreateArticleWithTagId,
   UpdateArticleInfo,
-  UpdateArticleWithThumbnail,
 } from "../types/article.type";
 import { PossibleNull } from "../types/common.type";
-import { MulterFileArray, UploadImageBodyData } from "../types/image.type";
+
+import { ImageService } from "./image.service";
 import { TagService } from "./tag.service";
 import { UserService } from "./user.service";
 
@@ -19,11 +18,13 @@ export class ArticleService {
   private articleRepository: ArticleRepository;
   private tagService: TagService;
   private userService: UserService;
+  private imageService: ImageService;
 
   constructor() {
     this.articleRepository = new ArticleRepository();
     this.tagService = new TagService();
     this.userService = new UserService();
+    this.imageService = new ImageService();
   }
 
   async createArticle(newArticleInfo: CreateArticle): Promise<Article> {
@@ -45,10 +46,10 @@ export class ArticleService {
     const articleWriter = await this.userService.findOneUserById(userId);
     if (!articleWriter) throw new CustomError(404, "User(writer) not found.");
 
-    const thumbnailUrl = (await this.uploadImages(
-      thumbnail,
-      "create",
-    )) as string;
+    const thumbnailUrl = await this.imageService.uploadOneImage(
+      { image: thumbnail, uniqueString: path },
+      "thumbnail",
+    );
 
     const newArticleInfoWithTagId: CreateArticleWithTagId = {
       thumbnail: thumbnailUrl,
@@ -67,28 +68,6 @@ export class ArticleService {
     return createdArticle;
   }
 
-  async uploadImages(
-    thumbnail: MulterFileArray,
-    type: string,
-  ): Promise<string> {
-    if (type === "create" && !thumbnail.length)
-      return process.env.DEFAULT_THUMBNAIL as string;
-
-    const thumbnailInfo: UploadImageBodyData = Object.values(thumbnail)
-      .flat()
-      .map((file) => {
-        const { originalname, buffer, ...restInfo } = file;
-        return { originalname, buffer };
-      });
-
-    try {
-      const response = await axiosInstance.post("/images", thumbnailInfo);
-      return response.data;
-    } catch (error) {
-      throw new CustomError(500, `${error}`);
-    }
-  }
-
   getAllArticles(): Promise<Article[]> {
     return this.articleRepository.getAllArticles();
   }
@@ -104,27 +83,26 @@ export class ArticleService {
     updatedInfo: UpdateArticleInfo,
   ): Promise<Article> {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
+    const articlePath = foundArticle.path;
 
     const writerId = foundArticle.user.id;
-
+    console.log(userId, writerId);
     this.validateUser(writerId, userId, "update");
 
-    const { updatedThumbnail, ...updatedBodyInfo } = updatedInfo;
+    const { thumbnail, ...updatedBodyInfo } = updatedInfo;
 
-    if (!updatedThumbnail.length) {
+    if (!thumbnail) {
       await this.articleRepository.updateArticle(articleId, updatedBodyInfo);
     } else {
-      const updatedThumbnailUrl = await this.uploadImages(
-        updatedThumbnail,
-        "update",
+      const thumbnailUrl = await this.imageService.uploadOneImage(
+        { image: thumbnail, uniqueString: articlePath },
+        "thumbnail",
       );
 
-      const updatedInfoWithUrl: UpdateArticleWithThumbnail = {
-        thumbnail: updatedThumbnailUrl,
+      await this.articleRepository.updateArticle(articleId, {
+        thumbnail: thumbnailUrl,
         ...updatedBodyInfo,
-      };
-
-      await this.articleRepository.updateArticle(articleId, updatedInfoWithUrl);
+      });
     }
 
     const updatedArticle =
@@ -137,8 +115,11 @@ export class ArticleService {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
 
     const writerId = foundArticle.user.id;
+    const thumbnailUrl = foundArticle.thumbnail;
 
     this.validateUser(writerId, userId, "remove");
+
+    await this.imageService.removeOneImage(thumbnailUrl);
 
     return this.articleRepository.removeArticle(articleId);
   }

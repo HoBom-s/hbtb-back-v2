@@ -1,9 +1,10 @@
 import { UserRepository } from "../repositories/user.repository";
 import {
-  CreateUser,
-  UpdateUser,
   UserWithoutPassword,
   LoginUser,
+  CreateUserWithProfileImg,
+  CreateUserWithProfileImgUrl,
+  UpdateUserWithProfileImg,
 } from "../types/user.type";
 import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
@@ -13,23 +14,47 @@ import {
   TokenResponseDto,
   UserWithoutPasswordResponseDto,
 } from "../dtos/user.dto";
+import { ImageService } from "./image.service";
 
 export class UserService {
   private userRepository: UserRepository;
   private authHelper: AuthHelper;
+  private imageService: ImageService;
 
   constructor() {
     this.userRepository = new UserRepository();
     this.authHelper = new AuthHelper();
+    this.imageService = new ImageService();
   }
 
-  async createUser(newUserInfo: CreateUser): Promise<UserWithoutPassword> {
-    const { nickname, ...restInfo } = newUserInfo;
+  async createUser(
+    userInfo: CreateUserWithProfileImg,
+  ): Promise<UserWithoutPassword> {
+    const { nickname, profileImg, ...restInfo } = userInfo;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
     if (foundUser) throw new CustomError(400, "User already exists.");
 
-    const createdUser = await this.userRepository.createUser(newUserInfo);
+    let userInfoWithProfileImgUrl: CreateUserWithProfileImgUrl;
+    if (!profileImg) {
+      userInfoWithProfileImgUrl = {
+        ...userInfo,
+        profileImg: process.env.DEFAULT_PROFILE as string,
+      };
+    } else {
+      const profileImgUrl = await this.imageService.uploadOneImage(
+        { image: profileImg, uniqueString: nickname },
+        "profile",
+      );
+      userInfoWithProfileImgUrl = {
+        ...userInfo,
+        profileImg: profileImgUrl,
+      };
+    }
+
+    const createdUser = await this.userRepository.createUser(
+      userInfoWithProfileImgUrl,
+    );
 
     const createUserResponseDto = new UserWithoutPasswordResponseDto(
       createdUser,
@@ -73,10 +98,24 @@ export class UserService {
 
   async updateUser(
     id: string,
-    updates: UpdateUser,
+    updates: UpdateUserWithProfileImg,
   ): Promise<UserWithoutPassword> {
-    await this.userRepository.findOneUserById(id);
-    await this.userRepository.updateUser(id, updates);
+    const foundUser = await this.userRepository.findOneUserById(id);
+
+    const { updatedProfileImg, ...updatedBodyInfo } = updates;
+
+    if (!updatedProfileImg) {
+      await this.userRepository.updateUser(id, updatedBodyInfo);
+    } else {
+      const profileImgUrl = await this.imageService.uploadOneImage(
+        { image: updatedProfileImg, uniqueString: foundUser.nickname },
+        "profile",
+      );
+      await this.userRepository.updateUser(id, {
+        profileImg: profileImgUrl,
+        ...updatedBodyInfo,
+      });
+    }
 
     const updatedUser = await this.findOneUserById(id);
 
@@ -84,7 +123,11 @@ export class UserService {
   }
 
   async removeUser(id: string) {
-    await this.findOneUserById(id);
+    const foundUser = await this.findOneUserById(id);
+    const profileImgUrl = foundUser.profileImg;
+
+    await this.imageService.removeOneImage(profileImgUrl);
+
     return this.userRepository.removeUser(id);
   }
 }

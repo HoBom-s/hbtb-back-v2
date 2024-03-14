@@ -9,9 +9,11 @@ import {
 import authValidateMiddleware from "../middlewares/auth.middleware";
 import paramValidateMiddleware from "../middlewares/param.middleware";
 import bodyValidateMiddleware from "../middlewares/body.middleware";
+import multer from "multer";
 
 const userRouter = Router();
 const userController = new UserController();
+const upload = multer();
 
 userRouter.get(
   "/",
@@ -21,6 +23,7 @@ userRouter.get(
 
 userRouter.post(
   "/signup",
+  upload.single("profileImg"),
   bodyValidateMiddleware(USER_CREATE),
   userController.createUser.bind(userController),
 );
@@ -41,6 +44,7 @@ userRouter.patch(
   "/:id",
   authValidateMiddleware,
   paramValidateMiddleware(ID_PARAM),
+  upload.single("profileImg"),
   bodyValidateMiddleware(USER_UPDATE),
   userController.updateUser.bind(userController),
 );

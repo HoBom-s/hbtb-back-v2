@@ -5,7 +5,7 @@ config();
 
 const axiosInstance = axios.create({
   baseURL: process.env.IMAGE_HOST,
-  timeout: 6000,
+  timeout: 3000,
   headers: { "Content-Type": "application/json" },
 });
 

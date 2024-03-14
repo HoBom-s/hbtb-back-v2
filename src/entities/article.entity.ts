@@ -45,13 +45,14 @@ class Article {
   @Column({
     type: "varchar",
     nullable: false,
+    unique: true,
   })
   path: string;
 
-  @ManyToOne(() => User, (user) => user.articles)
+  @ManyToOne(() => User)
   user: User;
 
-  @ManyToMany(() => Tag, (tags) => tags.articles)
+  @ManyToMany(() => Tag, { eager: true })
   @JoinTable()
   tags: Tag[];
 
