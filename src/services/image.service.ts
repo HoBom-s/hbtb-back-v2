@@ -5,17 +5,15 @@ import { InfoOnUploadImage, UploadOneImageData } from "../types/image.type";
 export class ImageService {
   constructor() {}
 
-  async uploadOneImage(
-    articleInfo: InfoOnUploadImage,
-    path: string,
-  ): Promise<string> {
-    const { image, uniqueString } = articleInfo;
+  async uploadOneImage(info: InfoOnUploadImage, path: string): Promise<string> {
+    const { image, uniqueString } = info;
 
     const ext = image.originalname.split(".").pop() as string;
 
     const { buffer, ...restInfo } = image;
 
     const imageInfo: UploadOneImageData = { uniqueString, buffer, path, ext };
+
     try {
       const response = await axiosInstance.post("/images/single", imageInfo);
       return response.data;
