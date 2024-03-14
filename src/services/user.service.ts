@@ -43,7 +43,7 @@ export class UserService {
       };
     } else {
       const profileImgUrl = await this.imageService.uploadOneImage(
-        profileImg,
+        { image: profileImg, uniqueString: nickname },
         "profile",
       );
       userInfoWithProfileImgUrl = {
@@ -100,7 +100,7 @@ export class UserService {
     id: string,
     updates: UpdateUserWithProfileImg,
   ): Promise<UserWithoutPassword> {
-    await this.userRepository.findOneUserById(id);
+    const foundUser = await this.userRepository.findOneUserById(id);
 
     const { updatedProfileImg, ...updatedBodyInfo } = updates;
 
@@ -108,7 +108,7 @@ export class UserService {
       await this.userRepository.updateUser(id, updatedBodyInfo);
     } else {
       const profileImgUrl = await this.imageService.uploadOneImage(
-        updatedProfileImg,
+        { image: updatedProfileImg, uniqueString: foundUser.nickname },
         "profile",
       );
       await this.userRepository.updateUser(id, {

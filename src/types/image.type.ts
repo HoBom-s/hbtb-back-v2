@@ -2,15 +2,16 @@ export type MulterFile = Express.Multer.File;
 
 export type MulterFileArray = Express.Multer.File[];
 
-export interface ArticleInfoOnUploadImage {
-  thumbnail: MulterFile;
-  articlePath: string;
+export interface InfoOnUploadImage {
+  image: MulterFile;
+  uniqueString: string;
 }
 
 export interface UploadOneImageData {
-  articlePath: string;
+  uniqueString: string;
   buffer: Buffer;
   path: string;
+  ext: string;
 }
 
 export type UploadMultipleImagesData = UploadOneImageData[];

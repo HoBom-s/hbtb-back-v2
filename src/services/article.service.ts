@@ -7,7 +7,6 @@ import {
   CreateArticle,
   CreateArticleWithTagId,
   UpdateArticleInfo,
-  UpdateArticleWithThumbnail,
 } from "../types/article.type";
 import { PossibleNull } from "../types/common.type";
 
@@ -48,7 +47,7 @@ export class ArticleService {
     if (!articleWriter) throw new CustomError(404, "User(writer) not found.");
 
     const thumbnailUrl = await this.imageService.uploadOneImage(
-      { thumbnail, articlePath: path },
+      { image: thumbnail, uniqueString: path },
       "thumbnail",
     );
 
@@ -87,6 +86,7 @@ export class ArticleService {
     const articlePath = foundArticle.path;
 
     const writerId = foundArticle.user.id;
+    console.log(userId, writerId);
     this.validateUser(writerId, userId, "update");
 
     const { thumbnail, ...updatedBodyInfo } = updatedInfo;
@@ -94,9 +94,8 @@ export class ArticleService {
     if (!thumbnail) {
       await this.articleRepository.updateArticle(articleId, updatedBodyInfo);
     } else {
-      // WIP
       const thumbnailUrl = await this.imageService.uploadOneImage(
-        { thumbnail, articlePath },
+        { image: thumbnail, uniqueString: articlePath },
         "thumbnail",
       );
 

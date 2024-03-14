@@ -4,8 +4,9 @@ import { config } from "dotenv";
 config();
 
 const axiosInstance = axios.create({
-  baseURL: process.env.IMAGE_HOST,
-  timeout: 6000,
+  // baseURL: process.env.IMAGE_HOST,
+  baseURL: "http://localhost:3000",
+  timeout: 3000,
   headers: { "Content-Type": "application/json" },
 });
 

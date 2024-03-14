@@ -1,20 +1,21 @@
 import axiosInstance from "../api/image.api";
 import { CustomError } from "../middlewares/error.middleware";
-import {
-  ArticleInfoOnUploadImage,
-  UploadOneImageData,
-} from "../types/image.type";
+import { InfoOnUploadImage, UploadOneImageData } from "../types/image.type";
 
 export class ImageService {
   constructor() {}
 
   async uploadOneImage(
-    articleInfo: ArticleInfoOnUploadImage,
+    articleInfo: InfoOnUploadImage,
     path: string,
   ): Promise<string> {
-    const { thumbnail, articlePath } = articleInfo;
-    const { buffer, ...restInfo } = thumbnail;
-    const imageInfo: UploadOneImageData = { articlePath, buffer, path };
+    const { image, uniqueString } = articleInfo;
+
+    const ext = image.originalname.split(".").pop() as string;
+
+    const { buffer, ...restInfo } = image;
+
+    const imageInfo: UploadOneImageData = { uniqueString, buffer, path, ext };
     try {
       const response = await axiosInstance.post("/images/single", imageInfo);
       return response.data;

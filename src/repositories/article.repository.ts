@@ -54,7 +54,8 @@ export class ArticleRepository {
       where: { id },
       relations: { user: true, tags: true },
     });
-    if (!foundArticle) throw new CustomError(404, "Original aticle not found.");
+    if (!foundArticle)
+      throw new CustomError(404, "Original article not found.");
 
     return foundArticle;
   }

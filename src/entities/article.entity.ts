@@ -42,7 +42,6 @@ class Article {
   })
   contents: string;
 
-  // WIP: path unique
   @Column({
     type: "varchar",
     nullable: false,
@@ -50,7 +49,7 @@ class Article {
   })
   path: string;
 
-  @ManyToOne(() => User, (user) => user.articles)
+  @ManyToOne(() => User)
   user: User;
 
   @ManyToMany(() => Tag, (tags) => tags.articles)
