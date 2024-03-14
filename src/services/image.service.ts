@@ -23,4 +23,14 @@ export class ImageService {
       throw new CustomError(500, `${error}`);
     }
   }
+
+  async removeOneImage(imageUrl: string) {
+    const imageKey = imageUrl.split("amazonaws.com").pop()?.slice(1);
+
+    try {
+      return axiosInstance.post("/images/remove", { imageKey });
+    } catch (error) {
+      throw new CustomError(500, `${error}`);
+    }
+  }
 }
