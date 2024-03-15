@@ -13,6 +13,7 @@ import categoryRouter from "./routes/category.router";
 import swaggerUi from "swagger-ui-express";
 import apiSpec from "./swagger/api-spec";
 import morganHandler from "./utils/morgan.util";
+import redisConnection from "./utils/redis.util";
 
 config();
 
@@ -26,6 +27,9 @@ const corsOptions = {
   origin: process.env.CLIENT_HOST,
   credentials: true,
 };
+
+// WIP: Redis config
+redisConnection();
 
 app.use(express.json());
 app.use(cookieParser());
