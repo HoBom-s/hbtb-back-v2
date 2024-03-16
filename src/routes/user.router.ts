@@ -10,14 +10,17 @@ import authValidateMiddleware from "../middlewares/auth.middleware";
 import paramValidateMiddleware from "../middlewares/param.middleware";
 import bodyValidateMiddleware from "../middlewares/body.middleware";
 import multer from "multer";
+import cacheMiddleware from "../middlewares/cache.middleware";
 
 const userRouter = Router();
 const userController = new UserController();
 const upload = multer();
 
+// WIP
 userRouter.get(
   "/",
   authValidateMiddleware,
+  cacheMiddleware,
   userController.getUserInfo.bind(userController),
 );
 

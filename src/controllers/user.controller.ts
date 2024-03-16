@@ -11,6 +11,7 @@ import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import { MulterFile } from "../types/image.type";
+import { redisClient } from "../redis/redis.config";
 
 export class UserController {
   private userService: UserService;
@@ -28,6 +29,12 @@ export class UserController {
       );
 
       const foundUser = await this.userService.findOneUserById(userId);
+
+      // WIP
+      const stringifiedFoundUser = JSON.stringify(foundUser);
+
+      const key = `redis_${req.method}_${req.originalUrl}`;
+      await redisClient.set(key, stringifiedFoundUser);
 
       return res.json({
         status: 200,

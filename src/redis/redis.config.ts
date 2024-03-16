@@ -3,7 +3,7 @@ import { config } from "dotenv";
 
 config();
 
-const redisClient = createClient({
+export const redisClient = createClient({
   password: process.env.REDIS_PASSWORD,
   socket: {
     host: process.env.REDIS_HOST,
@@ -13,8 +13,6 @@ const redisClient = createClient({
 
 redisClient.on("error", (error) => console.warn(`REDIS: ${error}`));
 
-function redisConnection() {
+export function redisConnection() {
   return redisClient.connect();
 }
-
-export default redisConnection;
