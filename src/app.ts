@@ -13,7 +13,7 @@ import categoryRouter from "./routes/category.router";
 import swaggerUi from "swagger-ui-express";
 import apiSpec from "./swagger/api-spec";
 import morganHandler from "./utils/morgan.util";
-import redisConnection from "./redis/config";
+import redisConnection from "./redis/redis.config";
 
 config();
 
