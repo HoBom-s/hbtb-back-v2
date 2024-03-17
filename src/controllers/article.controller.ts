@@ -10,6 +10,7 @@ import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import { MulterFile } from "../types/image.type";
+import { redisClient } from "../redis/redis.config";
 
 export class ArticleController {
   private articleService: ArticleService;
@@ -79,6 +80,12 @@ export class ArticleController {
   async getAllArticles(req: Request, res: Response, next: NextFunction) {
     try {
       const allArticles = await this.articleService.getAllArticles();
+
+      // WIP
+      const stringifiedAllArticles = JSON.stringify(allArticles);
+
+      const key = `redis_${req.method}_${req.originalUrl}`;
+      await redisClient.set(key, stringifiedAllArticles);
 
       return res.json({
         status: 200,
