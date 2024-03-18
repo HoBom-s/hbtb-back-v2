@@ -86,7 +86,6 @@ export class ArticleService {
     const articlePath = foundArticle.path;
 
     const writerId = foundArticle.user.id;
-    console.log(userId, writerId);
     this.validateUser(writerId, userId, "update");
 
     const { thumbnail, ...updatedBodyInfo } = updatedInfo;

@@ -16,7 +16,7 @@ const articleRouter = Router();
 const articleController = new ArticleController();
 const upload = multer();
 
-// WIP
+// WIP: caching
 articleRouter.get(
   "/",
   cacheMiddleware,
@@ -34,6 +34,7 @@ articleRouter.get(
   articleController.searchArticle.bind(articleController),
 );
 
+// WIP : recent article w/ sorting query
 articleRouter.get(
   "/list",
   articleController.getArticlePerPage.bind(articleController),
