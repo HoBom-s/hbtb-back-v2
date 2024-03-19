@@ -86,7 +86,7 @@ export class ArticleController {
     try {
       const allArticles = await this.articleService.getAllArticles();
 
-      await this.cacheHelper.setCache(req, allArticles);
+      await this.cacheHelper.setCache(req, { allArticles });
 
       return res.json({
         status: 200,
@@ -208,7 +208,7 @@ export class ArticleController {
       const articlesAndPageCount =
         await this.articleService.getArticlePerPage(perPageInfo);
 
-      await this.cacheHelper.setCache(req, articlesAndPageCount);
+      await this.cacheHelper.setCache(req, { articlesAndPageCount });
 
       return res.json({
         status: 200,

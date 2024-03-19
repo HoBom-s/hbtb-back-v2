@@ -14,6 +14,8 @@ async function cacheMiddleware(
       return next();
     }
 
+    console.log();
+
     return res.json({ data: JSON.parse(cacheData) });
   } catch (error) {
     next(error);

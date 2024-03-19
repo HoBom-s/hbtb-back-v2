@@ -98,7 +98,7 @@ export class TagController {
     try {
       const foundTags = await this.tagService.getAllTags();
 
-      await this.cacheHelper.setCache(req, foundTags);
+      await this.cacheHelper.setCache(req, { foundTags });
 
       return res.json({
         status: 200,
