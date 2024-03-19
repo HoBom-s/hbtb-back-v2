@@ -11,15 +11,17 @@ import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import { MulterFile } from "../types/image.type";
-import { redisClient } from "../redis/redis.config";
+import CacheHelper from "../helpers/cache.helper";
 
 export class ArticleController {
   private articleService: ArticleService;
   private authHelper: AuthHelper;
+  private cacheHelper: CacheHelper;
 
   constructor() {
     this.articleService = new ArticleService();
     this.authHelper = new AuthHelper();
+    this.cacheHelper = new CacheHelper();
   }
 
   async createArticle(req: Request & Auth, res: Response, next: NextFunction) {
@@ -47,7 +49,7 @@ export class ArticleController {
         newArticleInfoWithUser,
       );
 
-      // WIP : caching
+      await this.cacheHelper.delCache("articles");
 
       return res.json({
         status: 201,
@@ -84,10 +86,7 @@ export class ArticleController {
     try {
       const allArticles = await this.articleService.getAllArticles();
 
-      const stringifiedAllArticles = JSON.stringify(allArticles);
-
-      const redisKey = `redis_${req.method}_${req.originalUrl}`;
-      await redisClient.SETEX(redisKey, 3600, stringifiedAllArticles); // Redis TTL 1h
+      await this.cacheHelper.setCache(req, allArticles);
 
       return res.json({
         status: 200,
@@ -124,7 +123,7 @@ export class ArticleController {
         updatedInfo,
       );
 
-      // WIP : caching
+      await this.cacheHelper.delCache("articles");
 
       return res.json({
         status: 201,
@@ -183,13 +182,7 @@ export class ArticleController {
     }
   }
 
-  /**
-   * recent articles
-   * pageNumber : 1
-   * perPage: 3
-   * sorting: asc / desc (optional)
-   */
-
+  // WIP : caching
   async getArticlePerPage(req: Request, res: Response, next: NextFunction) {
     try {
       const { pageNumber, perPage, sorting } = req.query;
@@ -215,6 +208,8 @@ export class ArticleController {
 
       const articlesAndPageCount =
         await this.articleService.getArticlePerPage(perPageInfo);
+
+      await this.cacheHelper.setCache(req, articlesAndPageCount);
 
       return res.json({
         status: 200,

@@ -4,17 +4,19 @@ import { CustomError } from "../middlewares/error.middleware";
 import { CreateTag, UpdateTag } from "../types/tag.type";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
-import { redisClient } from "../redis/redis.config";
+import CacheHelper from "../helpers/cache.helper";
 
 export class TagController {
   private tagService: TagService;
   private authHelper: AuthHelper;
+  private cacheHelper: CacheHelper;
+
   constructor() {
     this.tagService = new TagService();
     this.authHelper = new AuthHelper();
+    this.cacheHelper = new CacheHelper();
   }
 
-  // WIP : caching
   async createTag(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
@@ -29,6 +31,8 @@ export class TagController {
 
       const createdTag = await this.tagService.createTag(newTagInfo);
 
+      await this.cacheHelper.delCache("tags");
+
       return res.json({
         status: 201,
         message: "Create tag success.",
@@ -39,7 +43,6 @@ export class TagController {
     }
   }
 
-  // WIP : caching
   async updateTag(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
@@ -55,6 +58,8 @@ export class TagController {
         );
 
       const updatedTag = await this.tagService.updateTag(id, updateTagInfo);
+
+      await this.cacheHelper.delCache("tags");
 
       return res.json({
         status: 201,
@@ -93,10 +98,7 @@ export class TagController {
     try {
       const foundTags = await this.tagService.getAllTags();
 
-      const stringifiedFoundTags = JSON.stringify(foundTags);
-
-      const redisKey = `redis_${req.method}_${req.originalUrl}`;
-      await redisClient.SETEX(redisKey, 3600, stringifiedFoundTags); // Redis TTL 1h
+      await this.cacheHelper.setCache(req, foundTags);
 
       return res.json({
         status: 200,
