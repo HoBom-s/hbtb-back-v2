@@ -182,7 +182,6 @@ export class ArticleController {
     }
   }
 
-  // WIP : caching
   async getArticlePerPage(req: Request, res: Response, next: NextFunction) {
     try {
       const { pageNumber, perPage, sorting } = req.query;

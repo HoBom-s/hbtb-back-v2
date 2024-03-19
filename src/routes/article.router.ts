@@ -35,6 +35,7 @@ articleRouter.get(
 
 articleRouter.get(
   "/list",
+  cacheMiddleware,
   articleController.getArticlePerPage.bind(articleController),
 );
 
