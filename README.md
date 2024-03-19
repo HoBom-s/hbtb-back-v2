@@ -85,7 +85,7 @@ Please check simplified api docs on **[HBTB-API-v2](https://port-0-hbtb-back-v2-
 ### Redis
 
 - Caching patterns: `Look Aside` + `Write Around`  
-  (more about this on [TroubleShooting](<#-문제 해결 (TroubleShooting)>) note)
+  (more about this on below **TroubleShooting** note)
 
 <br/>
 
