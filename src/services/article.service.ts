@@ -35,7 +35,7 @@ export class ArticleService {
     const foundArticle = await this.getArticleFindByPath(path);
     if (foundArticle) throw new CustomError(400, "Article already exists.");
 
-    const tagsStringToArr: string[] = tags.replace(" ", "").split(",");
+    const tagsStringToArr: string[] = tags.replace(/\s/g, "").split(",");
 
     const tagArr: Tag[] = [];
     for (const tag of tagsStringToArr) {
