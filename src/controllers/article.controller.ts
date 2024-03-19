@@ -47,6 +47,8 @@ export class ArticleController {
         newArticleInfoWithUser,
       );
 
+      // WIP : caching
+
       return res.json({
         status: 201,
         message: "Create article success.",
@@ -82,11 +84,10 @@ export class ArticleController {
     try {
       const allArticles = await this.articleService.getAllArticles();
 
-      // WIP
       const stringifiedAllArticles = JSON.stringify(allArticles);
 
-      const key = `redis_${req.method}_${req.originalUrl}`;
-      await redisClient.set(key, stringifiedAllArticles);
+      const redisKey = `redis_${req.method}_${req.originalUrl}`;
+      await redisClient.SETEX(redisKey, 3600, stringifiedAllArticles); // Redis TTL 1h
 
       return res.json({
         status: 200,
@@ -122,6 +123,8 @@ export class ArticleController {
         userId,
         updatedInfo,
       );
+
+      // WIP : caching
 
       return res.json({
         status: 201,

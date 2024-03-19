@@ -9,7 +9,6 @@ import cacheMiddleware from "../middlewares/cache.middleware";
 const tagRouter = Router();
 const tagController = new TagController();
 
-// WIP : caching
 tagRouter.get(
   "/",
   cacheMiddleware,

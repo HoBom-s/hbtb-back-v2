@@ -29,6 +29,7 @@ export class ArticleRepository {
 
   async getAllArticles(): Promise<Article[]> {
     const allArticles = await this.article.find({
+      order: { createdAt: "DESC" },
       relations: {
         user: true,
         tags: true,

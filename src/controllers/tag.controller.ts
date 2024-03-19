@@ -4,6 +4,7 @@ import { CustomError } from "../middlewares/error.middleware";
 import { CreateTag, UpdateTag } from "../types/tag.type";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import { redisClient } from "../redis/redis.config";
 
 export class TagController {
   private tagService: TagService;
@@ -13,6 +14,7 @@ export class TagController {
     this.authHelper = new AuthHelper();
   }
 
+  // WIP : caching
   async createTag(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
@@ -37,6 +39,7 @@ export class TagController {
     }
   }
 
+  // WIP : caching
   async updateTag(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
@@ -89,6 +92,11 @@ export class TagController {
   async getAllTags(req: Request, res: Response, next: NextFunction) {
     try {
       const foundTags = await this.tagService.getAllTags();
+
+      const stringifiedFoundTags = JSON.stringify(foundTags);
+
+      const redisKey = `redis_${req.method}_${req.originalUrl}`;
+      await redisClient.SETEX(redisKey, 3600, stringifiedFoundTags); // Redis TTL 1h
 
       return res.json({
         status: 200,

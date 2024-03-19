@@ -16,7 +16,6 @@ const articleRouter = Router();
 const articleController = new ArticleController();
 const upload = multer();
 
-// WIP: caching
 articleRouter.get(
   "/",
   cacheMiddleware,

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { redisClient } from "../redis/redis.config";
 
-// WIP
 async function cacheMiddleware(
   req: Request,
   res: Response,
