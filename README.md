@@ -44,7 +44,7 @@ Please check simplified api docs on **[HBTB-API-v2](https://port-0-hbtb-back-v2-
 
 <br/>
 
-## 기능 (Features)
+## 기능(Features)
 
 ### 1. Users
 
@@ -89,6 +89,6 @@ Please check simplified api docs on **[HBTB-API-v2](https://port-0-hbtb-back-v2-
 
 <br/>
 
-## 문제 해결 (TroubleShooting)
+## 문제 해결(TroubleShooting)
 
 - **_...ing..._** WIP on Notion **_...ing..._**
