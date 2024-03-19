@@ -10,6 +10,7 @@ import authValidateMiddleware from "../middlewares/auth.middleware";
 import paramValidateMiddleware from "../middlewares/param.middleware";
 import bodyValidateMiddleware from "../middlewares/body.middleware";
 import multer from "multer";
+import cacheMiddleware from "../middlewares/cache.middleware";
 
 const articleRouter = Router();
 const articleController = new ArticleController();
@@ -17,6 +18,7 @@ const upload = multer();
 
 articleRouter.get(
   "/",
+  cacheMiddleware,
   articleController.getAllArticles.bind(articleController),
 );
 

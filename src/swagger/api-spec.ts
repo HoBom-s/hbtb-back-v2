@@ -36,6 +36,10 @@ const apiSpec = {
       name: "Category",
       description: "Category CRUD",
     },
+    {
+      name: "Health-check",
+      description: "Health-checking",
+    },
   ],
 };
 

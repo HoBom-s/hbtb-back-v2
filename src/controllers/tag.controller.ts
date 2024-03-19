@@ -4,13 +4,17 @@ import { CustomError } from "../middlewares/error.middleware";
 import { CreateTag, UpdateTag } from "../types/tag.type";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import CacheHelper from "../helpers/cache.helper";
 
 export class TagController {
   private tagService: TagService;
   private authHelper: AuthHelper;
+  private cacheHelper: CacheHelper;
+
   constructor() {
     this.tagService = new TagService();
     this.authHelper = new AuthHelper();
+    this.cacheHelper = new CacheHelper();
   }
 
   async createTag(req: Request & Auth, res: Response, next: NextFunction) {
@@ -26,6 +30,8 @@ export class TagController {
         );
 
       const createdTag = await this.tagService.createTag(newTagInfo);
+
+      await this.cacheHelper.delCache("tags");
 
       return res.json({
         status: 201,
@@ -52,6 +58,8 @@ export class TagController {
         );
 
       const updatedTag = await this.tagService.updateTag(id, updateTagInfo);
+
+      await this.cacheHelper.delCache("tags");
 
       return res.json({
         status: 201,
@@ -89,6 +97,8 @@ export class TagController {
   async getAllTags(req: Request, res: Response, next: NextFunction) {
     try {
       const foundTags = await this.tagService.getAllTags();
+
+      await this.cacheHelper.setCache(req, foundTags);
 
       return res.json({
         status: 200,

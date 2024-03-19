@@ -4,6 +4,7 @@ import { CustomError } from "../middlewares/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
 import {
   ArticlePagination,
+  ArticlePerPageInfo,
   CreateArticle,
   CreateArticleWithTagId,
   UpdateArticleInfo,
@@ -86,7 +87,6 @@ export class ArticleService {
     const articlePath = foundArticle.path;
 
     const writerId = foundArticle.user.id;
-    console.log(userId, writerId);
     this.validateUser(writerId, userId, "update");
 
     const { thumbnail, ...updatedBodyInfo } = updatedInfo;
@@ -129,16 +129,12 @@ export class ArticleService {
   }
 
   async getArticlePerPage(
-    strPageNumber: string,
-    strPerPage: string,
+    perPageInfo: ArticlePerPageInfo,
   ): Promise<ArticlePagination> {
-    const pageNumber: number = Number.parseInt(strPageNumber);
-    const perPage: number = Number.parseInt(strPerPage);
+    const { pageNumber, perPage, sorting } = perPageInfo;
 
-    const foundArticles = await this.articleRepository.getArticlePerPage(
-      pageNumber,
-      perPage,
-    );
+    const foundArticles =
+      await this.articleRepository.getArticlePerPage(perPageInfo);
 
     const totalPageCount =
       await this.articleRepository.getTotalPageCount(perPage);

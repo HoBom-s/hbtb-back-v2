@@ -31,40 +31,36 @@ const userPath = {
     post: {
       description: "sign up user",
       tags: ["User"],
-      consumes: ["application/json"],
+      consumes: ["multipart/form-data"],
       produces: ["application/json"],
       parameters: [
         {
-          in: "body",
-          name: "req.body",
-          schema: {
-            type: "object",
-            properties: {
-              nickname: {
-                type: "string",
-                required: true,
-                example: "Samho",
-              },
-              password: {
-                type: "string",
-                required: true,
-                example: "Churu20000kum",
-              },
-              profileImg: {
-                type: "string",
-                required: false,
-                example:
-                  "https://hobom.s3.ap-northeast-2.amazonaws.com/samho.jpg",
-              },
-              introduction: {
-                type: "string",
-                required: true,
-                example: "More Churu",
-              },
-            },
-          },
+          in: "formData",
+          name: "nickname",
+          type: "string",
           required: true,
-          description: "req.body object",
+          description: "nickname for signup",
+        },
+        {
+          in: "formData",
+          name: "password",
+          type: "string",
+          required: true,
+          description: "password for signup",
+        },
+        {
+          in: "formData",
+          name: "profileImg",
+          type: "file",
+          required: true,
+          description: "profile image for signup",
+        },
+        {
+          in: "formData",
+          name: "introduction",
+          type: "string",
+          required: true,
+          description: "introduction for signup",
         },
       ],
       responses: {
@@ -173,36 +169,39 @@ const userPath = {
           description: "req.params userId",
         },
         {
-          in: "body",
-          name: "req.body",
-          schema: {
-            type: "object",
-            properties: {
-              nickname: {
-                type: "string",
-                required: false,
-                example: "Laphoo",
-              },
-              password: {
-                type: "string",
-                required: false,
-                example: "TreatLove119",
-              },
-              profileImg: {
-                type: "string",
-                required: false,
-                example:
-                  "https://hobom.s3.ap-northeast-2.amazonaws.com/laphoo.jpg",
-              },
-              introduction: {
-                type: "string",
-                required: false,
-                example: "Trick or Treat!",
-              },
-            },
-          },
-          required: true,
-          description: "req.body object",
+          in: "formData",
+          name: "nickname",
+          type: "string",
+          required: false,
+          description: "nickname for the signup",
+        },
+        {
+          in: "formData",
+          name: "nickname",
+          type: "string",
+          required: false,
+          description: "nickname for signup",
+        },
+        {
+          in: "formData",
+          name: "password",
+          type: "string",
+          required: false,
+          description: "password for signup",
+        },
+        {
+          in: "formData",
+          name: "profileImg",
+          type: "file",
+          required: false,
+          description: "profile image for signup",
+        },
+        {
+          in: "formData",
+          name: "introduction",
+          type: "string",
+          required: false,
+          description: "introduction for signup",
         },
       ],
       responses: {

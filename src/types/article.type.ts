@@ -1,3 +1,4 @@
+import QueryString from "qs";
 import Article from "../entities/article.entity";
 import Tag from "../entities/tag.entity";
 import { MulterFile } from "./image.type";
@@ -52,6 +53,30 @@ export interface UpdateArticleWithThumbnail {
   subtitle?: string;
   contents?: string;
   path?: string;
+}
+type SORTING = "asc" | "ASC" | "desc" | "DESC" | undefined;
+
+export interface ArticlePerPageInfo {
+  pageNumber: number;
+  perPage: number;
+  sorting?: SORTING;
+}
+
+export function isSORTING(
+  value:
+    | string
+    | QueryString.ParsedQs
+    | string[]
+    | QueryString.ParsedQs[]
+    | undefined,
+): value is SORTING {
+  return (
+    value === "asc" ||
+    value === "ASC" ||
+    value === "desc" ||
+    value === "DESC" ||
+    value === undefined
+  );
 }
 
 export interface ArticlePagination {

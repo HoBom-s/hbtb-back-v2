@@ -5,19 +5,23 @@ import {
   NewArticleInfo,
   UpdateArticleBody,
   UpdateArticleInfo,
+  isSORTING,
 } from "../types/article.type";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import { MulterFile } from "../types/image.type";
+import CacheHelper from "../helpers/cache.helper";
 
 export class ArticleController {
   private articleService: ArticleService;
   private authHelper: AuthHelper;
+  private cacheHelper: CacheHelper;
 
   constructor() {
     this.articleService = new ArticleService();
     this.authHelper = new AuthHelper();
+    this.cacheHelper = new CacheHelper();
   }
 
   async createArticle(req: Request & Auth, res: Response, next: NextFunction) {
@@ -44,6 +48,8 @@ export class ArticleController {
       const createdArticle = await this.articleService.createArticle(
         newArticleInfoWithUser,
       );
+
+      await this.cacheHelper.delCache("articles");
 
       return res.json({
         status: 201,
@@ -80,6 +86,8 @@ export class ArticleController {
     try {
       const allArticles = await this.articleService.getAllArticles();
 
+      await this.cacheHelper.setCache(req, allArticles);
+
       return res.json({
         status: 200,
         message: "Get article success.",
@@ -114,6 +122,8 @@ export class ArticleController {
         userId,
         updatedInfo,
       );
+
+      await this.cacheHelper.delCache("articles");
 
       return res.json({
         status: 201,
@@ -172,19 +182,34 @@ export class ArticleController {
     }
   }
 
+  // WIP : caching
   async getArticlePerPage(req: Request, res: Response, next: NextFunction) {
     try {
-      const { pageNumber, perPage } = req.query;
+      const { pageNumber, perPage, sorting } = req.query;
       if (!pageNumber || !perPage)
         throw new CustomError(
           400,
           "Error: Required query parameter 'pageNumber' or 'perPage' missing. Please include the 'pageNumber' or 'perPage' parameter in your request query.",
         );
 
-      const articlesAndPageCount = await this.articleService.getArticlePerPage(
-        pageNumber as string,
-        perPage as string,
-      );
+      const isSortingValid = isSORTING(sorting);
+      if (!isSortingValid) {
+        throw new CustomError(
+          400,
+          "Error: Required query parameter 'sorting' should be one of '`asc` | `desc` | undefined'(case-insensitive).",
+        );
+      }
+
+      const perPageInfo = {
+        pageNumber: parseInt(pageNumber as string, 10),
+        perPage: parseInt(perPage as string, 10),
+        sorting,
+      };
+
+      const articlesAndPageCount =
+        await this.articleService.getArticlePerPage(perPageInfo);
+
+      await this.cacheHelper.setCache(req, articlesAndPageCount);
 
       return res.json({
         status: 200,

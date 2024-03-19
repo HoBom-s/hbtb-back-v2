@@ -1,6 +1,7 @@
 import { Repository, Like } from "typeorm";
 import Article from "../entities/article.entity";
 import {
+  ArticlePerPageInfo,
   CreateArticleWithTagId,
   UpdateArticleWithThumbnail,
 } from "../types/article.type";
@@ -28,6 +29,7 @@ export class ArticleRepository {
 
   async getAllArticles(): Promise<Article[]> {
     const allArticles = await this.article.find({
+      order: { createdAt: "DESC" },
       relations: {
         user: true,
         tags: true,
@@ -94,12 +96,13 @@ export class ArticleRepository {
     return foundArticles;
   }
 
-  async getArticlePerPage(
-    pageNumber: number,
-    perPage: number,
-  ): Promise<Article[]> {
+  async getArticlePerPage(perPageInfo: ArticlePerPageInfo): Promise<Article[]> {
+    let { pageNumber, perPage, sorting } = perPageInfo;
+
+    if (!sorting) sorting = "DESC";
+
     const foundArticles = await this.article.find({
-      order: { createdAt: "DESC" },
+      order: { createdAt: sorting },
       skip: (pageNumber - 1) * perPage,
       take: perPage,
       relations: { user: true, tags: true },

@@ -162,6 +162,14 @@ const articlePath = {
           description: "article count for each page to include",
           required: true,
         },
+        {
+          in: "query",
+          name: "sorting",
+          type: "string",
+          description:
+            "article sorting(optional): one of `asc` or `desc`(case-insensitive)",
+          required: false,
+        },
       ],
       responses: {
         "200": {

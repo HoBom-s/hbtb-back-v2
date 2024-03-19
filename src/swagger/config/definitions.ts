@@ -1,5 +1,19 @@
 const definitions = {
   definitions: {
+    health: {
+      type: "object",
+      properties: {
+        status: {
+          type: "number",
+          example: 200,
+        },
+        message: {
+          type: "string",
+          example: "OK",
+        },
+      },
+    },
+
     foundUser: {
       type: "object",
       properties: {
