@@ -5,6 +5,7 @@ import {
   NewArticleInfo,
   UpdateArticleBody,
   UpdateArticleInfo,
+  isSORTING,
 } from "../types/article.type";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
@@ -179,19 +180,38 @@ export class ArticleController {
     }
   }
 
+  /**
+   * recent articles
+   * pageNumber : 1
+   * perPage: 3
+   * sorting: asc / desc (optional)
+   */
+
   async getArticlePerPage(req: Request, res: Response, next: NextFunction) {
     try {
-      const { pageNumber, perPage } = req.query;
+      const { pageNumber, perPage, sorting } = req.query;
       if (!pageNumber || !perPage)
         throw new CustomError(
           400,
           "Error: Required query parameter 'pageNumber' or 'perPage' missing. Please include the 'pageNumber' or 'perPage' parameter in your request query.",
         );
 
-      const articlesAndPageCount = await this.articleService.getArticlePerPage(
-        pageNumber as string,
-        perPage as string,
-      );
+      const isSortingValid = isSORTING(sorting);
+      if (!isSortingValid) {
+        throw new CustomError(
+          400,
+          "Error: Required query parameter 'sorting' should be one of '`asc` | `desc` | undefined'(case-insensitive).",
+        );
+      }
+
+      const perPageInfo = {
+        pageNumber: parseInt(pageNumber as string, 10),
+        perPage: parseInt(perPage as string, 10),
+        sorting,
+      };
+
+      const articlesAndPageCount =
+        await this.articleService.getArticlePerPage(perPageInfo);
 
       return res.json({
         status: 200,
