@@ -14,6 +14,7 @@ import swaggerUi from "swagger-ui-express";
 import apiSpec from "./swagger/api-spec";
 import morganHandler from "./utils/morgan.util";
 import { redisConnection } from "./redis/redis.config";
+import healthRouter from "./routes/health-check.router";
 
 config();
 
@@ -38,6 +39,7 @@ app.use(cors(corsOptions));
 
 app.use(morganHandler);
 app.use("/api/v2/docs", swaggerUi.serve, swaggerUi.setup(apiSpec));
+app.use("api/v2/health", healthRouter);
 app.use("/api/v2/users", userRouter);
 app.use("/api/v2/articles", articleRouter);
 app.use("/api/v2/tags", tagRouter);

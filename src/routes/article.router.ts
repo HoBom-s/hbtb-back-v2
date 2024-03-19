@@ -34,7 +34,6 @@ articleRouter.get(
   articleController.searchArticle.bind(articleController),
 );
 
-// WIP : recent article w/ sorting query
 articleRouter.get(
   "/list",
   articleController.getArticlePerPage.bind(articleController),
