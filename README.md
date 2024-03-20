@@ -90,5 +90,5 @@ Please check simplified api docs on **[HBTB-API-v2](https://port-0-hbtb-back-v2-
 <br/>
 
 ## 문제 해결(TroubleShooting)
-
-- **_...ing..._** WIP on Notion **_...ing..._**
+- 노션 트러블슈팅 [링크](https://robinyeon.notion.site/HoBom-Tech-Blog-a0cbf5c1efb9447eb7e1f76d0c5bf85b?pvs=4)
+- on Notion [Link](https://robinyeon.notion.site/HoBom-Tech-Blog-a0cbf5c1efb9447eb7e1f76d0c5bf85b?pvs=4)
