@@ -32,7 +32,6 @@ export class ArticleRepository {
       order: { createdAt: "DESC" },
       relations: {
         user: true,
-        tags: true,
       },
     });
     if (allArticles === undefined)
@@ -44,7 +43,7 @@ export class ArticleRepository {
   async getArticleFindByPath(path: string): Promise<PossibleNull<Article>> {
     const foundArticle = await this.article.findOne({
       where: { path },
-      relations: { user: true, tags: true },
+      relations: { user: true },
     });
     if (!foundArticle) return null;
 
@@ -54,7 +53,7 @@ export class ArticleRepository {
   async getArticleById(id: string): Promise<Article> {
     const foundArticle = await this.article.findOne({
       where: { id },
-      relations: { user: true, tags: true },
+      relations: { user: true },
     });
     if (!foundArticle)
       throw new CustomError(404, "Original article not found.");
@@ -105,7 +104,7 @@ export class ArticleRepository {
       order: { createdAt: sorting },
       skip: (pageNumber - 1) * perPage,
       take: perPage,
-      relations: { user: true, tags: true },
+      relations: { user: true },
     });
 
     if (foundArticles === undefined)
