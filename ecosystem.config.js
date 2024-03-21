@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "hbtb-v2",
-      script: "./dist/app.js",
+      script: "./src/app.ts",
       watch: "true",
       instances: 0,
       exec_mode: "cluster",
