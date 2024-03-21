@@ -5,7 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "build": "npx tsc",
-    "dev": "nodemon src/app.ts",
+    "dev": "pm2 start ecosystem.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Robin Yeon with Ethan Kim",
@@ -56,6 +56,7 @@
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "eslint": "^8.56.0",
+    "pm2": "^5.3.1",
     "prettier": "^3.1.1"
   }
 }
