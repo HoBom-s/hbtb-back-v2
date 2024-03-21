@@ -43,6 +43,14 @@ app.use("/api/v2/articles", article_router_1.default);
 app.use("/api/v2/tags", tag_router_1.default);
 app.use("/api/v2/categories", category_router_1.default);
 app.use(error_middleware_1.errorMiddleware);
-app.listen(process.env.DB_PORT, () => {
+const server = app.listen(process.env.DB_PORT, () => {
+    if (process.send)
+        process.send("ready");
     console.log(`SERVER IS RUNNING ON PORT ${process.env.DB_PORT}`);
+});
+process.on("SIGINT", () => {
+    server.close(() => {
+        console.log("server closed");
+        process.exit(0);
+    });
 });

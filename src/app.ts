@@ -46,6 +46,14 @@ app.use("/api/v2/tags", tagRouter);
 app.use("/api/v2/categories", categoryRouter);
 app.use(errorMiddleware);
 
-app.listen(process.env.DB_PORT, () => {
+const server = app.listen(process.env.DB_PORT, () => {
+  if (process.send) process.send("ready");
   console.log(`SERVER IS RUNNING ON PORT ${process.env.DB_PORT}`);
+});
+
+process.on("SIGINT", () => {
+  server.close(() => {
+    console.log("SERVER CLOSED");
+    process.exit(0);
+  });
 });
