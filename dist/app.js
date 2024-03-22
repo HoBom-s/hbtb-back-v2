@@ -50,7 +50,7 @@ const server = app.listen(process.env.DB_PORT, () => {
 });
 process.on("SIGINT", () => {
     server.close(() => {
-        console.log("server closed");
+        console.log("SERVER CLOSED");
         process.exit(0);
     });
 });
