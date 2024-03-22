@@ -4,8 +4,8 @@
   "description": "HBTB BackEnd Version2",
   "main": "app.ts",
   "scripts": {
-    "build": "npx tsc",
-    "dev": "nodemon src/app.ts",
+    "build": "npx rimraf dist && npx tsc",
+    "dev": "npm run build && pm2 start ecosystem.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Robin Yeon with Ethan Kim",
@@ -42,6 +42,7 @@
     "qs": "^6.12.0",
     "redis": "^4.6.13",
     "reflect-metadata": "^0.1.13",
+    "rimraf": "^5.0.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "ts-node": "^10.9.1",
@@ -56,6 +57,7 @@
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "eslint": "^8.56.0",
+    "pm2": "^5.3.1",
     "prettier": "^3.1.1"
   }
 }

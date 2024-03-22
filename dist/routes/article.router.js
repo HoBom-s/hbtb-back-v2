@@ -1,0 +1,24 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const article_controller_1 = require("../controllers/article.controller");
+const validate_const_1 = require("../static/validate.const");
+const auth_middleware_1 = __importDefault(require("../middlewares/auth.middleware"));
+const param_middleware_1 = __importDefault(require("../middlewares/param.middleware"));
+const body_middleware_1 = __importDefault(require("../middlewares/body.middleware"));
+const multer_1 = __importDefault(require("multer"));
+const cache_middleware_1 = __importDefault(require("../middlewares/cache.middleware"));
+const articleRouter = (0, express_1.Router)();
+const articleController = new article_controller_1.ArticleController();
+const upload = (0, multer_1.default)();
+articleRouter.get("/", cache_middleware_1.default, articleController.getAllArticles.bind(articleController));
+articleRouter.get("/list/:path", (0, param_middleware_1.default)(validate_const_1.PATH_PARAM), articleController.getArticleFindByPath.bind(articleController));
+articleRouter.get("/search", articleController.searchArticle.bind(articleController));
+articleRouter.get("/list", cache_middleware_1.default, articleController.getArticlePerPage.bind(articleController));
+articleRouter.post("/", auth_middleware_1.default, upload.single("thumbnail"), (0, body_middleware_1.default)(validate_const_1.ARTICLE_CREATE), articleController.createArticle.bind(articleController));
+articleRouter.patch("/:id", auth_middleware_1.default, (0, param_middleware_1.default)(validate_const_1.ID_PARAM), upload.single("thumbnail"), (0, body_middleware_1.default)(validate_const_1.ARTICLE_UPDATE), articleController.updateArticle.bind(articleController));
+articleRouter.delete("/:id", auth_middleware_1.default, (0, param_middleware_1.default)(validate_const_1.ID_PARAM), articleController.removeArticle.bind(articleController));
+exports.default = articleRouter;
