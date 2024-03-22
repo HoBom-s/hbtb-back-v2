@@ -19,11 +19,15 @@
    ※ 호봄 프로젝트 확장을 위해 이미지 서버 별도 구축  
    ※ Built a sepearate image server for the sake of HoBom service expansion
 
+## 문제 해결(TroubleShooting)
+- 노션 트러블슈팅 [링크](https://robinyeon.notion.site/HoBom-Tech-Blog-a0cbf5c1efb9447eb7e1f76d0c5bf85b?pvs=4)
+- on Notion [Link](https://robinyeon.notion.site/HoBom-Tech-Blog-a0cbf5c1efb9447eb7e1f76d0c5bf85b?pvs=4)
+
 <br/>
 
 ## 시작하기(Getting started)
 
-Of course, `.env` on private note.
+Of course, `.env` in private.
 
 ```bash
 # Git clone
@@ -85,10 +89,5 @@ Please check simplified api docs on **[HBTB-API-v2](https://port-0-hbtb-back-v2-
 ### Redis
 
 - Caching patterns: `Look Aside` + `Write Around`  
-  (more about this on below **TroubleShooting** note)
+  (more about this on above **TroubleShooting** note)
 
-<br/>
-
-## 문제 해결(TroubleShooting)
-- 노션 트러블슈팅 [링크](https://robinyeon.notion.site/HoBom-Tech-Blog-a0cbf5c1efb9447eb7e1f76d0c5bf85b?pvs=4)
-- on Notion [Link](https://robinyeon.notion.site/HoBom-Tech-Blog-a0cbf5c1efb9447eb7e1f76d0c5bf85b?pvs=4)
