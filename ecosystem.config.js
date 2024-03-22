@@ -3,8 +3,8 @@ module.exports = {
     {
       name: "hbtb-v2",
       script: "dist/app.js",
-      watch: true,
-      ignore_watch: ["node_modules", "logs"],
+      // watch: true,
+      // ignore_watch: ["node_modules", "logs", "dist"],
       // exec_mode: "cluster",
       // instances: 0,
       wait_ready: true,
