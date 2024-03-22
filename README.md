@@ -11,7 +11,7 @@
 ## 기술 스택(Tech Stack)
 
 `NodeJs` `Express` `TypeScript` `TypeORM` `MySQL`  
-`AWS-RDS` `AWS-S3` `Redis`
+`AWS-RDS` `AWS-S3` `Redis` `PM2`
 
 - WAS distribution on `CLOUDTYPE` free-tier
 - DB distribution on `AWS-RDS` free-tier
