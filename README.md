@@ -8,6 +8,12 @@
 
 <br/>
 
+## 아키텍쳐
+![_hbtb_architecture](https://github.com/HoBom-s/hbtb-back-v2/assets/85475577/147c6aa2-3fa9-45a5-b64a-bdd5cbf31658)
+
+
+<br/>
+
 ## 기술 스택(Tech Stack)
 
 `NodeJs` `Express` `TypeScript` `TypeORM` `MySQL`  
