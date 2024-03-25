@@ -1,5 +1,4 @@
-import express from "express";
-import { Express } from "express";
+import express, { Express }  from "express";
 import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
