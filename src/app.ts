@@ -1,5 +1,4 @@
-import express from "express";
-import { Express } from "express";
+import express, { Express } from "express";
 import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -10,11 +9,11 @@ import userRouter from "./routes/user.router";
 import tagRouter from "./routes/tag.router";
 import articleRouter from "./routes/article.router";
 import categoryRouter from "./routes/category.router";
+import healthRouter from "./routes/health-check.router";
 import swaggerUi from "swagger-ui-express";
 import apiSpec from "./swagger/api-spec";
 import morganHandler from "./utils/morgan.util";
 import { redisConnection } from "./redis/redis.config";
-import healthRouter from "./routes/health-check.router";
 
 config();
 
