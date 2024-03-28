@@ -8,6 +8,10 @@ const logFormat = printf(({ level, message, label, timestamp }) => {
 });
 
 const logDir = __dirname + "/../../logs";
+const koreanTime = () =>
+  new Date().toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul",
+  });
 
 function dailyOptions(level: string) {
   return {
@@ -24,7 +28,7 @@ const winstonLogger = createLogger({
   format: combine(
     label({ label: "Hobom-TechBlog" }),
     timestamp({
-      format: "YYYY-MM-DD HH:mm:ss",
+      format: koreanTime,
     }),
     logFormat,
   ),
