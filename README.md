@@ -8,6 +8,13 @@
 
 <br/>
 
+## 문제 해결(TroubleShooting)
+- 노션 트러블슈팅 [링크](https://robinyeon.notion.site/HoBom-Tech-Blog-c00b3f3d365b438dbaed8cac9f51b397)
+- on Notion [Link](https://robinyeon.notion.site/HoBom-Tech-Blog-c00b3f3d365b438dbaed8cac9f51b397)
+
+
+<br/>
+
 ## 아키텍쳐
 ![_hbtb_architecture](https://github.com/HoBom-s/hbtb-back-v2/assets/85475577/147c6aa2-3fa9-45a5-b64a-bdd5cbf31658)
 
@@ -24,10 +31,6 @@
 - [Image WAS](https://github.com/HoBom-s/hb-imageServer) distribution on `Koyeb` free-tier  
    ※ 호봄 프로젝트 확장을 위해 이미지 서버 별도 구축  
    ※ Built a sepearate image server for the sake of HoBom service expansion
-
-## 문제 해결(TroubleShooting)
-- 노션 트러블슈팅 [링크](https://robinyeon.notion.site/HoBom-Tech-Blog-a0cbf5c1efb9447eb7e1f76d0c5bf85b?pvs=4)
-- on Notion [Link](https://robinyeon.notion.site/HoBom-Tech-Blog-a0cbf5c1efb9447eb7e1f76d0c5bf85b?pvs=4)
 
 <br/>
 
