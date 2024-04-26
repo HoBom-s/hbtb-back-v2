@@ -49,7 +49,7 @@ class Article {
   })
   path: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: "SET NULL" })
   user: User;
 
   @ManyToMany(() => Tag, { eager: true })

@@ -8,7 +8,7 @@ const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const axiosInstance = axios_1.default.create({
     baseURL: process.env.IMAGE_HOST,
-    timeout: 5000,
+    timeout: 3000,
     headers: { "Content-Type": "application/json" },
 });
 exports.default = axiosInstance;

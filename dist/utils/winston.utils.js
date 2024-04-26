@@ -10,6 +10,9 @@ const logFormat = printf(({ level, message, label, timestamp }) => {
     return `${timestamp} [${label}] ${level}: ${message}`;
 });
 const logDir = __dirname + "/../../logs";
+const koreanTime = () => new Date().toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul",
+});
 function dailyOptions(level) {
     return {
         level,
@@ -22,7 +25,7 @@ function dailyOptions(level) {
 }
 const winstonLogger = (0, winston_1.createLogger)({
     format: combine(label({ label: "Hobom-TechBlog" }), timestamp({
-        format: "YYYY-MM-DD HH:mm:ss",
+        format: koreanTime,
     }), logFormat),
     transports: [new winston_daily_rotate_file_1.default(dailyOptions("info"))],
 });

@@ -14,11 +14,11 @@ const user_router_1 = __importDefault(require("./routes/user.router"));
 const tag_router_1 = __importDefault(require("./routes/tag.router"));
 const article_router_1 = __importDefault(require("./routes/article.router"));
 const category_router_1 = __importDefault(require("./routes/category.router"));
+const health_check_router_1 = __importDefault(require("./routes/health-check.router"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const api_spec_1 = __importDefault(require("./swagger/api-spec"));
 const morgan_util_1 = __importDefault(require("./utils/morgan.util"));
 const redis_config_1 = require("./redis/redis.config");
-const health_check_router_1 = __importDefault(require("./routes/health-check.router"));
 (0, dotenv_1.config)();
 data_source_1.myDataSource
     .initialize()
