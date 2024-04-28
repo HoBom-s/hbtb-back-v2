@@ -26,7 +26,7 @@ function dailyOptions(level: string) {
 
 const winstonLogger = createLogger({
   format: combine(
-    label({ label: "Hobom-TechBlog" }),
+    label({ label: "HoBom-TechBlog" }),
     timestamp({
       format: koreanTime,
     }),

@@ -54,6 +54,7 @@ export class UserController {
         profileImg,
         ...newUserInfo,
       };
+
       const createdUser = await this.userService.createUser(
         newUserInfoWithProfileImg,
       );

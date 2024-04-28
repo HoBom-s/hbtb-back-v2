@@ -54,6 +54,7 @@ export interface UpdateArticleWithThumbnail {
   contents?: string;
   path?: string;
 }
+
 type SORTING = "asc" | "ASC" | "desc" | "DESC" | undefined;
 
 export interface ArticlePerPageInfo {
