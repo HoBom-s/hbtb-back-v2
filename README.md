@@ -9,8 +9,8 @@
 <br/>
 
 ## 문제 해결(TroubleShooting)
-- 노션 트러블슈팅 [링크](https://robinyeon.notion.site/HoBom-Tech-Blog-c00b3f3d365b438dbaed8cac9f51b397)
-- on Notion [Link](https://robinyeon.notion.site/HoBom-Tech-Blog-c00b3f3d365b438dbaed8cac9f51b397)
+- 노션 트러블슈팅 [링크](https://flawless-octagon-2a5.notion.site/HoBom-Tech-Blog-29c15b6f89954ef5ab9733121fd72de7)
+- on Notion [Link](https://flawless-octagon-2a5.notion.site/HoBom-Tech-Blog-29c15b6f89954ef5ab9733121fd72de7)
 
 
 <br/>
