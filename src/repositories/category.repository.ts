@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import Category from "../entities/category.entity";
 import { myDataSource } from "../data-source";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import {
   CreateCategoryWithIndex,
   UpdateCategoryWithId,

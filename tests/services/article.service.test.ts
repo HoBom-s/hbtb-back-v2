@@ -5,7 +5,9 @@ import { TagService } from "../../src/services/tag.service";
 import { UserService } from "../../src/services/user.service";
 import Tag from "../../src/entities/tag.entity";
 import { UserWithoutPassword } from "../../src/types/user.type";
-import { newArticleInfo, createdArticle } from "../const/staticMocks";
+import { newArticleInfo, createdArticle } from "../const/mock.const";
+import { CustomError } from "../../src/middlewares/error/error.middleware";
+import { ErrorMessage } from "../../src/middlewares/error/error.enum";
 
 jest.mock("../../src/repositories/article.repository.ts");
 jest.mock("../../src/services/tag.service.ts");
@@ -34,7 +36,7 @@ describe("ArticleService", () => {
   });
 
   describe("createArticle", () => {
-    it("should create one article successfully", async () => {
+    it("should create one article successfully.", async () => {
       articleRespository.getArticleFindByPath.mockResolvedValue(null);
 
       tagService.getOneTagByTitle.mockResolvedValue({
@@ -54,9 +56,44 @@ describe("ArticleService", () => {
 
       expect(result).toEqual(createdArticle);
     });
-  });
 
-  // describe("updateArticle", () => {
-  //   it("should update the specified article successfully", async () => {});
-  // });
+    it("should throw an error if the article already exists.", async () => {
+      articleRespository.getArticleFindByPath.mockResolvedValue(createdArticle);
+
+      await expect(
+        articleService.createArticle(newArticleInfo),
+      ).rejects.toThrow(CustomError);
+      await expect(
+        articleService.createArticle(newArticleInfo),
+      ).rejects.toThrow(ErrorMessage.ALREADY_EXISTS);
+    });
+
+    it("should throw an error if tags not found.", async () => {
+      articleRespository.getArticleFindByPath.mockResolvedValue(null);
+
+      tagService.getOneTagByTitle.mockResolvedValue(null);
+
+      await expect(
+        articleService.createArticle(newArticleInfo),
+      ).rejects.toThrow(CustomError);
+      await expect(
+        articleService.createArticle(newArticleInfo),
+      ).rejects.toThrow(ErrorMessage.NOT_FOUND);
+    });
+
+    it("should throw an error if the user not found.", async () => {
+      articleRespository.getArticleFindByPath.mockResolvedValue(null);
+
+      tagService.getOneTagByTitle.mockResolvedValue(null);
+
+      userService.findOneUserById.mockResolvedValue(null);
+
+      await expect(
+        articleService.createArticle(newArticleInfo),
+      ).rejects.toThrow(CustomError);
+      await expect(
+        articleService.createArticle(newArticleInfo),
+      ).rejects.toThrow(ErrorMessage.NOT_FOUND);
+    });
+  });
 });

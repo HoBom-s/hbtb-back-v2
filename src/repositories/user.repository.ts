@@ -7,7 +7,7 @@ import {
 } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 
 export class UserRepository {
   private user: Repository<User>;

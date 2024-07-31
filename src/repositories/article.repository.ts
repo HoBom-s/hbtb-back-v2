@@ -6,7 +6,7 @@ import {
   UpdateArticleWithThumbnail,
 } from "../types/article.type";
 import { myDataSource } from "../data-source";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import { PossibleNull } from "../types/common.type";
 
 export class ArticleRepository {

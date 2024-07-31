@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import Tag from "../entities/tag.entity";
 import { myDataSource } from "../data-source";
 import { CreateTag, UpdateTag } from "../types/tag.type";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import { PossibleNull } from "../types/common.type";
 
 export class TagRepository {

@@ -6,7 +6,7 @@ import {
   CreateUserWithProfileImgUrl,
   UpdateUserWithProfileImg,
 } from "../types/user.type";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import bcrypt from "bcrypt";
 import { Tokens } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
@@ -15,6 +15,8 @@ import {
   UserWithoutPasswordResponseDto,
 } from "../dtos/user.dto";
 import { ImageService } from "./image.service";
+import { PossibleNull } from "../types/common.type";
+import { ErrorMessage, ErrorStatus } from "../middlewares/error/error.enum";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -33,7 +35,11 @@ export class UserService {
     const { nickname, profileImg, ...restInfo } = userInfo;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
-    if (foundUser) throw new CustomError(400, "User already exists.");
+    if (foundUser)
+      throw new CustomError(
+        ErrorStatus.BAD_REQUEST,
+        ErrorMessage.ALREADY_EXISTS,
+      );
 
     let userInfoWithProfileImgUrl: CreateUserWithProfileImgUrl;
     if (!profileImg) {
@@ -67,12 +73,16 @@ export class UserService {
     const { nickname, password } = loginInfo;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
-    if (!foundUser) throw new CustomError(404, "User not found.");
+    if (!foundUser)
+      throw new CustomError(ErrorStatus.NOT_FOUND, ErrorMessage.NOT_FOUND);
 
     const hashedPassword = foundUser.password;
     const isPasswordCorrect = bcrypt.compareSync(password, hashedPassword);
     if (!isPasswordCorrect)
-      throw new CustomError(400, "Please check the password again.");
+      throw new CustomError(
+        ErrorStatus.BAD_REQUEST,
+        ErrorMessage.WRONG_PASSWORD,
+      );
 
     const userId = foundUser.id;
 
@@ -86,7 +96,9 @@ export class UserService {
     return tokenResponseDto;
   }
 
-  async findOneUserById(id: string): Promise<UserWithoutPassword> {
+  async findOneUserById(
+    id: string,
+  ): Promise<PossibleNull<UserWithoutPassword>> {
     const foundUser = await this.userRepository.findOneUserById(id);
 
     const foundUserResponseDto = new UserWithoutPasswordResponseDto(
@@ -99,7 +111,7 @@ export class UserService {
   async updateUser(
     id: string,
     updates: UpdateUserWithProfileImg,
-  ): Promise<UserWithoutPassword> {
+  ): Promise<PossibleNull<UserWithoutPassword>> {
     const foundUser = await this.userRepository.findOneUserById(id);
 
     const { updatedProfileImg, ...updatedBodyInfo } = updates;
@@ -124,6 +136,10 @@ export class UserService {
 
   async removeUser(id: string) {
     const foundUser = await this.findOneUserById(id);
+
+    if (!foundUser)
+      throw new CustomError(ErrorStatus.NOT_FOUND, ErrorMessage.NOT_FOUND);
+
     const profileImgUrl = foundUser.profileImg;
 
     await this.imageService.removeOneImage(profileImgUrl);

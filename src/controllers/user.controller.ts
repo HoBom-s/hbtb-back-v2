@@ -7,7 +7,7 @@ import {
   UpdateUserWithProfileImg,
 } from "../types/user.type";
 import { UserService } from "../services/user.service";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import { MulterFile } from "../types/image.type";

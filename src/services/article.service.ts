@@ -1,6 +1,7 @@
 import Article from "../entities/article.entity";
 import Tag from "../entities/tag.entity";
-import { CustomError } from "../middlewares/error.middleware";
+import { ErrorMessage, ErrorStatus } from "../middlewares/error/error.enum";
+import { CustomError } from "../middlewares/error/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
 import {
   ArticlePagination,
@@ -33,19 +34,25 @@ export class ArticleService {
       newArticleInfo;
 
     const foundArticle = await this.getArticleFindByPath(path);
-    if (foundArticle) throw new CustomError(400, "Article already exists.");
+    if (foundArticle)
+      throw new CustomError(
+        ErrorStatus.BAD_REQUEST,
+        ErrorMessage.ALREADY_EXISTS,
+      );
 
     const tagsStringToArr: string[] = tags.replace(/\s/g, "").split(",");
 
     const tagArr: Tag[] = [];
     for (const tag of tagsStringToArr) {
       const foundTag = await this.tagService.getOneTagByTitle(tag);
-      if (!foundTag) throw new CustomError(404, "Tag not found.");
+      if (!foundTag)
+        throw new CustomError(ErrorStatus.NOT_FOUND, ErrorMessage.NOT_FOUND);
       tagArr.push(foundTag);
     }
 
     const articleWriter = await this.userService.findOneUserById(userId);
-    if (!articleWriter) throw new CustomError(404, "User(writer) not found.");
+    if (!articleWriter)
+      throw new CustomError(ErrorStatus.NOT_FOUND, ErrorMessage.NOT_FOUND);
 
     const thumbnailUrl = await this.imageService.uploadOneImage(
       { image: thumbnail, uniqueString: path },

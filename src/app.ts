@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
 import { myDataSource } from "./data-source";
-import { errorMiddleware } from "./middlewares/error.middleware";
+import { errorMiddleware } from "./middlewares/error/error.middleware";
 import userRouter from "./routes/user.router";
 import tagRouter from "./routes/tag.router";
 import articleRouter from "./routes/article.router";
