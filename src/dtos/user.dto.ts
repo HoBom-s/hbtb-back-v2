@@ -1,4 +1,4 @@
-import BaseResponseDto from "./common.dto";
+import BaseResponseDto from "./base.response.dto";
 import User from "../entities/user.entity";
 import { TTokens } from "../types/auth.type";
 

@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { CategoryService } from "../services/category.service";
 import { CustomError } from "../middlewares/error.middleware";
-import {
-  TCreateCategory,
-  TUpdateCategory,
-  TUpdateCategoryWithId,
-} from "../types/category.type";
+import { TUpdateCategoryWithId } from "../types/category.type";
 import AuthHelper from "../helpers/auth.helper";
 import { Auth } from "../types/auth.type";
+import CreateCategoryRequestDto from "../dtos/category/createCategoryRequest.dto";
+import { plainToClass } from "class-transformer";
+import { validateOrReject } from "class-validator";
+import UpdateCategoryRequestDto from "../dtos/category/updateCategoryRequest.dto";
 
 export class CategoryController {
   private categoryService: CategoryService;
@@ -38,15 +38,22 @@ export class CategoryController {
         req.authInfo,
       );
 
-      const newCategoryInfo: TCreateCategory = req.body;
-      if (!newCategoryInfo)
+      const createCategoryRequest = plainToClass(
+        CreateCategoryRequestDto,
+        req.body,
+      );
+
+      await validateOrReject(createCategoryRequest);
+
+      if (!createCategoryRequest)
         throw new CustomError(
           400,
           "Error: Request body missing. Please provide the necessary data in the request body.",
         );
 
-      const createdCategory =
-        await this.categoryService.createCategory(newCategoryInfo);
+      const createdCategory = await this.categoryService.createCategory(
+        createCategoryRequest,
+      );
 
       return res.json({
         status: 200,
@@ -64,15 +71,24 @@ export class CategoryController {
         req.authInfo,
       );
       const { id } = req.params;
-      const updatedInfo: TUpdateCategory = req.body;
 
-      if (!id || !updatedInfo)
+      const updateCategoryRequest = plainToClass(
+        UpdateCategoryRequestDto,
+        req.body,
+      );
+
+      await validateOrReject(updateCategoryRequest);
+
+      if (!id || !updateCategoryRequest)
         throw new CustomError(
           400,
           "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
         );
 
-      const updatedInfoWithId: TUpdateCategoryWithId = { id, ...updatedInfo };
+      const updatedInfoWithId: TUpdateCategoryWithId = {
+        id,
+        ...updateCategoryRequest,
+      };
 
       const updatedCategory =
         await this.categoryService.updateCategory(updatedInfoWithId);

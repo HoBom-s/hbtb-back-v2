@@ -1,7 +1,8 @@
+import CreateCategoryRequestDto from "../dtos/category/createCategoryRequest.dto";
 import Category from "../entities/category.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { CategoryRepository } from "../repositories/category.repository";
-import { TCreateCategory, TUpdateCategoryWithId } from "../types/category.type";
+import { TUpdateCategoryWithId } from "../types/category.type";
 
 export class CategoryService {
   private categoryRepository: CategoryRepository;
@@ -13,8 +14,10 @@ export class CategoryService {
     return this.categoryRepository.getAllCategories();
   }
 
-  async createCategory(newCategoryInfo: TCreateCategory): Promise<Category> {
-    const { title, ...restInfo } = newCategoryInfo;
+  async createCategory(
+    createCategoryRequest: CreateCategoryRequestDto,
+  ): Promise<Category> {
+    const { title, ...restInfo } = createCategoryRequest;
 
     const foundCategory =
       await this.categoryRepository.findCategoryByTitle(title);
@@ -23,7 +26,7 @@ export class CategoryService {
     const existingMaxIndex = await this.categoryRepository.getMaxIndex();
 
     const newCategoryInfoWithIndex = {
-      ...newCategoryInfo,
+      ...createCategoryRequest,
       sortIndex: existingMaxIndex + 1,
     };
 

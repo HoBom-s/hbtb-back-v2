@@ -1,4 +1,4 @@
-import { Article } from "../entities/article.entity";
+import Article from "../entities/article.entity";
 
 export type TRole = "user" | "admin";
 

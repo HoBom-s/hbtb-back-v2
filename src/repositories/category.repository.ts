@@ -40,6 +40,7 @@ export class CategoryRepository {
     newCategoryInfo: TCreateCategoryWithIndex,
   ): Promise<Category> {
     const createdCategory = this.category.create(newCategoryInfo);
+
     if (!createdCategory) throw new CustomError(404, "Create category failed.");
 
     await this.category.save(createdCategory);
