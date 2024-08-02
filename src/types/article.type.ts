@@ -1,17 +1,7 @@
-import { Article } from "../entities/article.entity";
-import { Tag } from "../entities/tag.entity";
+import Article from "../entities/article.entity";
 import { TUserWithoutPassword } from "./user.type";
 
-export interface TNewArticleInfo {
-  thumbnail?: string;
-  title: string;
-  subtitle: string;
-  contents: string;
-  path: string;
-  tags: string[];
-}
-
-export interface TCreateArticle {
+export interface TNewArticleInfoWithUser {
   thumbnail?: string;
   title: string;
   subtitle: string;

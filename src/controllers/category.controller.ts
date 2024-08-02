@@ -5,9 +5,8 @@ import { TUpdateCategoryWithId } from "../types/category.type";
 import AuthHelper from "../helpers/auth.helper";
 import { Auth } from "../types/auth.type";
 import CreateCategoryRequestDto from "../dtos/category/createCategoryRequest.dto";
-import { plainToClass } from "class-transformer";
-import { validateOrReject } from "class-validator";
 import UpdateCategoryRequestDto from "../dtos/category/updateCategoryRequest.dto";
+import validateDto from "../helpers/dto.helper";
 
 export class CategoryController {
   private categoryService: CategoryService;
@@ -38,12 +37,10 @@ export class CategoryController {
         req.authInfo,
       );
 
-      const createCategoryRequest = plainToClass(
-        CreateCategoryRequestDto,
+      const createCategoryRequest = await validateDto(
         req.body,
+        CreateCategoryRequestDto,
       );
-
-      await validateOrReject(createCategoryRequest);
 
       if (!createCategoryRequest)
         throw new CustomError(
@@ -72,12 +69,10 @@ export class CategoryController {
       );
       const { id } = req.params;
 
-      const updateCategoryRequest = plainToClass(
-        UpdateCategoryRequestDto,
+      const updateCategoryRequest = validateDto(
         req.body,
+        UpdateCategoryRequestDto,
       );
-
-      await validateOrReject(updateCategoryRequest);
 
       if (!id || !updateCategoryRequest)
         throw new CustomError(

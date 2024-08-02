@@ -1,10 +1,10 @@
-import { Article } from "../entities/article.entity";
+import Article from "../entities/article.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
 import {
   ArticlePagination,
-  TCreateArticle,
   TCreateArticleWithTagId,
+  TNewArticleInfoWithUser,
   TUpdateArticle,
 } from "../types/article.type";
 import { TagService } from "./tag.service";
@@ -21,7 +21,9 @@ export class ArticleService {
     this.userService = new UserService();
   }
 
-  async createArticle(newArticleInfo: TCreateArticle): Promise<Article> {
+  async createArticle(
+    newArticleInfo: TNewArticleInfoWithUser,
+  ): Promise<Article> {
     const { thumbnail, title, subtitle, contents, userId, path, tags } =
       newArticleInfo;
 

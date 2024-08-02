@@ -1,6 +1,15 @@
-import { Request } from "express";
+import { ClassConstructor, plainToClass } from "class-transformer";
+import { validateOrReject } from "class-validator";
 
-// @TODO
-class DtoHelper {
-  public static async validateDto(dto: any, req: Request): Promise<void> {}
+async function validateDto<T extends object>(
+  body: Request["body"],
+  dto: ClassConstructor<T>,
+): Promise<T> {
+  const dtoInstance = plainToClass(dto, body);
+
+  await validateOrReject(dtoInstance);
+
+  return dtoInstance;
 }
+
+export default validateDto;

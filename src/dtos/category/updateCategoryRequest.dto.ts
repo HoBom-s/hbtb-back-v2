@@ -3,15 +3,15 @@ import { IsOptional, IsString } from "class-validator";
 class UpdateCategoryRequestDto {
   @IsString()
   @IsOptional()
-  title: string;
+  title?: string;
 
   @IsString()
   @IsOptional()
-  path: string;
+  path?: string;
 
   @IsString()
   @IsOptional()
-  spot: string;
+  spot?: string;
 }
 
 export default UpdateCategoryRequestDto;

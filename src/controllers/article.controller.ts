@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
-import {
-  TCreateArticle,
-  TNewArticleInfo,
-  TUpdateArticle,
-} from "../types/article.type";
+import { TNewArticleInfoWithUser, TUpdateArticle } from "../types/article.type";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import CreateArticleRequestDto from "../dtos/article/createArticleRequest.dto";
+import { plainToClass } from "class-transformer";
+import { validateOrReject } from "class-validator";
 
 export class ArticleController {
   private articleService: ArticleService;
@@ -24,15 +23,21 @@ export class ArticleController {
         req.authInfo,
       );
 
-      const newArticleInfo: TNewArticleInfo = req.body;
-      if (!newArticleInfo)
+      const createArticleRequestDto = plainToClass(
+        CreateArticleRequestDto,
+        req.body,
+      );
+
+      await validateOrReject(createArticleRequestDto);
+
+      if (!createArticleRequestDto)
         throw new CustomError(
           400,
           "Error: Request body missing. Please provide the necessary data in the request body.",
         );
 
-      const newArticleInfoWithUser: TCreateArticle = {
-        ...newArticleInfo,
+      const newArticleInfoWithUser: TNewArticleInfoWithUser = {
+        ...createArticleRequestDto,
         userId,
       };
 
