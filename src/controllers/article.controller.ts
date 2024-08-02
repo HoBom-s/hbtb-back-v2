@@ -7,7 +7,7 @@ import {
   UpdateArticleInfo,
   isSORTING,
 } from "../types/article.type";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import { MulterFile } from "../types/image.type";

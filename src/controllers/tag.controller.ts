@@ -1,6 +1,6 @@
 import { Request, NextFunction, Response } from "express";
 import { TagService } from "../services/tag.service";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import { CreateTag, UpdateTag } from "../types/tag.type";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";

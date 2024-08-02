@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { CategoryService } from "../services/category.service";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import {
   CreateCategory,
   UpdateCategory,

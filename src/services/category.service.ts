@@ -1,5 +1,5 @@
 import Category from "../entities/category.entity";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import { CategoryRepository } from "../repositories/category.repository";
 import { CreateCategory, UpdateCategoryWithId } from "../types/category.type";
 

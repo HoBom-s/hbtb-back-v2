@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CustomError } from "./error.middleware";
+import { CustomError } from "./error/error.middleware";
 import AuthHelper from "../helpers/auth.helper";
 import { RequestUserId } from "../types/auth.type";
 

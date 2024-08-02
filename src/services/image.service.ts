@@ -1,5 +1,5 @@
 import axiosInstance from "../api/image.api";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import { InfoOnUploadImage, UploadOneImageData } from "../types/image.type";
 
 export class ImageService {

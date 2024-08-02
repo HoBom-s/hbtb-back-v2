@@ -1,5 +1,5 @@
 import jwt, { TokenExpiredError } from "jsonwebtoken";
-import { CustomError } from "../middlewares/error.middleware";
+import { CustomError } from "../middlewares/error/error.middleware";
 import { RequestUserId, TokenType } from "../types/auth.type";
 
 class AuthHelper {
