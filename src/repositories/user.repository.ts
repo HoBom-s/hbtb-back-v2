@@ -80,6 +80,7 @@ export class UserRepository {
 
   async removeUser(id: string) {
     const deleteResult = await this.user.delete(id);
+
     if (!deleteResult.affected)
       throw new CustomError(404, "Delete user failed: 0 affected.");
 

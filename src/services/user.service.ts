@@ -76,6 +76,7 @@ export class UserService {
 
   async removeUser(id: string) {
     await this.findOneUserById(id);
+
     return this.userRepository.removeUser(id);
   }
 }

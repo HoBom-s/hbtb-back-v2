@@ -129,20 +129,15 @@ export class UserController {
   async removeUser(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
-        req.authInfo,
-      );
+
+      const { userId } = this.authHelper.validateAuthInfo(req.authInfo);
 
       if (id !== userId)
         throw new CustomError(401, "Error: User not identical.");
 
       await this.userService.removeUser(id);
 
-      return res.json({
-        status: 201,
-        message: "Delete user success",
-        data: { reissuedAccessToken },
-      });
+      return sendResponse(res, 201, "Delete user success");
     } catch (error) {
       next(error);
     }
