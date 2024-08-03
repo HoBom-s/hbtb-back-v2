@@ -11,6 +11,7 @@ import paramValidateMiddleware from "../middlewares/param.middleware";
 import bodyValidateMiddleware from "../middlewares/body.middleware";
 
 const userRouter = Router();
+
 const userController = new UserController();
 
 userRouter.get(

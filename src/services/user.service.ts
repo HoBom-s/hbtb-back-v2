@@ -1,6 +1,5 @@
 import { UserRepository } from "../repositories/user.repository";
 import {
-  TCreateUser,
   TUpdateUser,
   TUserWithoutPassword,
   TLoginUser,
@@ -13,6 +12,8 @@ import {
   TokenResponseDto,
   UserWithoutPasswordResponseDto,
 } from "../dtos/user.dto";
+import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
+import UserResponseDto from "../dtos/user/userResponse.dto";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -23,7 +24,9 @@ export class UserService {
     this.authHelper = new AuthHelper();
   }
 
-  async createUser(newUserInfo: TCreateUser): Promise<TUserWithoutPassword> {
+  async createUser(
+    newUserInfo: CreateUserRequestDto,
+  ): Promise<TUserWithoutPassword> {
     const { nickname, ...restInfo } = newUserInfo;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
@@ -31,13 +34,12 @@ export class UserService {
 
     const createdUser = await this.userRepository.createUser(newUserInfo);
 
-    const createUserResponseDto = new UserWithoutPasswordResponseDto(
-      createdUser,
-    ).excludePassword();
+    const createUserResponseDto = UserResponseDto.from(createdUser);
 
     return createUserResponseDto;
   }
 
+  // @TODO
   async loginUser(loginInfo: TLoginUser): Promise<TTokens> {
     const { nickname, password } = loginInfo;
 
@@ -64,11 +66,7 @@ export class UserService {
   async findOneUserById(id: string): Promise<TUserWithoutPassword> {
     const foundUser = await this.userRepository.findOneUserById(id);
 
-    const foundUserResponseDto = new UserWithoutPasswordResponseDto(
-      foundUser,
-    ).excludePassword();
-
-    return foundUserResponseDto;
+    return UserResponseDto.from(foundUser);
   }
 
   async updateUser(

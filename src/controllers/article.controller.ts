@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
-import { TNewArticleInfoWithUser, TUpdateArticle } from "../types/article.type";
+import { TNewArticleInfoWithUser } from "../types/article.type";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import CreateArticleRequestDto from "../dtos/article/createArticleRequest.dto";
-import { plainToClass } from "class-transformer";
-import { validateOrReject } from "class-validator";
+import validateDto from "../helpers/dto.helper";
+import UpdateArticleRequestDto from "../dtos/article/updateArticleRequest.dto";
 
 export class ArticleController {
   private articleService: ArticleService;
@@ -23,12 +23,10 @@ export class ArticleController {
         req.authInfo,
       );
 
-      const createArticleRequestDto = plainToClass(
-        CreateArticleRequestDto,
+      const createArticleRequestDto = await validateDto(
         req.body,
+        CreateArticleRequestDto,
       );
-
-      await validateOrReject(createArticleRequestDto);
 
       if (!createArticleRequestDto)
         throw new CustomError(
@@ -58,6 +56,7 @@ export class ArticleController {
   async getArticleFindByPath(req: Request, res: Response, next: NextFunction) {
     try {
       const { path } = req.params;
+
       if (!path)
         throw new CustomError(
           400,
@@ -96,7 +95,9 @@ export class ArticleController {
         req.authInfo,
       );
       const { id } = req.params;
-      const updatedInfo: TUpdateArticle = req.body;
+
+      const updatedInfo = await validateDto(req.body, UpdateArticleRequestDto);
+
       if (!id || !updatedInfo)
         throw new CustomError(
           400,

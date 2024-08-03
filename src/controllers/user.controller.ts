@@ -1,9 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { TCreateUser, TLoginUser, TUpdateUser } from "../types/user.type";
+import { TLoginUser, TUpdateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import validateDto from "../helpers/dto.helper";
+import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
+import BaseResponseDto from "../dtos/common/baseResponse.dto";
 
 export class UserController {
   private userService: UserService;
@@ -22,11 +25,12 @@ export class UserController {
 
       const foundUser = await this.userService.findOneUserById(userId);
 
-      return res.json({
-        status: 200,
-        message: "Get user info success.",
-        data: { foundUser, reissuedAccessToken },
+      const responseDto = new BaseResponseDto(200, "Get user info success.", {
+        foundUser,
+        reissuedAccessToken,
       });
+
+      return res.status(responseDto.statusCode).json(responseDto.toResponse());
     } catch (error) {
       next(error);
     }
@@ -34,7 +38,7 @@ export class UserController {
 
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const newUserInfo: TCreateUser = req.body;
+      const newUserInfo = await validateDto(req.body, CreateUserRequestDto);
 
       if (!newUserInfo)
         throw new CustomError(

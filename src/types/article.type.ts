@@ -21,14 +21,6 @@ export interface TCreateArticleWithTagId {
   tags: string[];
 }
 
-export interface TUpdateArticle {
-  thumbnail?: string;
-  title?: string;
-  subtitle?: string;
-  contents?: string;
-  path?: string;
-}
-
 export interface ArticlePagination {
   foundArticles: Article[];
   totalPageCount: number;

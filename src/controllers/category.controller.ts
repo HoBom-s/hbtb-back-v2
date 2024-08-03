@@ -69,7 +69,7 @@ export class CategoryController {
       );
       const { id } = req.params;
 
-      const updateCategoryRequest = validateDto(
+      const updateCategoryRequest = await validateDto(
         req.body,
         UpdateCategoryRequestDto,
       );

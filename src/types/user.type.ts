@@ -2,13 +2,6 @@ import Article from "../entities/article.entity";
 
 export type TRole = "user" | "admin";
 
-export interface TCreateUser {
-  nickname: string;
-  password: string;
-  profileImg?: string;
-  introduction: string;
-}
-
 export interface TLoginUser {
   nickname: string;
   password: string;

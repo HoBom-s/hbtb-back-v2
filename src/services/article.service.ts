@@ -1,3 +1,4 @@
+import UpdateArticleRequestDto from "../dtos/article/updateArticleRequest.dto";
 import Article from "../entities/article.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
@@ -5,7 +6,6 @@ import {
   ArticlePagination,
   TCreateArticleWithTagId,
   TNewArticleInfoWithUser,
-  TUpdateArticle,
 } from "../types/article.type";
 import { TagService } from "./tag.service";
 import { UserService } from "./user.service";
@@ -69,7 +69,7 @@ export class ArticleService {
   async updateArticle(
     articleId: string,
     userId: string,
-    updatedInfo: TUpdateArticle,
+    updatedInfo: UpdateArticleRequestDto,
   ): Promise<Article> {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
 
