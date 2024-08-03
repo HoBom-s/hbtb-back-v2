@@ -8,10 +8,7 @@ import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
 import { TTokens } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
-import {
-  TokenResponseDto,
-  UserWithoutPasswordResponseDto,
-} from "../dtos/user.dto";
+import { TokenResponseDto } from "../dtos/user.dto";
 import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
 import UserResponseDto from "../dtos/user/userResponse.dto";
 
@@ -25,18 +22,18 @@ export class UserService {
   }
 
   async createUser(
-    newUserInfo: CreateUserRequestDto,
+    createUserRequestDto: CreateUserRequestDto,
   ): Promise<TUserWithoutPassword> {
-    const { nickname, ...restInfo } = newUserInfo;
+    const { nickname } = createUserRequestDto;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
+
     if (foundUser) throw new CustomError(400, "User already exists.");
 
-    const createdUser = await this.userRepository.createUser(newUserInfo);
+    const createdUser =
+      await this.userRepository.createUser(createUserRequestDto);
 
-    const createUserResponseDto = UserResponseDto.from(createdUser);
-
-    return createUserResponseDto;
+    return UserResponseDto.from(createdUser);
   }
 
   // @TODO

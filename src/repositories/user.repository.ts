@@ -5,6 +5,7 @@ import { TCreateUser, TUpdateUser } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 import { CustomError } from "../middlewares/error.middleware";
+import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
 
 export class UserRepository {
   private user: Repository<User>;
@@ -22,27 +23,30 @@ export class UserRepository {
 
   async findOneUserByNickname(nickname: string): Promise<PossibleNull<User>> {
     const foundUser = await this.user.findOneBy({ nickname });
+
     if (!foundUser) return null;
 
     return foundUser;
   }
 
-  async createUser(newUserInfo: TCreateUser): Promise<User> {
-    const { nickname, password, profileImg, introduction } = newUserInfo;
+  async createUser(createUserRequestDto: CreateUserRequestDto): Promise<User> {
+    const { nickname, password, profileImg, introduction } =
+      createUserRequestDto;
 
     const hashedPassword = bcrypt.hashSync(
       password,
       parseInt(process.env.SALT!),
     );
 
-    const userInfo = {
+    const newUserInfoWithHashedPassword = {
       nickname,
       password: hashedPassword,
       profileImg,
       introduction,
     };
 
-    const createdUser = this.user.create(userInfo);
+    const createdUser = this.user.create(newUserInfoWithHashedPassword);
+
     if (!createdUser) throw new CustomError(404, "Create user failed.");
 
     await this.user.save(createdUser);

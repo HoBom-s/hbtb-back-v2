@@ -7,6 +7,7 @@ import AuthHelper from "../helpers/auth.helper";
 import validateDto from "../helpers/dto.helper";
 import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
 import BaseResponseDto from "../dtos/common/baseResponse.dto";
+import sendResponse from "../utils/response.util";
 
 export class UserController {
   private userService: UserService;
@@ -25,12 +26,10 @@ export class UserController {
 
       const foundUser = await this.userService.findOneUserById(userId);
 
-      const responseDto = new BaseResponseDto(200, "Get user info success.", {
+      return sendResponse(res, 200, "Get user info success.", {
         foundUser,
         reissuedAccessToken,
       });
-
-      return res.status(responseDto.statusCode).json(responseDto.toResponse());
     } catch (error) {
       next(error);
     }
@@ -38,21 +37,21 @@ export class UserController {
 
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const newUserInfo = await validateDto(req.body, CreateUserRequestDto);
+      const createUserRequestDto = await validateDto(
+        req.body,
+        CreateUserRequestDto,
+      );
 
-      if (!newUserInfo)
+      if (!createUserRequestDto)
         throw new CustomError(
           400,
           "Error: Request body missing. Please provide the necessary data in the request body.",
         );
 
-      const createdUser = await this.userService.createUser(newUserInfo);
+      const createdUser =
+        await this.userService.createUser(createUserRequestDto);
 
-      return res.json({
-        status: 201,
-        message: "Create user success.",
-        data: createdUser,
-      });
+      return sendResponse(res, 201, "Create user success.", createdUser);
     } catch (error) {
       next(error);
     }
