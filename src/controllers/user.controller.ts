@@ -90,10 +90,7 @@ export class UserController {
     try {
       res.clearCookie("refreshToken");
 
-      return res.json({
-        status: 201,
-        message: "Logout success.",
-      });
+      return sendResponse(res, 201, "Logout success.");
     } catch (error) {
       next(error);
     }

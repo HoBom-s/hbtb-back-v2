@@ -5,11 +5,15 @@ function sendResponse<T>(
   res: Response,
   statusCode: number,
   message: string,
-  body: T,
+  body?: T,
 ): Response {
   const responseDto = new BaseResponseDto(statusCode, message, body);
 
-  return res.status(responseDto.statusCode).json(responseDto.toResponse());
+  if (body) {
+    return res.status(responseDto.statusCode).json(responseDto.toResponse());
+  }
+
+  return res.status(responseDto.statusCode).send(responseDto.message);
 }
 
 export default sendResponse;
