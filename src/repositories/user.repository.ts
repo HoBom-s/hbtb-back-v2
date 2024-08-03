@@ -6,6 +6,7 @@ import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 import { CustomError } from "../middlewares/error.middleware";
 import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
+import UpdateUserRequestDto from "../dtos/user/updateUserRequest.dto";
 
 export class UserRepository {
   private user: Repository<User>;
@@ -54,19 +55,23 @@ export class UserRepository {
     return createdUser;
   }
 
-  async updateUser(id: string, updates: TUpdateUser) {
-    const isPasswordUpdate = Object.keys(updates).includes("password");
+  async updateUser(id: string, updateUserREquestDto: UpdateUserRequestDto) {
+    const isPasswordUpdate =
+      Object.keys(updateUserREquestDto).includes("password");
 
     if (isPasswordUpdate) {
-      const password: string = updates.password!;
+      const password: string = updateUserREquestDto.password!;
+
       const hashedPassword = bcrypt.hashSync(
         password,
         parseInt(process.env.SALT!),
       );
-      updates.password = hashedPassword;
+
+      updateUserREquestDto.password = hashedPassword;
     }
 
-    const updateResult = await this.user.update(id, updates);
+    const updateResult = await this.user.update(id, updateUserREquestDto);
+
     if (!updateResult.affected)
       throw new CustomError(404, "Update user failed: 0 affected.");
 

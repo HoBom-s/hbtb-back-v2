@@ -6,7 +6,7 @@ import AuthHelper from "../helpers/auth.helper";
 import { Auth } from "../types/auth.type";
 import CreateCategoryRequestDto from "../dtos/category/createCategoryRequest.dto";
 import UpdateCategoryRequestDto from "../dtos/category/updateCategoryRequest.dto";
-import validateDto from "../helpers/dto.helper";
+import validateDto from "../utils/dto.util";
 
 export class CategoryController {
   private categoryService: CategoryService;

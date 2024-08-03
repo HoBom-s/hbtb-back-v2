@@ -5,7 +5,7 @@ import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import CreateArticleRequestDto from "../dtos/article/createArticleRequest.dto";
-import validateDto from "../helpers/dto.helper";
+import validateDto from "../utils/dto.util";
 import UpdateArticleRequestDto from "../dtos/article/updateArticleRequest.dto";
 
 export class ArticleController {

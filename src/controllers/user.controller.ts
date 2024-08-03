@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import { TLoginUser, TUpdateUser } from "../types/user.type";
 import { UserService } from "../services/user.service";
 import { CustomError } from "../middlewares/error.middleware";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
-import validateDto from "../helpers/dto.helper";
+import validateDto from "../utils/dto.util";
 import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
 import sendResponse from "../utils/response.util";
 import LoginUserRequestDto from "../dtos/user/loginUserRequest.dto";
+import UpdateUserRequestDto from "../dtos/user/updateUserRequest.dto";
 
 export class UserController {
   private userService: UserService;
@@ -99,6 +99,7 @@ export class UserController {
   async updateUser(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
+
       const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
@@ -106,13 +107,19 @@ export class UserController {
       if (id !== userId)
         throw new CustomError(401, "Error: User not identical.");
 
-      const updates: TUpdateUser = req.body;
-      const updatedUser = await this.userService.updateUser(id, updates);
+      const updateUserRequestDto = await validateDto(
+        req.body,
+        UpdateUserRequestDto,
+      );
 
-      return res.json({
-        status: 201,
-        message: "User udate success.",
-        data: { updatedUser, reissuedAccessToken },
+      const updatedUser = await this.userService.updateUser(
+        id,
+        updateUserRequestDto,
+      );
+
+      return sendResponse(res, 201, "User udate success.", {
+        updatedUser,
+        reissuedAccessToken,
       });
     } catch (error) {
       next(error);

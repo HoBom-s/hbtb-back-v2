@@ -7,6 +7,7 @@ import TokenResponseDto from "../dtos/user/tokenResponse.dto";
 import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
 import UserResponseDto from "../dtos/user/userResponse.dto";
 import LoginUserRequestDto from "../dtos/user/loginUserRequest.dto";
+import UpdateUserRequestDto from "../dtos/user/updateUserRequest.dto";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -64,14 +65,13 @@ export class UserService {
 
   async updateUser(
     id: string,
-    updates: TUpdateUser,
+    updateUserREquestDto: UpdateUserRequestDto,
   ): Promise<TUserWithoutPassword> {
     await this.userRepository.findOneUserById(id);
-    await this.userRepository.updateUser(id, updates);
 
-    const updatedUser = await this.findOneUserById(id);
+    await this.userRepository.updateUser(id, updateUserREquestDto);
 
-    return updatedUser;
+    return this.findOneUserById(id);
   }
 
   async removeUser(id: string) {
