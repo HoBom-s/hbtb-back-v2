@@ -6,8 +6,8 @@ import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import validateDto from "../helpers/dto.helper";
 import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
-import BaseResponseDto from "../dtos/common/baseResponse.dto";
 import sendResponse from "../utils/response.util";
+import LoginUserRequestDto from "../dtos/user/loginUserRequest.dto";
 
 export class UserController {
   private userService: UserService;
@@ -59,16 +59,19 @@ export class UserController {
 
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const loginInfo: TLoginUser = req.body;
+      const loginUserRequestDto = await validateDto(
+        req.body,
+        LoginUserRequestDto,
+      );
 
-      if (!loginInfo)
+      if (!loginUserRequestDto)
         throw new CustomError(
           400,
           "Error: Request body missing. Please provide the necessary data in the request body.",
         );
 
       const { accessToken, refreshToken } =
-        await this.userService.loginUser(loginInfo);
+        await this.userService.loginUser(loginUserRequestDto);
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -77,11 +80,7 @@ export class UserController {
         maxAge: 14 * 24 * 60 * 60 * 1000, // 14days in milliseconds
       });
 
-      return res.json({
-        status: 200,
-        message: "Login success.",
-        accessToken,
-      });
+      return sendResponse(res, 200, "Login success.", accessToken);
     } catch (error) {
       next(error);
     }

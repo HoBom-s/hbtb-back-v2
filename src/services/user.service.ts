@@ -1,16 +1,12 @@
 import { UserRepository } from "../repositories/user.repository";
-import {
-  TUpdateUser,
-  TUserWithoutPassword,
-  TLoginUser,
-} from "../types/user.type";
+import { TUpdateUser, TUserWithoutPassword } from "../types/user.type";
 import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
-import { TTokens } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
-import { TokenResponseDto } from "../dtos/user.dto";
+import TokenResponseDto from "../dtos/user/tokenResponse.dto";
 import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
 import UserResponseDto from "../dtos/user/userResponse.dto";
+import LoginUserRequestDto from "../dtos/user/loginUserRequest.dto";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -36,15 +32,19 @@ export class UserService {
     return UserResponseDto.from(createdUser);
   }
 
-  // @TODO
-  async loginUser(loginInfo: TLoginUser): Promise<TTokens> {
-    const { nickname, password } = loginInfo;
+  async loginUser(
+    loginUserRequestDto: LoginUserRequestDto,
+  ): Promise<TokenResponseDto> {
+    const { nickname, password } = loginUserRequestDto;
 
     const foundUser = await this.userRepository.findOneUserByNickname(nickname);
+
     if (!foundUser) throw new CustomError(404, "User not found.");
 
     const hashedPassword = foundUser.password;
+
     const isPasswordCorrect = bcrypt.compareSync(password, hashedPassword);
+
     if (!isPasswordCorrect)
       throw new CustomError(400, "Please check the password again.");
 
@@ -53,11 +53,7 @@ export class UserService {
     const accessToken = this.authHelper.createToken(userId, "access");
     const refreshToken = this.authHelper.createToken(userId, "refresh");
 
-    const tokens = { accessToken, refreshToken };
-
-    const tokenResponseDto = new TokenResponseDto(tokens).toResponse();
-
-    return tokenResponseDto;
+    return new TokenResponseDto(accessToken, refreshToken).toResponse();
   }
 
   async findOneUserById(id: string): Promise<TUserWithoutPassword> {

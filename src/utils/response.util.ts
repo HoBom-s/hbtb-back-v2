@@ -9,7 +9,7 @@ function sendResponse<T>(
 ): Response {
   const responseDto = new BaseResponseDto(statusCode, message, body);
 
-  return res.status(responseDto.statusCode).json(responseDto);
+  return res.status(responseDto.statusCode).json(responseDto.toResponse());
 }
 
 export default sendResponse;

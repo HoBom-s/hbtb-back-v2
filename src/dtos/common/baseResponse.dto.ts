@@ -10,6 +10,10 @@ class BaseResponseDto<T> {
     this.message = message;
     this.body = body;
   }
+
+  toResponse(): BaseResponseDto<T> {
+    return new BaseResponseDto(this.statusCode, this.message, this.body);
+  }
 }
 
 export default BaseResponseDto;
