@@ -1,7 +1,6 @@
 import { Repository } from "typeorm";
 import { myDataSource } from "../data-source";
 import User from "../entities/user.entity";
-import { TUpdateUser } from "../types/user.type";
 import { PossibleNull } from "../types/common.type";
 import bcrypt from "bcrypt";
 import { CustomError } from "../middlewares/error.middleware";

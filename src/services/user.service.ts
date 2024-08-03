@@ -1,5 +1,5 @@
 import { UserRepository } from "../repositories/user.repository";
-import { TUpdateUser, TUserWithoutPassword } from "../types/user.type";
+import { TUserWithoutPassword } from "../types/user.type";
 import { CustomError } from "../middlewares/error.middleware";
 import bcrypt from "bcrypt";
 import AuthHelper from "../helpers/auth.helper";
