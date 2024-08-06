@@ -8,6 +8,7 @@ import CreateUserRequestDto from "../dtos/user/createUserRequest.dto";
 import sendResponse from "../utils/response.util";
 import LoginUserRequestDto from "../dtos/user/loginUserRequest.dto";
 import UpdateUserRequestDto from "../dtos/user/updateUserRequest.dto";
+import { MulterFile } from "../types/image.type";
 
 export class UserController {
   private userService: UserService;
@@ -43,16 +44,20 @@ export class UserController {
         CreateUserRequestDto,
       );
 
+      const profileImg = req.file as MulterFile;
+
       if (!createUserRequestDto)
         throw new CustomError(
           400,
           "Error: Request body missing. Please provide the necessary data in the request body.",
         );
 
-      const createdUser =
-        await this.userService.createUser(createUserRequestDto);
+      const createdUser = await this.userService.createUser(
+        createUserRequestDto,
+        profileImg,
+      );
 
-      return sendResponse(res, 201, "Create user success.", createdUser);
+      return sendResponse(res, 201, "Create user success.", { createdUser });
     } catch (error) {
       next(error);
     }
@@ -77,11 +82,11 @@ export class UserController {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: 14 * 24 * 60 * 60 * 1000, // 14days
       });
 
-      return sendResponse(res, 200, "Login success.", accessToken);
+      return sendResponse(res, 200, "Login success.", { accessToken });
     } catch (error) {
       next(error);
     }
@@ -89,7 +94,11 @@ export class UserController {
 
   async logoutUser(req: Request, res: Response, next: NextFunction) {
     try {
-      res.clearCookie("refreshToken");
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      });
 
       return sendResponse(res, 201, "Logout success.");
     } catch (error) {
@@ -108,6 +117,8 @@ export class UserController {
       if (id !== userId)
         throw new CustomError(401, "Error: User not identical.");
 
+      const profileImg = req.file as MulterFile;
+
       const updateUserRequestDto = await validateDto(
         req.body,
         UpdateUserRequestDto,
@@ -116,6 +127,7 @@ export class UserController {
       const updatedUser = await this.userService.updateUser(
         id,
         updateUserRequestDto,
+        profileImg,
       );
 
       return sendResponse(res, 201, "User udate success.", {

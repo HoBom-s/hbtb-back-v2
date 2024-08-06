@@ -1,6 +1,9 @@
 import { Repository, Like } from "typeorm";
 import Article from "../entities/article.entity";
-import { TCreateArticleWithTagId } from "../types/article.type";
+import {
+  ArticlePerPageInfo,
+  CreateArticleWithUserAndTag,
+} from "../types/article.type";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
 import { PossibleNull } from "../types/common.type";
@@ -14,9 +17,9 @@ export class ArticleRepository {
   }
 
   async createArticle(
-    newArticleInfoWithTagId: TCreateArticleWithTagId,
+    newArticleInfo: CreateArticleWithUserAndTag,
   ): Promise<Article> {
-    const createdArticle = this.article.create(newArticleInfoWithTagId);
+    const createdArticle = this.article.create(newArticleInfo);
 
     if (!createdArticle) throw new CustomError(404, "Create article failed.");
 
@@ -27,6 +30,7 @@ export class ArticleRepository {
 
   async getAllArticles(): Promise<Article[]> {
     const allArticles = await this.article.find({
+      order: { createdAt: "DESC" },
       relations: {
         user: true,
       },
@@ -54,17 +58,22 @@ export class ArticleRepository {
       where: { id },
       relations: { user: true },
     });
-
-    if (!foundArticle) throw new CustomError(404, "Original aticle not found.");
+    if (!foundArticle)
+      throw new CustomError(404, "Original article not found.");
 
     return foundArticle;
   }
 
   async updateArticle(
     id: string,
-    updateArticleREquestDto: UpdateArticleRequestDto,
+    updateArticleRequestDto: UpdateArticleRequestDto,
+    thumbnailUrl?: string,
   ) {
-    const updateResult = await this.article.update(id, updateArticleREquestDto);
+    updateArticleRequestDto = thumbnailUrl
+      ? { thumbnail: thumbnailUrl, ...updateArticleRequestDto }
+      : updateArticleRequestDto;
+
+    const updateResult = await this.article.update(id, updateArticleRequestDto);
 
     if (!updateResult.affected)
       throw new CustomError(404, "Update article failed: 0 affected.");
@@ -96,14 +105,16 @@ export class ArticleRepository {
     return foundArticles;
   }
 
-  async getArticlePerPage(
-    pageNumber: number,
-    perPage: number,
-  ): Promise<Article[]> {
+  async getArticlePerPage(perPageInfo: ArticlePerPageInfo): Promise<Article[]> {
+    let { pageNumber, perPage, sorting } = perPageInfo;
+
+    if (!sorting) sorting = "DESC";
+
     const foundArticles = await this.article.find({
-      order: { createdAt: "DESC" },
+      order: { createdAt: sorting },
       skip: (pageNumber - 1) * perPage,
       take: perPage,
+      relations: { user: true },
     });
 
     if (foundArticles === undefined)
@@ -124,7 +135,7 @@ export class ArticleRepository {
     if (totalArticleCount % perPage === 0) {
       totalPageCount = totalArticleCount / perPage;
     } else {
-      totalPageCount = totalArticleCount / perPage + 1;
+      totalPageCount = Math.floor(totalArticleCount / perPage) + 1;
     }
 
     return totalPageCount;

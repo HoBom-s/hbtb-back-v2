@@ -3,7 +3,7 @@ import UpdateCategoryRequestDto from "../dtos/category/updateCategoryRequest.dto
 import Category from "../entities/category.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { CategoryRepository } from "../repositories/category.repository";
-import { TCreateCategoryWithIndex } from "../types/category.type";
+import { CreateCategoryWithIndex } from "../types/category.type";
 
 export class CategoryService {
   private categoryRepository: CategoryRepository;
@@ -28,7 +28,7 @@ export class CategoryService {
 
     const existingMaxIndex = await this.categoryRepository.getMaxIndex();
 
-    const newCategoryInfoWithIndex: TCreateCategoryWithIndex = {
+    const newCategoryInfoWithIndex: CreateCategoryWithIndex = {
       ...createCategoryRequest,
       sortIndex: existingMaxIndex + 1,
     };

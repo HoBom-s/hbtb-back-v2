@@ -2,11 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import User from "./user.entity";
+import Tag from "./tag.entity";
 
 @Entity()
 class Article {
@@ -42,16 +45,16 @@ class Article {
   @Column({
     type: "varchar",
     nullable: false,
+    unique: true,
   })
   path: string;
 
-  @Column({
-    type: "simple-array",
-  })
-  tags: string[];
-
-  @ManyToOne(() => User, (user) => user.articles)
+  @ManyToOne(() => User, { onDelete: "SET NULL" })
   user: User;
+
+  @ManyToMany(() => Tag, { eager: true })
+  @JoinTable()
+  tags: Tag[];
 
   @CreateDateColumn()
   createdAt: Date;

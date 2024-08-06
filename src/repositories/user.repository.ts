@@ -16,6 +16,7 @@ export class UserRepository {
 
   async findOneUserById(id: string): Promise<User> {
     const foundUser = await this.user.findOneBy({ id });
+
     if (!foundUser) throw new CustomError(404, "User not found.");
 
     return foundUser;
@@ -29,23 +30,24 @@ export class UserRepository {
     return foundUser;
   }
 
-  async createUser(createUserRequestDto: CreateUserRequestDto): Promise<User> {
-    const { nickname, password, profileImg, introduction } =
-      createUserRequestDto;
+  async createUser(
+    createUserRequestDto: CreateUserRequestDto,
+    profileImgUrl: string,
+  ): Promise<User> {
+    const { password } = createUserRequestDto;
 
     const hashedPassword = bcrypt.hashSync(
       password,
       parseInt(process.env.SALT!),
     );
 
-    const newUserInfoWithHashedPassword = {
-      nickname,
+    const newUserInfo = {
+      ...createUserRequestDto,
       password: hashedPassword,
-      profileImg,
-      introduction,
+      profileImg: profileImgUrl,
     };
 
-    const createdUser = this.user.create(newUserInfoWithHashedPassword);
+    const createdUser = this.user.create(newUserInfo);
 
     if (!createdUser) throw new CustomError(404, "Create user failed.");
 
@@ -54,22 +56,30 @@ export class UserRepository {
     return createdUser;
   }
 
-  async updateUser(id: string, updateUserREquestDto: UpdateUserRequestDto) {
+  async updateUser(
+    id: string,
+    updateUserRequestDto: UpdateUserRequestDto,
+    profileImgUrl?: string,
+  ) {
     const isPasswordUpdate =
-      Object.keys(updateUserREquestDto).includes("password");
+      Object.keys(updateUserRequestDto).includes("password");
 
     if (isPasswordUpdate) {
-      const password: string = updateUserREquestDto.password!;
+      const password: string = updateUserRequestDto.password!;
 
       const hashedPassword = bcrypt.hashSync(
         password,
         parseInt(process.env.SALT!),
       );
 
-      updateUserREquestDto.password = hashedPassword;
+      updateUserRequestDto.password = hashedPassword;
     }
 
-    const updateResult = await this.user.update(id, updateUserREquestDto);
+    updateUserRequestDto = profileImgUrl
+      ? { ...updateUserRequestDto, profileImg: profileImgUrl }
+      : updateUserRequestDto;
+
+    const updateResult = await this.user.update(id, updateUserRequestDto);
 
     if (!updateResult.affected)
       throw new CustomError(404, "Update user failed: 0 affected.");

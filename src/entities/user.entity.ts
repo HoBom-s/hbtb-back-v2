@@ -3,11 +3,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { TRole } from "../types/user.type";
-import Article from "./article.entity";
+import { Role } from "../types/user.type";
 
 @Entity()
 class User {
@@ -38,9 +36,9 @@ class User {
   @Column({
     type: "varchar",
     nullable: false,
-    default: "user" as TRole,
+    default: "user" as Role,
   })
-  role: TRole;
+  role: Role;
 
   @Column({
     type: "nvarchar",
@@ -48,9 +46,6 @@ class User {
     default: "Hi!",
   })
   introduction: string;
-
-  @OneToMany(() => Article, (article) => article.user)
-  articles: Article[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import Category from "../entities/category.entity";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
-import { TCreateCategoryWithIndex } from "../types/category.type";
+import { CreateCategoryWithIndex } from "../types/category.type";
 import { PossibleNull } from "../types/common.type";
 import UpdateCategoryRequestDto from "../dtos/category/updateCategoryRequest.dto";
 
@@ -35,7 +35,7 @@ export class CategoryRepository {
   }
 
   async createCategory(
-    newCategoryInfo: TCreateCategoryWithIndex,
+    newCategoryInfo: CreateCategoryWithIndex,
   ): Promise<Category> {
     const createdCategory = this.category.create(newCategoryInfo);
 

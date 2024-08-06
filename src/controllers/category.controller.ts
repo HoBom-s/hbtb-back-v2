@@ -22,12 +22,9 @@ export class CategoryController {
     try {
       const allCategories = await this.categoryService.getAllCategories();
 
-      return sendResponse(
-        res,
-        200,
-        "Get all categories success.",
+      return sendResponse(res, 200, "Get all categories success.", {
         allCategories,
-      );
+      });
     } catch (error) {
       next(error);
     }

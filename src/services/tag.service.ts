@@ -48,12 +48,4 @@ export class TagService {
   getAllTags(): Promise<Tag[]> {
     return this.tagRepository.getAllTags();
   }
-
-  async saveArticleId(tags: string[], createdArticleId: string) {
-    for (const tag of tags) {
-      await this.tagRepository.saveArticleId(tag, createdArticleId);
-    }
-
-    return;
-  }
 }

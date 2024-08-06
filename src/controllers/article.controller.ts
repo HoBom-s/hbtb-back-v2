@@ -1,21 +1,26 @@
 import { NextFunction, Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
-import { CustomError } from "../middlewares/error.middleware";
-import { Auth } from "../types/auth.type";
-import AuthHelper from "../helpers/auth.helper";
 import CreateArticleRequestDto from "../dtos/article/createArticleRequest.dto";
 import validateDto from "../utils/dto.util";
 import UpdateArticleRequestDto from "../dtos/article/updateArticleRequest.dto";
 import sendResponse from "../utils/response.util";
+import { isSORTING } from "../types/article.type";
+import { CustomError } from "../middlewares/error.middleware";
+import { Auth } from "../types/auth.type";
+import AuthHelper from "../helpers/auth.helper";
+import { MulterFile } from "../types/image.type";
+import CacheHelper from "../helpers/cache.helper";
 
 export class ArticleController {
   private articleService: ArticleService;
 
   private authHelper: AuthHelper;
+  private cacheHelper: CacheHelper;
 
   constructor() {
     this.articleService = new ArticleService();
     this.authHelper = new AuthHelper();
+    this.cacheHelper = new CacheHelper();
   }
 
   async createArticle(req: Request & Auth, res: Response, next: NextFunction) {
@@ -23,6 +28,8 @@ export class ArticleController {
       const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
+
+      const thumbnail = req.file as MulterFile;
 
       const createArticleRequestDto = await validateDto(
         req.body,
@@ -38,7 +45,10 @@ export class ArticleController {
       const createdArticle = await this.articleService.createArticle(
         userId,
         createArticleRequestDto,
+        thumbnail,
       );
+
+      await this.cacheHelper.delCache("articles");
 
       return sendResponse(res, 201, "Create article success.", {
         createdArticle,
@@ -59,14 +69,11 @@ export class ArticleController {
           "Error: Required parameter missing. Please ensure that all required parameters are provided.",
         );
 
-      const foundArticle = this.articleService.getArticleFindByPath(path);
+      const foundArticle = await this.articleService.getArticleFindByPath(path);
 
-      return sendResponse(
-        res,
-        200,
-        "Get article by path success.",
+      return sendResponse(res, 200, "Get article by path success.", {
         foundArticle,
-      );
+      });
     } catch (error) {
       next(error);
     }
@@ -76,7 +83,9 @@ export class ArticleController {
     try {
       const allArticles = await this.articleService.getAllArticles();
 
-      return sendResponse(res, 200, "Get article success.", allArticles);
+      await this.cacheHelper.setCache(req, { allArticles });
+
+      return sendResponse(res, 200, "Get article success.", { allArticles });
     } catch (error) {
       next(error);
     }
@@ -90,24 +99,30 @@ export class ArticleController {
 
       const { id } = req.params;
 
-      const updateArticleREquestDto = await validateDto(
+      const thumbnail = req.file as MulterFile;
+
+      const updateArticleRequestDto = await validateDto(
         req.body,
         UpdateArticleRequestDto,
       );
 
-      if (!id || !updateArticleREquestDto)
+      if (!id || !updateArticleRequestDto)
         throw new CustomError(
           400,
           "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
         );
 
-      await this.articleService.updateArticle(
+      const updatedArticle = await this.articleService.updateArticle(
         id,
         userId,
-        updateArticleREquestDto,
+        updateArticleRequestDto,
+        thumbnail,
       );
 
+      await this.cacheHelper.delCache("articles");
+
       return sendResponse(res, 201, "Update article success.", {
+        updatedArticle,
         reissuedAccessToken,
       });
     } catch (error) {
@@ -153,12 +168,9 @@ export class ArticleController {
         keyword as string,
       );
 
-      return sendResponse(
-        res,
-        200,
-        "Get searched articles success.",
+      return sendResponse(res, 200, "Get searched articles success.", {
         foundArticles,
-      );
+      });
     } catch (error) {
       next(error);
     }
@@ -166,7 +178,7 @@ export class ArticleController {
 
   async getArticlePerPage(req: Request, res: Response, next: NextFunction) {
     try {
-      const { pageNumber, perPage } = req.query;
+      const { pageNumber, perPage, sorting } = req.query;
 
       if (!pageNumber || !perPage)
         throw new CustomError(
@@ -174,17 +186,29 @@ export class ArticleController {
           "Error: Required query parameter 'pageNumber' or 'perPage' missing. Please include the 'pageNumber' or 'perPage' parameter in your request query.",
         );
 
-      const articlesAndPageCount = await this.articleService.getArticlePerPage(
-        pageNumber as string,
-        perPage as string,
-      );
+      const isSortingValid = isSORTING(sorting);
 
-      return sendResponse(
-        res,
-        200,
-        "Get articles per page success.",
+      if (!isSortingValid) {
+        throw new CustomError(
+          400,
+          "Error: Required query parameter 'sorting' should be one of '`asc` | `desc` | undefined'(case-insensitive).",
+        );
+      }
+
+      const perPageInfo = {
+        pageNumber: parseInt(pageNumber as string, 10),
+        perPage: parseInt(perPage as string, 10),
+        sorting,
+      };
+
+      const articlesAndPageCount =
+        await this.articleService.getArticlePerPage(perPageInfo);
+
+      await this.cacheHelper.setCache(req, { articlesAndPageCount });
+
+      return sendResponse(res, 200, "Get articles per page success.", {
         articlesAndPageCount,
-      );
+      });
     } catch (error) {
       next(error);
     }

@@ -7,10 +7,6 @@ class TokenResponseDto {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
   }
-
-  toResponse(): TokenResponseDto {
-    return new TokenResponseDto(this.accessToken, this.refreshToken);
-  }
 }
 
 export default TokenResponseDto;

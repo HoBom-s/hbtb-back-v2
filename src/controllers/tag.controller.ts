@@ -1,22 +1,26 @@
 import { Request, NextFunction, Response } from "express";
 import { TagService } from "../services/tag.service";
 import { CustomError } from "../middlewares/error.middleware";
-import { Auth } from "../types/auth.type";
-import AuthHelper from "../helpers/auth.helper";
 import validateDto from "../utils/dto.util";
 import CreateTagRequestDto from "../dtos/tag/createTagRequest.dto";
 import sendResponse from "../utils/response.util";
 import UpdateTagRequestDto from "../dtos/tag/updateTagRequest.dto";
 import Tag from "../entities/tag.entity";
+import { Auth } from "../types/auth.type";
+import AuthHelper from "../helpers/auth.helper";
+import CacheHelper from "../helpers/cache.helper";
 
 export class TagController {
   private tagService: TagService;
 
   private authHelper: AuthHelper;
 
+  private cacheHelper: CacheHelper;
+
   constructor() {
     this.tagService = new TagService();
     this.authHelper = new AuthHelper();
+    this.cacheHelper = new CacheHelper();
   }
 
   async createTag(req: Request & Auth, res: Response, next: NextFunction) {
@@ -37,6 +41,8 @@ export class TagController {
         );
 
       const createdTag = await this.tagService.createTag(createTagRequestDto);
+
+      await this.cacheHelper.delCache("tags");
 
       return sendResponse(res, 201, "Create tag success.", {
         createdTag,
@@ -71,6 +77,8 @@ export class TagController {
         updateTagRequestDto,
       );
 
+      await this.cacheHelper.delCache("tags");
+
       return sendResponse(res, 201, "Update tag success.", {
         updatedTag,
         reissuedAccessToken,
@@ -80,9 +88,12 @@ export class TagController {
     }
   }
 
-  async removeTag(req: Request, res: Response, next: NextFunction) {
+  async removeTag(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
+      const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
+        req.authInfo,
+      );
 
       if (!id)
         throw new CustomError(
@@ -92,7 +103,9 @@ export class TagController {
 
       await this.tagService.removeTag(id);
 
-      return sendResponse(res, 201, "Delete tag success.");
+      return sendResponse(res, 201, "Delete tag success.", {
+        reissuedAccessToken,
+      });
     } catch (error) {
       next(error);
     }
@@ -102,7 +115,9 @@ export class TagController {
     try {
       const foundTags = await this.tagService.getAllTags();
 
-      return sendResponse(res, 200, "Get all tags success.", foundTags);
+      await this.cacheHelper.setCache(req, { foundTags });
+
+      return sendResponse(res, 200, "Get all tags success.", { foundTags });
     } catch (error) {
       next(error);
     }

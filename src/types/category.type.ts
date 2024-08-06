@@ -1,4 +1,4 @@
-export interface TCreateCategoryWithIndex {
+export interface CreateCategoryWithIndex {
   title: string;
   path: string;
   spot: string;

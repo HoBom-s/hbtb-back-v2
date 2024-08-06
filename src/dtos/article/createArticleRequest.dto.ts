@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 class CreateArticleRequestDto {
   @IsString()
@@ -21,9 +21,9 @@ class CreateArticleRequestDto {
   @IsNotEmpty()
   path: string;
 
-  @IsArray()
+  @IsString()
   @IsNotEmpty()
-  tags: string[];
+  tags: string;
 }
 
 export default CreateArticleRequestDto;

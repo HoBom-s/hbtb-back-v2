@@ -3,13 +3,13 @@ import UpdateArticleRequestDto from "../dtos/article/updateArticleRequest.dto";
 import Article from "../entities/article.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
-import {
-  ArticlePagination,
-  TCreateArticleWithTagId,
-} from "../types/article.type";
-import { TUserWithoutPassword } from "../types/user.type";
+import { ArticlePagination, ArticlePerPageInfo } from "../types/article.type";
+import { ImageService } from "./image.service";
+import { PossibleNull } from "../types/common.type";
 import { TagService } from "./tag.service";
 import { UserService } from "./user.service";
+import { MulterFile } from "../types/image.type";
+import Tag from "../entities/tag.entity";
 
 export class ArticleService {
   private articleRepository: ArticleRepository;
@@ -18,79 +18,99 @@ export class ArticleService {
 
   private userService: UserService;
 
+  private imageService: ImageService;
+
   constructor() {
     this.articleRepository = new ArticleRepository();
     this.tagService = new TagService();
     this.userService = new UserService();
+    this.imageService = new ImageService();
   }
 
   async createArticle(
     userId: string,
     createArticleRequestDto: CreateArticleRequestDto,
+    thumbnail: MulterFile,
   ): Promise<Article> {
-    const { thumbnail, title, subtitle, contents, path, tags } =
-      createArticleRequestDto;
+    const { path, tags } = createArticleRequestDto;
 
     const foundArticle = await this.getArticleFindByPath(path);
 
     if (foundArticle) throw new CustomError(400, "Article already exists.");
 
-    const tagIds: string[] = [];
+    const tagsStringToArr: string[] = tags.replace(/\s/g, "").split(",");
 
-    for (const tag of tags) {
-      const foundTag = await this.tagService.getOneTagByTitle(tag);
+    const tagArr: Tag[] = [];
+
+    for (const tagTitle of tagsStringToArr) {
+      const foundTag = await this.tagService.getOneTagByTitle(tagTitle);
 
       if (!foundTag) throw new CustomError(404, "Tag not found.");
 
-      tagIds.push(foundTag.id);
+      tagArr.push(foundTag);
     }
 
-    const articleWriter: TUserWithoutPassword =
-      await this.userService.findOneUserById(userId);
+    const writer = await this.userService.findOneUserById(userId);
 
-    const newArticleInfo: TCreateArticleWithTagId = {
-      thumbnail,
-      title,
-      subtitle,
-      contents,
-      user: articleWriter,
-      path,
-      tags: tagIds,
+    if (!writer) throw new CustomError(404, "User(writer) not found.");
+
+    const thumbnailUrl = await this.imageService.uploadOneImage(
+      { image: thumbnail, uniqueString: path },
+      "thumbnail",
+    );
+
+    const newArticleInfo = {
+      ...createArticleRequestDto,
+      thumbnail: thumbnailUrl,
+      tags: tagArr,
+      user: writer,
     };
 
     const createdArticle =
       await this.articleRepository.createArticle(newArticleInfo);
 
-    await this.tagService.saveArticleId(tags, createdArticle.id);
-
     return createdArticle;
   }
 
-  getAllArticles() {
+  getAllArticles(): Promise<Article[]> {
     return this.articleRepository.getAllArticles();
   }
 
-  getArticleFindByPath(path: string) {
+  getArticleFindByPath(path: string): Promise<PossibleNull<Article>> {
+    path = "/" + path;
     return this.articleRepository.getArticleFindByPath(path);
   }
 
   async updateArticle(
-    articleId: string,
+    id: string,
     userId: string,
-    updateArticleREquestDto: UpdateArticleRequestDto,
+    updateArticleRequestDto: UpdateArticleRequestDto,
+    thumbnail?: MulterFile,
   ): Promise<Article> {
-    const foundArticle = await this.articleRepository.getArticleById(articleId);
+    const foundArticle = await this.articleRepository.getArticleById(id);
+
+    const articlePath = foundArticle.path;
 
     const writerId = foundArticle.user.id;
 
     this.validateUser(writerId, userId, "update");
 
-    await this.articleRepository.updateArticle(
-      articleId,
-      updateArticleREquestDto,
-    );
+    if (thumbnail) {
+      const thumbnailUrl = await this.imageService.uploadOneImage(
+        { image: thumbnail, uniqueString: articlePath },
+        "thumbnail",
+      );
 
-    const updatedArticle = this.articleRepository.getArticleById(articleId);
+      await this.articleRepository.updateArticle(
+        id,
+        updateArticleRequestDto,
+        thumbnailUrl,
+      );
+    } else {
+      await this.articleRepository.updateArticle(id, updateArticleRequestDto);
+    }
+
+    const updatedArticle = await this.articleRepository.getArticleById(id);
 
     return updatedArticle;
   }
@@ -100,7 +120,11 @@ export class ArticleService {
 
     const writerId = foundArticle.user.id;
 
+    const thumbnailUrl = foundArticle.thumbnail;
+
     this.validateUser(writerId, userId, "remove");
+
+    await this.imageService.removeOneImage(thumbnailUrl);
 
     return this.articleRepository.removeArticle(articleId);
   }
@@ -110,17 +134,12 @@ export class ArticleService {
   }
 
   async getArticlePerPage(
-    strPageNumber: string,
-    strPerPage: string,
+    perPageInfo: ArticlePerPageInfo,
   ): Promise<ArticlePagination> {
-    const pageNumber: number = Number.parseInt(strPageNumber);
+    const { perPage } = perPageInfo;
 
-    const perPage: number = Number.parseInt(strPerPage);
-
-    const foundArticles = await this.articleRepository.getArticlePerPage(
-      pageNumber,
-      perPage,
-    );
+    const foundArticles =
+      await this.articleRepository.getArticlePerPage(perPageInfo);
 
     const totalPageCount =
       await this.articleRepository.getTotalPageCount(perPage);
