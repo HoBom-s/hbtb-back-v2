@@ -11,6 +11,7 @@ import UpdateUserRequestDto from "../dtos/user/updateUserRequest.dto";
 
 export class UserController {
   private userService: UserService;
+
   private authHelper: AuthHelper;
 
   constructor() {
@@ -77,7 +78,7 @@ export class UserController {
         httpOnly: true,
         secure: true,
         sameSite: "strict",
-        maxAge: 14 * 24 * 60 * 60 * 1000, // 14days in milliseconds
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14days
       });
 
       return sendResponse(res, 200, "Login success.", accessToken);

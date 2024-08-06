@@ -13,7 +13,9 @@ import { UserService } from "./user.service";
 
 export class ArticleService {
   private articleRepository: ArticleRepository;
+
   private tagService: TagService;
+
   private userService: UserService;
 
   constructor() {

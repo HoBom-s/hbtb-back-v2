@@ -2,11 +2,9 @@ import { Repository } from "typeorm";
 import Category from "../entities/category.entity";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
-import {
-  TCreateCategoryWithIndex,
-  TUpdateCategoryWithId,
-} from "../types/category.type";
+import { TCreateCategoryWithIndex } from "../types/category.type";
 import { PossibleNull } from "../types/common.type";
+import UpdateCategoryRequestDto from "../dtos/category/updateCategoryRequest.dto";
 
 export class CategoryRepository {
   private category: Repository<Category>;
@@ -48,10 +46,15 @@ export class CategoryRepository {
     return createdCategory;
   }
 
-  async updateCategory(updatedInfoWithId: TUpdateCategoryWithId) {
-    const { id, ...updatedInfo } = updatedInfoWithId;
+  async updateCategory(
+    id: string,
+    updateCategoryRequestDto: UpdateCategoryRequestDto,
+  ) {
+    const updateResult = await this.category.update(
+      id,
+      updateCategoryRequestDto,
+    );
 
-    const updateResult = await this.category.update(id, updatedInfo);
     if (!updateResult.affected)
       throw new CustomError(404, "Update category failed: 0 affected.");
 
@@ -60,6 +63,7 @@ export class CategoryRepository {
 
   async removeCategory(id: string) {
     const deleteResult = await this.category.delete(id);
+
     if (!deleteResult.affected)
       throw new CustomError(404, "Category delete failed: 0 affected.");
 
@@ -68,7 +72,9 @@ export class CategoryRepository {
 
   async getMaxIndex(): Promise<number> {
     const maxIndex = await this.category.maximum("sortIndex", {});
+
     if (!maxIndex) return 0;
+
     return maxIndex;
   }
 }

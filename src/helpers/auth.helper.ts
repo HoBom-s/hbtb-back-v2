@@ -7,6 +7,7 @@ class AuthHelper {
 
   createToken(userId: string, tokenType: TokenType) {
     const secretKey = this.getSecretKey(tokenType);
+
     const exp = this.getExp(tokenType);
 
     const token = jwt.sign({ userId }, secretKey, {
@@ -19,6 +20,7 @@ class AuthHelper {
   getUserIdFromToken(validToken: string, tokenType: TokenType) {
     try {
       const secretKey = this.getSecretKey(tokenType);
+
       const decodedToken = jwt.verify(validToken, secretKey);
 
       if (typeof decodedToken === "string") return false;
@@ -37,11 +39,13 @@ class AuthHelper {
   verifyToken(token: string, tokenType: TokenType) {
     try {
       const secretKey = this.getSecretKey(tokenType);
+
       const decodedToken = jwt.verify(token, secretKey);
 
       if (typeof decodedToken === "string") return false;
 
       const currentTime = Math.floor(Date.now() / 1000);
+
       const tokenExpirationTime = decodedToken.exp!;
 
       return tokenExpirationTime > currentTime;

@@ -1,15 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { CategoryService } from "../services/category.service";
 import { CustomError } from "../middlewares/error.middleware";
-import { TUpdateCategoryWithId } from "../types/category.type";
 import AuthHelper from "../helpers/auth.helper";
 import { Auth } from "../types/auth.type";
 import CreateCategoryRequestDto from "../dtos/category/createCategoryRequest.dto";
 import UpdateCategoryRequestDto from "../dtos/category/updateCategoryRequest.dto";
 import validateDto from "../utils/dto.util";
+import sendResponse from "../utils/response.util";
 
 export class CategoryController {
   private categoryService: CategoryService;
+
   private authHelper: AuthHelper;
 
   constructor() {
@@ -21,11 +22,12 @@ export class CategoryController {
     try {
       const allCategories = await this.categoryService.getAllCategories();
 
-      return res.json({
-        status: 200,
-        message: "Get all categories success.",
-        data: allCategories,
-      });
+      return sendResponse(
+        res,
+        200,
+        "Get all categories success.",
+        allCategories,
+      );
     } catch (error) {
       next(error);
     }
@@ -37,25 +39,24 @@ export class CategoryController {
         req.authInfo,
       );
 
-      const createCategoryRequest = await validateDto(
+      const createCategoryRequestDto = await validateDto(
         req.body,
         CreateCategoryRequestDto,
       );
 
-      if (!createCategoryRequest)
+      if (!createCategoryRequestDto)
         throw new CustomError(
           400,
           "Error: Request body missing. Please provide the necessary data in the request body.",
         );
 
       const createdCategory = await this.categoryService.createCategory(
-        createCategoryRequest,
+        createCategoryRequestDto,
       );
 
-      return res.json({
-        status: 200,
-        message: "Create new category success.",
-        data: { createdCategory, reissuedAccessToken },
+      return sendResponse(res, 200, "Create new category success.", {
+        createdCategory,
+        reissuedAccessToken,
       });
     } catch (error) {
       next(error);
@@ -67,31 +68,28 @@ export class CategoryController {
       const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
+
       const { id } = req.params;
 
-      const updateCategoryRequest = await validateDto(
+      const updateCategoryRequestDto = await validateDto(
         req.body,
         UpdateCategoryRequestDto,
       );
 
-      if (!id || !updateCategoryRequest)
+      if (!id || !updateCategoryRequestDto)
         throw new CustomError(
           400,
           "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
         );
 
-      const updatedInfoWithId: TUpdateCategoryWithId = {
+      const updatedCategory = await this.categoryService.updateCategory(
         id,
-        ...updateCategoryRequest,
-      };
+        updateCategoryRequestDto,
+      );
 
-      const updatedCategory =
-        await this.categoryService.updateCategory(updatedInfoWithId);
-
-      return res.json({
-        status: 201,
-        message: "Update category success.",
-        data: { updatedCategory, reissuedAccessToken },
+      return sendResponse(res, 201, "Update category success.", {
+        updatedCategory,
+        reissuedAccessToken,
       });
     } catch (error) {
       next(error);
@@ -103,7 +101,9 @@ export class CategoryController {
       const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
+
       const { id } = req.params;
+
       if (!id)
         throw new CustomError(
           400,
@@ -112,10 +112,8 @@ export class CategoryController {
 
       await this.categoryService.removeCategory(id);
 
-      return res.json({
-        status: 201,
-        massage: "Delete category success.",
-        data: { reissuedAccessToken },
+      return sendResponse(res, 201, "Delete category success.", {
+        reissuedAccessToken,
       });
     } catch (error) {
       next(error);

@@ -10,6 +10,7 @@ import sendResponse from "../utils/response.util";
 
 export class ArticleController {
   private articleService: ArticleService;
+
   private authHelper: AuthHelper;
 
   constructor() {

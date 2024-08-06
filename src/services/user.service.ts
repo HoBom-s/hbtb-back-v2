@@ -11,6 +11,7 @@ import UpdateUserRequestDto from "../dtos/user/updateUserRequest.dto";
 
 export class UserService {
   private userRepository: UserRepository;
+
   private authHelper: AuthHelper;
 
   constructor() {
@@ -52,6 +53,7 @@ export class UserService {
     const userId = foundUser.id;
 
     const accessToken = this.authHelper.createToken(userId, "access");
+
     const refreshToken = this.authHelper.createToken(userId, "refresh");
 
     return new TokenResponseDto(accessToken, refreshToken).toResponse();

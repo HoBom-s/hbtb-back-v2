@@ -11,7 +11,9 @@ import Tag from "../entities/tag.entity";
 
 export class TagController {
   private tagService: TagService;
+
   private authHelper: AuthHelper;
+
   constructor() {
     this.tagService = new TagService();
     this.authHelper = new AuthHelper();
