@@ -16,6 +16,11 @@ exports.UserController = void 0;
 const user_service_1 = require("../services/user.service");
 const error_middleware_1 = require("../middlewares/error.middleware");
 const auth_helper_1 = __importDefault(require("../helpers/auth.helper"));
+const dto_util_1 = __importDefault(require("../utils/dto.util"));
+const createUserRequest_dto_1 = __importDefault(require("../dtos/user/createUserRequest.dto"));
+const response_util_1 = __importDefault(require("../utils/response.util"));
+const loginUserRequest_dto_1 = __importDefault(require("../dtos/user/loginUserRequest.dto"));
+const updateUserRequest_dto_1 = __importDefault(require("../dtos/user/updateUserRequest.dto"));
 class UserController {
     constructor() {
         this.userService = new user_service_1.UserService();
@@ -26,10 +31,9 @@ class UserController {
             try {
                 const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
                 const foundUser = yield this.userService.findOneUserById(userId);
-                return res.json({
-                    status: 200,
-                    message: "Get user info success.",
-                    data: { foundUser, reissuedAccessToken },
+                return (0, response_util_1.default)(res, 200, "Get user info success.", {
+                    foundUser,
+                    reissuedAccessToken,
                 });
             }
             catch (error) {
@@ -40,17 +44,12 @@ class UserController {
     createUser(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const createUserRequestDto = yield (0, dto_util_1.default)(req.body, createUserRequest_dto_1.default);
                 const profileImg = req.file;
-                const newUserInfo = req.body;
-                if (!newUserInfo)
+                if (!createUserRequestDto)
                     throw new error_middleware_1.CustomError(400, "Error: Request body missing. Please provide the necessary data in the request body.");
-                const newUserInfoWithProfileImg = Object.assign({ profileImg }, newUserInfo);
-                const createdUser = yield this.userService.createUser(newUserInfoWithProfileImg);
-                return res.json({
-                    status: 201,
-                    message: "Create user success.",
-                    data: { createdUser },
-                });
+                const createdUser = yield this.userService.createUser(createUserRequestDto, profileImg);
+                return (0, response_util_1.default)(res, 201, "Create user success.", { createdUser });
             }
             catch (error) {
                 next(error);
@@ -60,21 +59,17 @@ class UserController {
     loginUser(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const loginInfo = req.body;
-                if (!loginInfo)
+                const loginUserRequestDto = yield (0, dto_util_1.default)(req.body, loginUserRequest_dto_1.default);
+                if (!loginUserRequestDto)
                     throw new error_middleware_1.CustomError(400, "Error: Request body missing. Please provide the necessary data in the request body.");
-                const { accessToken, refreshToken } = yield this.userService.loginUser(loginInfo);
+                const { accessToken, refreshToken } = yield this.userService.loginUser(loginUserRequestDto);
                 res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
                     secure: true,
                     sameSite: "none",
-                    maxAge: 14 * 24 * 60 * 60 * 1000, // 14days in milliseconds
+                    maxAge: 14 * 24 * 60 * 60 * 1000, // 14days
                 });
-                return res.json({
-                    status: 200,
-                    message: "Login success.",
-                    data: { accessToken },
-                });
+                return (0, response_util_1.default)(res, 200, "Login success.", { accessToken });
             }
             catch (error) {
                 next(error);
@@ -89,10 +84,7 @@ class UserController {
                     secure: true,
                     sameSite: "none",
                 });
-                return res.json({
-                    status: 201,
-                    message: "Logout success.",
-                });
+                return (0, response_util_1.default)(res, 201, "Logout success.");
             }
             catch (error) {
                 next(error);
@@ -106,14 +98,12 @@ class UserController {
                 const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
                 if (id !== userId)
                     throw new error_middleware_1.CustomError(401, "Error: User not identical.");
-                const updatedProfileImg = req.file;
-                const updatedBody = req.body;
-                const updatedInfo = Object.assign({ updatedProfileImg }, updatedBody);
-                const updatedUser = yield this.userService.updateUser(id, updatedInfo);
-                return res.json({
-                    status: 201,
-                    message: "User udate success.",
-                    data: { updatedUser, reissuedAccessToken },
+                const profileImg = req.file;
+                const updateUserRequestDto = yield (0, dto_util_1.default)(req.body, updateUserRequest_dto_1.default);
+                const updatedUser = yield this.userService.updateUser(id, updateUserRequestDto, profileImg);
+                return (0, response_util_1.default)(res, 201, "User udate success.", {
+                    updatedUser,
+                    reissuedAccessToken,
                 });
             }
             catch (error) {
@@ -125,14 +115,11 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
+                const { userId } = this.authHelper.validateAuthInfo(req.authInfo);
                 if (id !== userId)
                     throw new error_middleware_1.CustomError(401, "Error: User not identical.");
                 yield this.userService.removeUser(id);
-                return res.json({
-                    status: 201,
-                    message: "Delete user success",
-                });
+                return (0, response_util_1.default)(res, 201, "Delete user success.");
             }
             catch (error) {
                 next(error);

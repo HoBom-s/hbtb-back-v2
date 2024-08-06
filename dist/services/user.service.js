@@ -8,17 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -28,7 +17,8 @@ const user_repository_1 = require("../repositories/user.repository");
 const error_middleware_1 = require("../middlewares/error.middleware");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const auth_helper_1 = __importDefault(require("../helpers/auth.helper"));
-const user_dto_1 = require("../dtos/user.dto");
+const tokenResponse_dto_1 = __importDefault(require("../dtos/user/tokenResponse.dto"));
+const userResponse_dto_1 = __importDefault(require("../dtos/user/userResponse.dto"));
 const image_service_1 = require("./image.service");
 class UserService {
     constructor() {
@@ -36,28 +26,26 @@ class UserService {
         this.authHelper = new auth_helper_1.default();
         this.imageService = new image_service_1.ImageService();
     }
-    createUser(userInfo) {
+    createUser(createUserRequestDto, profileImg) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { nickname, profileImg } = userInfo, restInfo = __rest(userInfo, ["nickname", "profileImg"]);
+            const { nickname } = createUserRequestDto;
             const foundUser = yield this.userRepository.findOneUserByNickname(nickname);
             if (foundUser)
                 throw new error_middleware_1.CustomError(400, "User already exists.");
-            let userInfoWithProfileImgUrl;
-            if (!profileImg) {
-                userInfoWithProfileImgUrl = Object.assign(Object.assign({}, userInfo), { profileImg: process.env.DEFAULT_PROFILE });
+            let profileImgUrl;
+            if (profileImg) {
+                profileImgUrl = yield this.imageService.uploadOneImage({ image: profileImg, uniqueString: nickname }, "profile");
             }
             else {
-                const profileImgUrl = yield this.imageService.uploadOneImage({ image: profileImg, uniqueString: nickname }, "profile");
-                userInfoWithProfileImgUrl = Object.assign(Object.assign({}, userInfo), { profileImg: profileImgUrl });
+                profileImgUrl = process.env.DEFAULT_PROFILE;
             }
-            const createdUser = yield this.userRepository.createUser(userInfoWithProfileImgUrl);
-            const createUserResponseDto = new user_dto_1.UserWithoutPasswordResponseDto(createdUser).excludePassword();
-            return createUserResponseDto;
+            const createdUser = yield this.userRepository.createUser(createUserRequestDto, profileImgUrl);
+            return userResponse_dto_1.default.from(createdUser);
         });
     }
-    loginUser(loginInfo) {
+    loginUser(loginUserRequestDto) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { nickname, password } = loginInfo;
+            const { nickname, password } = loginUserRequestDto;
             const foundUser = yield this.userRepository.findOneUserByNickname(nickname);
             if (!foundUser)
                 throw new error_middleware_1.CustomError(404, "User not found.");
@@ -68,31 +56,26 @@ class UserService {
             const userId = foundUser.id;
             const accessToken = this.authHelper.createToken(userId, "access");
             const refreshToken = this.authHelper.createToken(userId, "refresh");
-            const tokens = { accessToken, refreshToken };
-            const tokenResponseDto = new user_dto_1.TokenResponseDto(tokens).toResponse();
-            return tokenResponseDto;
+            return new tokenResponse_dto_1.default(accessToken, refreshToken);
         });
     }
     findOneUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const foundUser = yield this.userRepository.findOneUserById(id);
-            const foundUserResponseDto = new user_dto_1.UserWithoutPasswordResponseDto(foundUser).excludePassword();
-            return foundUserResponseDto;
+            return userResponse_dto_1.default.from(foundUser);
         });
     }
-    updateUser(id, updates) {
+    updateUser(id, updateUserRequestDto, profileImg) {
         return __awaiter(this, void 0, void 0, function* () {
             const foundUser = yield this.userRepository.findOneUserById(id);
-            const { updatedProfileImg } = updates, updatedBodyInfo = __rest(updates, ["updatedProfileImg"]);
-            if (!updatedProfileImg) {
-                yield this.userRepository.updateUser(id, updatedBodyInfo);
+            if (profileImg) {
+                const profileImgUrl = yield this.imageService.uploadOneImage({ image: profileImg, uniqueString: foundUser.nickname }, "profile");
+                yield this.userRepository.updateUser(id, updateUserRequestDto, profileImgUrl);
             }
             else {
-                const profileImgUrl = yield this.imageService.uploadOneImage({ image: updatedProfileImg, uniqueString: foundUser.nickname }, "profile");
-                yield this.userRepository.updateUser(id, Object.assign({ profileImg: profileImgUrl }, updatedBodyInfo));
+                yield this.userRepository.updateUser(id, updateUserRequestDto);
             }
-            const updatedUser = yield this.findOneUserById(id);
-            return updatedUser;
+            return this.findOneUserById(id);
         });
     }
     removeUser(id) {

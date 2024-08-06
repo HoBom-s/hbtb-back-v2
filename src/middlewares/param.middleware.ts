@@ -8,6 +8,7 @@ function paramValidateMiddleware(target: string) {
   return function (req: Request, res: Response, next: NextFunction) {
     try {
       const params = req.params;
+
       if (!params)
         throw new CustomError(
           400,

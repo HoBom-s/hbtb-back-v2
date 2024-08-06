@@ -12,7 +12,9 @@ import bodyValidateMiddleware from "../middlewares/body.middleware";
 import multer from "multer";
 
 const userRouter = Router();
+
 const userController = new UserController();
+
 const upload = multer();
 
 userRouter.get(

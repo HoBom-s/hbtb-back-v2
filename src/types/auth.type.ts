@@ -1,8 +1,3 @@
-export interface Tokens {
-  refreshToken: string;
-  accessToken: string;
-}
-
 export interface RequestUserId {
   userId: string;
   reissuedAccessToken?: string;

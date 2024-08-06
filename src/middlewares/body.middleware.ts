@@ -8,6 +8,7 @@ function bodyValidateMiddleware(target: string) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const bodies = req.body;
+
       if (!bodies)
         throw new CustomError(
           400,

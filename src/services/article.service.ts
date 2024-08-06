@@ -1,24 +1,23 @@
+import CreateArticleRequestDto from "../dtos/article/createArticleRequest.dto";
+import UpdateArticleRequestDto from "../dtos/article/updateArticleRequest.dto";
 import Article from "../entities/article.entity";
-import Tag from "../entities/tag.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { ArticleRepository } from "../repositories/article.repository";
-import {
-  ArticlePagination,
-  ArticlePerPageInfo,
-  CreateArticle,
-  CreateArticleWithTagId,
-  UpdateArticleInfo,
-} from "../types/article.type";
-import { PossibleNull } from "../types/common.type";
-
+import { ArticlePagination, ArticlePerPageInfo } from "../types/article.type";
 import { ImageService } from "./image.service";
+import { PossibleNull } from "../types/common.type";
 import { TagService } from "./tag.service";
 import { UserService } from "./user.service";
+import { MulterFile } from "../types/image.type";
+import Tag from "../entities/tag.entity";
 
 export class ArticleService {
   private articleRepository: ArticleRepository;
+
   private tagService: TagService;
+
   private userService: UserService;
+
   private imageService: ImageService;
 
   constructor() {
@@ -28,43 +27,47 @@ export class ArticleService {
     this.imageService = new ImageService();
   }
 
-  async createArticle(newArticleInfo: CreateArticle): Promise<Article> {
-    const { thumbnail, title, subtitle, contents, userId, path, tags } =
-      newArticleInfo;
+  async createArticle(
+    userId: string,
+    createArticleRequestDto: CreateArticleRequestDto,
+    thumbnail: MulterFile,
+  ): Promise<Article> {
+    const { path, tags } = createArticleRequestDto;
 
     const foundArticle = await this.getArticleFindByPath(path);
+
     if (foundArticle) throw new CustomError(400, "Article already exists.");
 
     const tagsStringToArr: string[] = tags.replace(/\s/g, "").split(",");
 
     const tagArr: Tag[] = [];
-    for (const tag of tagsStringToArr) {
-      const foundTag = await this.tagService.getOneTagByTitle(tag);
+
+    for (const tagTitle of tagsStringToArr) {
+      const foundTag = await this.tagService.getOneTagByTitle(tagTitle);
+
       if (!foundTag) throw new CustomError(404, "Tag not found.");
+
       tagArr.push(foundTag);
     }
 
-    const articleWriter = await this.userService.findOneUserById(userId);
-    if (!articleWriter) throw new CustomError(404, "User(writer) not found.");
+    const writer = await this.userService.findOneUserById(userId);
+
+    if (!writer) throw new CustomError(404, "User(writer) not found.");
 
     const thumbnailUrl = await this.imageService.uploadOneImage(
       { image: thumbnail, uniqueString: path },
       "thumbnail",
     );
 
-    const newArticleInfoWithTagId: CreateArticleWithTagId = {
+    const newArticleInfo = {
+      ...createArticleRequestDto,
       thumbnail: thumbnailUrl,
-      title,
-      subtitle,
-      contents,
-      user: articleWriter,
-      path,
       tags: tagArr,
+      user: writer,
     };
 
-    const createdArticle = await this.articleRepository.createArticle(
-      newArticleInfoWithTagId,
-    );
+    const createdArticle =
+      await this.articleRepository.createArticle(newArticleInfo);
 
     return createdArticle;
   }
@@ -79,34 +82,35 @@ export class ArticleService {
   }
 
   async updateArticle(
-    articleId: string,
+    id: string,
     userId: string,
-    updatedInfo: UpdateArticleInfo,
+    updateArticleRequestDto: UpdateArticleRequestDto,
+    thumbnail?: MulterFile,
   ): Promise<Article> {
-    const foundArticle = await this.articleRepository.getArticleById(articleId);
+    const foundArticle = await this.articleRepository.getArticleById(id);
+
     const articlePath = foundArticle.path;
 
     const writerId = foundArticle.user.id;
+
     this.validateUser(writerId, userId, "update");
 
-    const { thumbnail, ...updatedBodyInfo } = updatedInfo;
-
-    if (!thumbnail) {
-      await this.articleRepository.updateArticle(articleId, updatedBodyInfo);
-    } else {
+    if (thumbnail) {
       const thumbnailUrl = await this.imageService.uploadOneImage(
         { image: thumbnail, uniqueString: articlePath },
         "thumbnail",
       );
 
-      await this.articleRepository.updateArticle(articleId, {
-        thumbnail: thumbnailUrl,
-        ...updatedBodyInfo,
-      });
+      await this.articleRepository.updateArticle(
+        id,
+        updateArticleRequestDto,
+        thumbnailUrl,
+      );
+    } else {
+      await this.articleRepository.updateArticle(id, updateArticleRequestDto);
     }
 
-    const updatedArticle =
-      await this.articleRepository.getArticleById(articleId);
+    const updatedArticle = await this.articleRepository.getArticleById(id);
 
     return updatedArticle;
   }
@@ -115,6 +119,7 @@ export class ArticleService {
     const foundArticle = await this.articleRepository.getArticleById(articleId);
 
     const writerId = foundArticle.user.id;
+
     const thumbnailUrl = foundArticle.thumbnail;
 
     this.validateUser(writerId, userId, "remove");
@@ -131,7 +136,7 @@ export class ArticleService {
   async getArticlePerPage(
     perPageInfo: ArticlePerPageInfo,
   ): Promise<ArticlePagination> {
-    const { pageNumber, perPage, sorting } = perPageInfo;
+    const { perPage } = perPageInfo;
 
     const foundArticles =
       await this.articleRepository.getArticlePerPage(perPageInfo);

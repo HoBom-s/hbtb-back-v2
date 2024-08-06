@@ -10,7 +10,7 @@ export class ImageService {
 
     const ext = image.originalname.split(".").pop() as string;
 
-    const { buffer, ...restInfo } = image;
+    const { buffer } = image;
 
     const imageInfo: UploadOneImageData = { uniqueString, buffer, path, ext };
 

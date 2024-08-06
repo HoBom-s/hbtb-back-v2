@@ -18,6 +18,7 @@ class CacheHelper {
 
   async delCache(type: string) {
     const keys = await redisClient.KEYS(`redis_GET_/api/v2/${type}*`);
+
     if (keys.length) {
       await redisClient.DEL(keys);
     }

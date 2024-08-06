@@ -10,6 +10,7 @@ async function cacheMiddleware(
     const key = `redis_${req.method}_${req.originalUrl}`;
 
     const cacheData = await redisClient.get(key);
+
     if (!cacheData) {
       return next();
     }

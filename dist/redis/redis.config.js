@@ -8,7 +8,7 @@ exports.redisClient = (0, redis_1.createClient)({
     password: process.env.REDIS_PASSWORD,
     socket: {
         host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT, 10),
+        port: Number.parseInt(process.env.REDIS_PORT, 10),
     },
 });
 exports.redisClient.on("error", (error) => console.warn(`REDIS: ${error}`));

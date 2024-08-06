@@ -19,19 +19,19 @@ class TagService {
     getOneTagByTitle(title) {
         return this.tagRepository.getOneTagByTitle(title);
     }
-    createTag(newTagInfo) {
+    createTag(createTagRequestDto) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { title, path } = newTagInfo;
+            const { title } = createTagRequestDto;
             const foundTag = yield this.tagRepository.getOneTagByTitle(title);
             if (foundTag)
                 throw new error_middleware_1.CustomError(400, "Tag already exists.");
-            return this.tagRepository.createTag(newTagInfo);
+            return this.tagRepository.createTag(createTagRequestDto);
         });
     }
-    updateTag(tagId, updatedTagInfo) {
+    updateTag(tagId, updateTagRequestDto) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.tagRepository.getOneTagById(tagId);
-            yield this.tagRepository.updateTag(tagId, updatedTagInfo);
+            yield this.tagRepository.updateTag(tagId, updateTagRequestDto);
             const updatedTag = yield this.tagRepository.getOneTagById(tagId);
             return updatedTag;
         });

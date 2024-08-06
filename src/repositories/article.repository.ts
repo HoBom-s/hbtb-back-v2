@@ -2,12 +2,12 @@ import { Repository, Like } from "typeorm";
 import Article from "../entities/article.entity";
 import {
   ArticlePerPageInfo,
-  CreateArticleWithTagId,
-  UpdateArticleWithThumbnail,
+  CreateArticleWithUserAndTag,
 } from "../types/article.type";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
 import { PossibleNull } from "../types/common.type";
+import UpdateArticleRequestDto from "../dtos/article/updateArticleRequest.dto";
 
 export class ArticleRepository {
   private article: Repository<Article>;
@@ -17,9 +17,10 @@ export class ArticleRepository {
   }
 
   async createArticle(
-    newArticleInfoWithTagId: CreateArticleWithTagId,
+    newArticleInfo: CreateArticleWithUserAndTag,
   ): Promise<Article> {
-    const createdArticle = this.article.create(newArticleInfoWithTagId);
+    const createdArticle = this.article.create(newArticleInfo);
+
     if (!createdArticle) throw new CustomError(404, "Create article failed.");
 
     await this.article.save(createdArticle);
@@ -34,6 +35,7 @@ export class ArticleRepository {
         user: true,
       },
     });
+
     if (allArticles === undefined)
       throw new CustomError(404, "Get all articles failed.");
 
@@ -45,6 +47,7 @@ export class ArticleRepository {
       where: { path },
       relations: { user: true },
     });
+
     if (!foundArticle) return null;
 
     return foundArticle;
@@ -63,9 +66,15 @@ export class ArticleRepository {
 
   async updateArticle(
     id: string,
-    updatedInfoWithUrl: UpdateArticleWithThumbnail,
+    updateArticleRequestDto: UpdateArticleRequestDto,
+    thumbnailUrl?: string,
   ) {
-    const updateResult = await this.article.update(id, updatedInfoWithUrl);
+    updateArticleRequestDto = thumbnailUrl
+      ? { thumbnail: thumbnailUrl, ...updateArticleRequestDto }
+      : updateArticleRequestDto;
+
+    const updateResult = await this.article.update(id, updateArticleRequestDto);
+
     if (!updateResult.affected)
       throw new CustomError(404, "Update article failed: 0 affected.");
 
@@ -74,6 +83,7 @@ export class ArticleRepository {
 
   async removeArticle(articleId: string) {
     const deleteResult = await this.article.delete(articleId);
+
     if (!deleteResult.affected)
       throw new CustomError(404, "Delete article failed: 0 affected.");
 
@@ -121,6 +131,7 @@ export class ArticleRepository {
     const totalArticleCount = await this.getArticleCount();
 
     let totalPageCount: number;
+
     if (totalArticleCount % perPage === 0) {
       totalPageCount = totalArticleCount / perPage;
     } else {

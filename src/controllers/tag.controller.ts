@@ -1,14 +1,20 @@
 import { Request, NextFunction, Response } from "express";
 import { TagService } from "../services/tag.service";
 import { CustomError } from "../middlewares/error.middleware";
-import { CreateTag, UpdateTag } from "../types/tag.type";
+import validateDto from "../utils/dto.util";
+import CreateTagRequestDto from "../dtos/tag/createTagRequest.dto";
+import sendResponse from "../utils/response.util";
+import UpdateTagRequestDto from "../dtos/tag/updateTagRequest.dto";
+import Tag from "../entities/tag.entity";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import CacheHelper from "../helpers/cache.helper";
 
 export class TagController {
   private tagService: TagService;
+
   private authHelper: AuthHelper;
+
   private cacheHelper: CacheHelper;
 
   constructor() {
@@ -22,21 +28,25 @@ export class TagController {
       const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
-      const newTagInfo: CreateTag = req.body;
-      if (!newTagInfo)
+
+      const createTagRequestDto = await validateDto(
+        req.body,
+        CreateTagRequestDto,
+      );
+
+      if (!createTagRequestDto)
         throw new CustomError(
           400,
           "Error: Request body missing. Please provide the necessary data in the request body.",
         );
 
-      const createdTag = await this.tagService.createTag(newTagInfo);
+      const createdTag = await this.tagService.createTag(createTagRequestDto);
 
       await this.cacheHelper.delCache("tags");
 
-      return res.json({
-        status: 201,
-        message: "Create tag success.",
-        data: { createdTag, reissuedAccessToken },
+      return sendResponse(res, 201, "Create tag success.", {
+        createdTag,
+        reissuedAccessToken,
       });
     } catch (error) {
       next(error);
@@ -50,21 +60,28 @@ export class TagController {
       );
 
       const { id } = req.params;
-      const updateTagInfo: UpdateTag = req.body;
-      if (!id || !updateTagInfo)
+
+      const updateTagRequestDto: UpdateTagRequestDto = await validateDto(
+        req.body,
+        UpdateTagRequestDto,
+      );
+
+      if (!id || !updateTagRequestDto)
         throw new CustomError(
           400,
           "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
         );
 
-      const updatedTag = await this.tagService.updateTag(id, updateTagInfo);
+      const updatedTag: Tag = await this.tagService.updateTag(
+        id,
+        updateTagRequestDto,
+      );
 
       await this.cacheHelper.delCache("tags");
 
-      return res.json({
-        status: 201,
-        message: "Update tag success.",
-        data: { updatedTag, reissuedAccessToken },
+      return sendResponse(res, 201, "Update tag success.", {
+        updatedTag,
+        reissuedAccessToken,
       });
     } catch (error) {
       next(error);
@@ -74,7 +91,7 @@ export class TagController {
   async removeTag(req: Request & Auth, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(
+      const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
 
@@ -83,11 +100,13 @@ export class TagController {
           400,
           "Error: Required parameter missing. Please ensure that all required parameters are provided.",
         );
+
       await this.tagService.removeTag(id);
-      return res.json({
-        status: 201,
-        message: "Delete tag success.",
-        data: { reissuedAccessToken },
+
+      await this.cacheHelper.delCache("tags");
+
+      return sendResponse(res, 201, "Delete tag success.", {
+        reissuedAccessToken,
       });
     } catch (error) {
       next(error);
@@ -100,11 +119,7 @@ export class TagController {
 
       await this.cacheHelper.setCache(req, { foundTags });
 
-      return res.json({
-        status: 200,
-        message: "Get all tags success.",
-        data: { foundTags },
-      });
+      return sendResponse(res, 200, "Get all tags success.", { foundTags });
     } catch (error) {
       next(error);
     }
