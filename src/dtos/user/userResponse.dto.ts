@@ -9,6 +9,7 @@ class UserResponseDto {
 
   public static from(body: User) {
     const { password, ...restInfo } = body;
+
     return restInfo;
   }
 }

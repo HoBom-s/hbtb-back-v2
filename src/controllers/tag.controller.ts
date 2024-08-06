@@ -1,12 +1,13 @@
 import { Request, NextFunction, Response } from "express";
 import { TagService } from "../services/tag.service";
 import { CustomError } from "../middlewares/error.middleware";
-import { TUpdateTag } from "../types/tag.type";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
 import validateDto from "../utils/dto.util";
 import CreateTagRequestDto from "../dtos/tag/createTagRequest.dto";
 import sendResponse from "../utils/response.util";
+import UpdateTagRequestDto from "../dtos/tag/updateTagRequest.dto";
+import Tag from "../entities/tag.entity";
 
 export class TagController {
   private tagService: TagService;
@@ -51,19 +52,26 @@ export class TagController {
       );
 
       const { id } = req.params;
-      const updateTagInfo: TUpdateTag = req.body;
-      if (!id || !updateTagInfo)
+
+      const updateTagRequestDto: UpdateTagRequestDto = await validateDto(
+        req.body,
+        UpdateTagRequestDto,
+      );
+
+      if (!id || !updateTagRequestDto)
         throw new CustomError(
           400,
           "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.",
         );
 
-      await this.tagService.updateTag(id, updateTagInfo);
+      const updatedTag: Tag = await this.tagService.updateTag(
+        id,
+        updateTagRequestDto,
+      );
 
-      return res.json({
-        status: 201,
-        message: "Update tag success.",
-        data: { reissuedAccessToken },
+      return sendResponse(res, 201, "Update tag success.", {
+        updatedTag,
+        reissuedAccessToken,
       });
     } catch (error) {
       next(error);
@@ -73,16 +81,16 @@ export class TagController {
   async removeTag(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
+
       if (!id)
         throw new CustomError(
           400,
           "Error: Required parameter missing. Please ensure that all required parameters are provided.",
         );
+
       await this.tagService.removeTag(id);
-      return res.json({
-        status: 201,
-        message: "Delete tag success.",
-      });
+
+      return sendResponse(res, 201, "Delete tag success.");
     } catch (error) {
       next(error);
     }
@@ -92,11 +100,7 @@ export class TagController {
     try {
       const foundTags = await this.tagService.getAllTags();
 
-      return res.json({
-        status: 200,
-        message: "Get all tags success.",
-        data: foundTags,
-      });
+      return sendResponse(res, 200, "Get all tags success.", foundTags);
     } catch (error) {
       next(error);
     }
