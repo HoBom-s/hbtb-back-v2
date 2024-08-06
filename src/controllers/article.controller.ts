@@ -146,6 +146,8 @@ export class ArticleController {
 
       await this.articleService.removeArticle(id, userId);
 
+      await this.cacheHelper.delCache("articles");
+
       return sendResponse(res, 201, "Delete article success.", {
         reissuedAccessToken,
       });

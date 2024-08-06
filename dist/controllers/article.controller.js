@@ -105,6 +105,7 @@ class ArticleController {
                 if (!id)
                     throw new error_middleware_1.CustomError(400, "Error: Required parameter missing. Please ensure that all required parameters are provided.");
                 yield this.articleService.removeArticle(id, userId);
+                yield this.cacheHelper.delCache("articles");
                 return (0, response_util_1.default)(res, 201, "Delete article success.", {
                     reissuedAccessToken,
                 });
