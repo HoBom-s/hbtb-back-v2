@@ -1,9 +1,10 @@
 import { Repository } from "typeorm";
 import Tag from "../entities/tag.entity";
 import { myDataSource } from "../data-source";
-import { TCreateTag, TUpdateTag } from "../types/tag.type";
+import { TUpdateTag } from "../types/tag.type";
 import { CustomError } from "../middlewares/error.middleware";
 import { PossibleNull } from "../types/common.type";
+import CreateTagRequestDto from "../dtos/tag/createTagRequest.dto";
 
 export class TagRepository {
   private tag: Repository<Tag>;
@@ -25,8 +26,9 @@ export class TagRepository {
     return foundTag;
   }
 
-  async createTag(newTagInfo: TCreateTag): Promise<Tag> {
-    const createdTag = this.tag.create(newTagInfo);
+  async createTag(createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
+    const createdTag = this.tag.create(createTagRequestDto);
+
     if (!createdTag) throw new CustomError(404, "Create tag failed.");
 
     await this.tag.save(createdTag);

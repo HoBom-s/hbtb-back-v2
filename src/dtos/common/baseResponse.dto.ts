@@ -8,6 +8,7 @@ class BaseResponseDto<T> {
   constructor(statusCode: number, message: string, body?: T) {
     this.statusCode = statusCode;
     this.message = message;
+
     if (body !== undefined) {
       this.body = body;
     }

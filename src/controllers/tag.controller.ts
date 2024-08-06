@@ -1,9 +1,12 @@
 import { Request, NextFunction, Response } from "express";
 import { TagService } from "../services/tag.service";
 import { CustomError } from "../middlewares/error.middleware";
-import { TCreateTag, TUpdateTag } from "../types/tag.type";
+import { TUpdateTag } from "../types/tag.type";
 import { Auth } from "../types/auth.type";
 import AuthHelper from "../helpers/auth.helper";
+import validateDto from "../utils/dto.util";
+import CreateTagRequestDto from "../dtos/tag/createTagRequest.dto";
+import sendResponse from "../utils/response.util";
 
 export class TagController {
   private tagService: TagService;
@@ -18,19 +21,23 @@ export class TagController {
       const { reissuedAccessToken } = this.authHelper.validateAuthInfo(
         req.authInfo,
       );
-      const newTagInfo: TCreateTag = req.body;
-      if (!newTagInfo)
+
+      const createTagRequestDto = await validateDto(
+        req.body,
+        CreateTagRequestDto,
+      );
+
+      if (!createTagRequestDto)
         throw new CustomError(
           400,
           "Error: Request body missing. Please provide the necessary data in the request body.",
         );
 
-      const createdTag = await this.tagService.createTag(newTagInfo);
+      const createdTag = await this.tagService.createTag(createTagRequestDto);
 
-      return res.json({
-        status: 201,
-        message: "Create tag success.",
-        data: { createdTag, reissuedAccessToken },
+      return sendResponse(res, 201, "Create tag success.", {
+        createdTag,
+        reissuedAccessToken,
       });
     } catch (error) {
       next(error);

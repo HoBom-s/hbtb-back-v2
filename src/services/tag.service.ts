@@ -1,8 +1,9 @@
+import CreateTagRequestDto from "../dtos/tag/createTagRequest.dto";
 import Tag from "../entities/tag.entity";
 import { CustomError } from "../middlewares/error.middleware";
 import { TagRepository } from "../repositories/tag.repository";
 import { PossibleNull } from "../types/common.type";
-import { TCreateTag, TUpdateTag } from "../types/tag.type";
+import { TUpdateTag } from "../types/tag.type";
 
 export class TagService {
   private tagRepository: TagRepository;
@@ -14,13 +15,14 @@ export class TagService {
     return this.tagRepository.getOneTagByTitle(title);
   }
 
-  async createTag(newTagInfo: TCreateTag): Promise<Tag> {
-    const { title, path } = newTagInfo;
+  async createTag(createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
+    const { title } = createTagRequestDto;
 
     const foundTag = await this.tagRepository.getOneTagByTitle(title);
+
     if (foundTag) throw new CustomError(400, "Tag already exists.");
 
-    return this.tagRepository.createTag(newTagInfo);
+    return this.tagRepository.createTag(createTagRequestDto);
   }
 
   async updateTag(tagId: string, updatedTagInfo: TUpdateTag): Promise<Tag> {
