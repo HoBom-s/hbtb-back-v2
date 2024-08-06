@@ -21,9 +21,9 @@ class ArticleRepository {
     constructor() {
         this.article = data_source_1.myDataSource.getRepository(article_entity_1.default);
     }
-    createArticle(newArticleInfoWithTagId) {
+    createArticle(newArticleInfo) {
         return __awaiter(this, void 0, void 0, function* () {
-            const createdArticle = this.article.create(newArticleInfoWithTagId);
+            const createdArticle = this.article.create(newArticleInfo);
             if (!createdArticle)
                 throw new error_middleware_1.CustomError(404, "Create article failed.");
             yield this.article.save(createdArticle);
@@ -65,9 +65,11 @@ class ArticleRepository {
             return foundArticle;
         });
     }
-    updateArticle(id, updatedInfoWithUrl) {
+    updateArticle(id, updateArticleRequestDto, thumbnailUrl) {
         return __awaiter(this, void 0, void 0, function* () {
-            const updateResult = yield this.article.update(id, updatedInfoWithUrl);
+            updateArticleRequestDto = thumbnailUrl
+                ? Object.assign({ thumbnail: thumbnailUrl }, updateArticleRequestDto) : updateArticleRequestDto;
+            const updateResult = yield this.article.update(id, updateArticleRequestDto);
             if (!updateResult.affected)
                 throw new error_middleware_1.CustomError(404, "Update article failed: 0 affected.");
             return;

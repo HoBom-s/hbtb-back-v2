@@ -150,7 +150,7 @@ export class UserController {
 
       await this.userService.removeUser(id);
 
-      return sendResponse(res, 201, "Delete user success");
+      return sendResponse(res, 201, "Delete user success.");
     } catch (error) {
       next(error);
     }

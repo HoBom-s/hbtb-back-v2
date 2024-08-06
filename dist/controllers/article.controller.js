@@ -14,6 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ArticleController = void 0;
 const article_service_1 = require("../services/article.service");
+const createArticleRequest_dto_1 = __importDefault(require("../dtos/article/createArticleRequest.dto"));
+const dto_util_1 = __importDefault(require("../utils/dto.util"));
+const updateArticleRequest_dto_1 = __importDefault(require("../dtos/article/updateArticleRequest.dto"));
+const response_util_1 = __importDefault(require("../utils/response.util"));
 const article_type_1 = require("../types/article.type");
 const error_middleware_1 = require("../middlewares/error.middleware");
 const auth_helper_1 = __importDefault(require("../helpers/auth.helper"));
@@ -29,17 +33,14 @@ class ArticleController {
             try {
                 const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
                 const thumbnail = req.file;
-                const newArticleInfo = req.body;
-                if (!newArticleInfo)
+                const createArticleRequestDto = yield (0, dto_util_1.default)(req.body, createArticleRequest_dto_1.default);
+                if (!createArticleRequestDto)
                     throw new error_middleware_1.CustomError(400, "Error: Request body missing. Please provide the necessary data in the request body.");
-                const newArticleInfoWithUser = Object.assign({ thumbnail,
-                    userId }, newArticleInfo);
-                const createdArticle = yield this.articleService.createArticle(newArticleInfoWithUser);
+                const createdArticle = yield this.articleService.createArticle(userId, createArticleRequestDto, thumbnail);
                 yield this.cacheHelper.delCache("articles");
-                return res.json({
-                    status: 201,
-                    message: "Create article success.",
-                    data: { createdArticle, reissuedAccessToken },
+                return (0, response_util_1.default)(res, 201, "Create article success.", {
+                    createdArticle,
+                    reissuedAccessToken,
                 });
             }
             catch (error) {
@@ -54,10 +55,8 @@ class ArticleController {
                 if (!path)
                     throw new error_middleware_1.CustomError(400, "Error: Required parameter missing. Please ensure that all required parameters are provided.");
                 const foundArticle = yield this.articleService.getArticleFindByPath(path);
-                return res.json({
-                    status: 200,
-                    message: "Get article by path success.",
-                    data: { foundArticle },
+                return (0, response_util_1.default)(res, 200, "Get article by path success.", {
+                    foundArticle,
                 });
             }
             catch (error) {
@@ -70,11 +69,7 @@ class ArticleController {
             try {
                 const allArticles = yield this.articleService.getAllArticles();
                 yield this.cacheHelper.setCache(req, { allArticles });
-                return res.json({
-                    status: 200,
-                    message: "Get article success.",
-                    data: { allArticles },
-                });
+                return (0, response_util_1.default)(res, 200, "Get article success.", { allArticles });
             }
             catch (error) {
                 next(error);
@@ -87,16 +82,14 @@ class ArticleController {
                 const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
                 const { id } = req.params;
                 const thumbnail = req.file;
-                const updatedBody = req.body;
-                if (!id || !updatedBody)
+                const updateArticleRequestDto = yield (0, dto_util_1.default)(req.body, updateArticleRequest_dto_1.default);
+                if (!id || !updateArticleRequestDto)
                     throw new error_middleware_1.CustomError(400, "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.");
-                const updatedInfo = Object.assign({ thumbnail }, updatedBody);
-                const updatedArticle = yield this.articleService.updateArticle(id, userId, updatedInfo);
+                const updatedArticle = yield this.articleService.updateArticle(id, userId, updateArticleRequestDto, thumbnail);
                 yield this.cacheHelper.delCache("articles");
-                return res.json({
-                    status: 201,
-                    message: "Update article success.",
-                    data: { updatedArticle, reissuedAccessToken },
+                return (0, response_util_1.default)(res, 201, "Update article success.", {
+                    updatedArticle,
+                    reissuedAccessToken,
                 });
             }
             catch (error) {
@@ -112,10 +105,8 @@ class ArticleController {
                 if (!id)
                     throw new error_middleware_1.CustomError(400, "Error: Required parameter missing. Please ensure that all required parameters are provided.");
                 yield this.articleService.removeArticle(id, userId);
-                return res.json({
-                    status: 201,
-                    message: "Delete article success.",
-                    data: { reissuedAccessToken },
+                return (0, response_util_1.default)(res, 201, "Delete article success.", {
+                    reissuedAccessToken,
                 });
             }
             catch (error) {
@@ -130,10 +121,8 @@ class ArticleController {
                 if (!keyword)
                     throw new error_middleware_1.CustomError(400, "Error: Required query parameter 'keyword' missing. Please include the 'keyword' parameter in your request query.");
                 const foundArticles = yield this.articleService.searchArticle(keyword);
-                return res.json({
-                    status: 200,
-                    message: "Get searched articles success.",
-                    data: { foundArticles },
+                return (0, response_util_1.default)(res, 200, "Get searched articles success.", {
+                    foundArticles,
                 });
             }
             catch (error) {
@@ -158,10 +147,8 @@ class ArticleController {
                 };
                 const articlesAndPageCount = yield this.articleService.getArticlePerPage(perPageInfo);
                 yield this.cacheHelper.setCache(req, { articlesAndPageCount });
-                return res.json({
-                    status: 200,
-                    message: "Get articles per page success.",
-                    data: { articlesAndPageCount },
+                return (0, response_util_1.default)(res, 200, "Get articles per page success.", {
+                    articlesAndPageCount,
                 });
             }
             catch (error) {

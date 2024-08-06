@@ -15,6 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TagController = void 0;
 const tag_service_1 = require("../services/tag.service");
 const error_middleware_1 = require("../middlewares/error.middleware");
+const dto_util_1 = __importDefault(require("../utils/dto.util"));
+const createTagRequest_dto_1 = __importDefault(require("../dtos/tag/createTagRequest.dto"));
+const response_util_1 = __importDefault(require("../utils/response.util"));
+const updateTagRequest_dto_1 = __importDefault(require("../dtos/tag/updateTagRequest.dto"));
 const auth_helper_1 = __importDefault(require("../helpers/auth.helper"));
 const cache_helper_1 = __importDefault(require("../helpers/cache.helper"));
 class TagController {
@@ -27,15 +31,14 @@ class TagController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
-                const newTagInfo = req.body;
-                if (!newTagInfo)
+                const createTagRequestDto = yield (0, dto_util_1.default)(req.body, createTagRequest_dto_1.default);
+                if (!createTagRequestDto)
                     throw new error_middleware_1.CustomError(400, "Error: Request body missing. Please provide the necessary data in the request body.");
-                const createdTag = yield this.tagService.createTag(newTagInfo);
+                const createdTag = yield this.tagService.createTag(createTagRequestDto);
                 yield this.cacheHelper.delCache("tags");
-                return res.json({
-                    status: 201,
-                    message: "Create tag success.",
-                    data: { createdTag, reissuedAccessToken },
+                return (0, response_util_1.default)(res, 201, "Create tag success.", {
+                    createdTag,
+                    reissuedAccessToken,
                 });
             }
             catch (error) {
@@ -48,15 +51,14 @@ class TagController {
             try {
                 const { reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
                 const { id } = req.params;
-                const updateTagInfo = req.body;
-                if (!id || !updateTagInfo)
+                const updateTagRequestDto = yield (0, dto_util_1.default)(req.body, updateTagRequest_dto_1.default);
+                if (!id || !updateTagRequestDto)
                     throw new error_middleware_1.CustomError(400, "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.");
-                const updatedTag = yield this.tagService.updateTag(id, updateTagInfo);
+                const updatedTag = yield this.tagService.updateTag(id, updateTagRequestDto);
                 yield this.cacheHelper.delCache("tags");
-                return res.json({
-                    status: 201,
-                    message: "Update tag success.",
-                    data: { updatedTag, reissuedAccessToken },
+                return (0, response_util_1.default)(res, 201, "Update tag success.", {
+                    updatedTag,
+                    reissuedAccessToken,
                 });
             }
             catch (error) {
@@ -68,14 +70,13 @@ class TagController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const { userId, reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
+                const { reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
                 if (!id)
                     throw new error_middleware_1.CustomError(400, "Error: Required parameter missing. Please ensure that all required parameters are provided.");
                 yield this.tagService.removeTag(id);
-                return res.json({
-                    status: 201,
-                    message: "Delete tag success.",
-                    data: { reissuedAccessToken },
+                yield this.cacheHelper.delCache("tags");
+                return (0, response_util_1.default)(res, 201, "Delete tag success.", {
+                    reissuedAccessToken,
                 });
             }
             catch (error) {
@@ -88,11 +89,7 @@ class TagController {
             try {
                 const foundTags = yield this.tagService.getAllTags();
                 yield this.cacheHelper.setCache(req, { foundTags });
-                return res.json({
-                    status: 200,
-                    message: "Get all tags success.",
-                    data: { foundTags },
-                });
+                return (0, response_util_1.default)(res, 200, "Get all tags success.", { foundTags });
             }
             catch (error) {
                 next(error);

@@ -103,6 +103,8 @@ export class TagController {
 
       await this.tagService.removeTag(id);
 
+      await this.cacheHelper.delCache("tags");
+
       return sendResponse(res, 201, "Delete tag success.", {
         reissuedAccessToken,
       });

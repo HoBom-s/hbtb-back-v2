@@ -8,17 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ArticleService = void 0;
 const error_middleware_1 = require("../middlewares/error.middleware");
@@ -33,34 +22,26 @@ class ArticleService {
         this.userService = new user_service_1.UserService();
         this.imageService = new image_service_1.ImageService();
     }
-    createArticle(newArticleInfo) {
+    createArticle(userId, createArticleRequestDto, thumbnail) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { thumbnail, title, subtitle, contents, userId, path, tags } = newArticleInfo;
+            const { path, tags } = createArticleRequestDto;
             const foundArticle = yield this.getArticleFindByPath(path);
             if (foundArticle)
                 throw new error_middleware_1.CustomError(400, "Article already exists.");
             const tagsStringToArr = tags.replace(/\s/g, "").split(",");
             const tagArr = [];
-            for (const tag of tagsStringToArr) {
-                const foundTag = yield this.tagService.getOneTagByTitle(tag);
+            for (const tagTitle of tagsStringToArr) {
+                const foundTag = yield this.tagService.getOneTagByTitle(tagTitle);
                 if (!foundTag)
                     throw new error_middleware_1.CustomError(404, "Tag not found.");
                 tagArr.push(foundTag);
             }
-            const articleWriter = yield this.userService.findOneUserById(userId);
-            if (!articleWriter)
+            const writer = yield this.userService.findOneUserById(userId);
+            if (!writer)
                 throw new error_middleware_1.CustomError(404, "User(writer) not found.");
             const thumbnailUrl = yield this.imageService.uploadOneImage({ image: thumbnail, uniqueString: path }, "thumbnail");
-            const newArticleInfoWithTagId = {
-                thumbnail: thumbnailUrl,
-                title,
-                subtitle,
-                contents,
-                user: articleWriter,
-                path,
-                tags: tagArr,
-            };
-            const createdArticle = yield this.articleRepository.createArticle(newArticleInfoWithTagId);
+            const newArticleInfo = Object.assign(Object.assign({}, createArticleRequestDto), { thumbnail: thumbnailUrl, tags: tagArr, user: writer });
+            const createdArticle = yield this.articleRepository.createArticle(newArticleInfo);
             return createdArticle;
         });
     }
@@ -71,21 +52,20 @@ class ArticleService {
         path = "/" + path;
         return this.articleRepository.getArticleFindByPath(path);
     }
-    updateArticle(articleId, userId, updatedInfo) {
+    updateArticle(id, userId, updateArticleRequestDto, thumbnail) {
         return __awaiter(this, void 0, void 0, function* () {
-            const foundArticle = yield this.articleRepository.getArticleById(articleId);
+            const foundArticle = yield this.articleRepository.getArticleById(id);
             const articlePath = foundArticle.path;
             const writerId = foundArticle.user.id;
             this.validateUser(writerId, userId, "update");
-            const { thumbnail } = updatedInfo, updatedBodyInfo = __rest(updatedInfo, ["thumbnail"]);
-            if (!thumbnail) {
-                yield this.articleRepository.updateArticle(articleId, updatedBodyInfo);
+            if (thumbnail) {
+                const thumbnailUrl = yield this.imageService.uploadOneImage({ image: thumbnail, uniqueString: articlePath }, "thumbnail");
+                yield this.articleRepository.updateArticle(id, updateArticleRequestDto, thumbnailUrl);
             }
             else {
-                const thumbnailUrl = yield this.imageService.uploadOneImage({ image: thumbnail, uniqueString: articlePath }, "thumbnail");
-                yield this.articleRepository.updateArticle(articleId, Object.assign({ thumbnail: thumbnailUrl }, updatedBodyInfo));
+                yield this.articleRepository.updateArticle(id, updateArticleRequestDto);
             }
-            const updatedArticle = yield this.articleRepository.getArticleById(articleId);
+            const updatedArticle = yield this.articleRepository.getArticleById(id);
             return updatedArticle;
         });
     }
@@ -104,7 +84,7 @@ class ArticleService {
     }
     getArticlePerPage(perPageInfo) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { pageNumber, perPage, sorting } = perPageInfo;
+            const { perPage } = perPageInfo;
             const foundArticles = yield this.articleRepository.getArticlePerPage(perPageInfo);
             const totalPageCount = yield this.articleRepository.getTotalPageCount(perPage);
             return { foundArticles, totalPageCount };

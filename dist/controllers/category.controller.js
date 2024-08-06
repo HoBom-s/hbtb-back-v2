@@ -16,6 +16,10 @@ exports.CategoryController = void 0;
 const category_service_1 = require("../services/category.service");
 const error_middleware_1 = require("../middlewares/error.middleware");
 const auth_helper_1 = __importDefault(require("../helpers/auth.helper"));
+const createCategoryRequest_dto_1 = __importDefault(require("../dtos/category/createCategoryRequest.dto"));
+const updateCategoryRequest_dto_1 = __importDefault(require("../dtos/category/updateCategoryRequest.dto"));
+const dto_util_1 = __importDefault(require("../utils/dto.util"));
+const response_util_1 = __importDefault(require("../utils/response.util"));
 class CategoryController {
     constructor() {
         this.categoryService = new category_service_1.CategoryService();
@@ -25,10 +29,8 @@ class CategoryController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const allCategories = yield this.categoryService.getAllCategories();
-                return res.json({
-                    status: 200,
-                    message: "Get all categories success.",
-                    data: { allCategories },
+                return (0, response_util_1.default)(res, 200, "Get all categories success.", {
+                    allCategories,
                 });
             }
             catch (error) {
@@ -40,14 +42,13 @@ class CategoryController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
-                const newCategoryInfo = req.body;
-                if (!newCategoryInfo)
+                const createCategoryRequestDto = yield (0, dto_util_1.default)(req.body, createCategoryRequest_dto_1.default);
+                if (!createCategoryRequestDto)
                     throw new error_middleware_1.CustomError(400, "Error: Request body missing. Please provide the necessary data in the request body.");
-                const createdCategory = yield this.categoryService.createCategory(newCategoryInfo);
-                return res.json({
-                    status: 200,
-                    message: "Create new category success.",
-                    data: { createdCategory, reissuedAccessToken },
+                const createdCategory = yield this.categoryService.createCategory(createCategoryRequestDto);
+                return (0, response_util_1.default)(res, 200, "Create new category success.", {
+                    createdCategory,
+                    reissuedAccessToken,
                 });
             }
             catch (error) {
@@ -60,15 +61,13 @@ class CategoryController {
             try {
                 const { reissuedAccessToken } = this.authHelper.validateAuthInfo(req.authInfo);
                 const { id } = req.params;
-                const updatedInfo = req.body;
-                if (!id || !updatedInfo)
+                const updateCategoryRequestDto = yield (0, dto_util_1.default)(req.body, updateCategoryRequest_dto_1.default);
+                if (!id || !updateCategoryRequestDto)
                     throw new error_middleware_1.CustomError(400, "Error: Required request data missing. Please provide either the request body or the necessary parameters in the request.");
-                const updatedInfoWithId = Object.assign({ id }, updatedInfo);
-                const updatedCategory = yield this.categoryService.updateCategory(updatedInfoWithId);
-                return res.json({
-                    status: 201,
-                    message: "Update category success.",
-                    data: { updatedCategory, reissuedAccessToken },
+                const updatedCategory = yield this.categoryService.updateCategory(id, updateCategoryRequestDto);
+                return (0, response_util_1.default)(res, 201, "Update category success.", {
+                    updatedCategory,
+                    reissuedAccessToken,
                 });
             }
             catch (error) {
@@ -84,10 +83,8 @@ class CategoryController {
                 if (!id)
                     throw new error_middleware_1.CustomError(400, "Error: Required parameter missing. Please ensure that all required parameters are provided.");
                 yield this.categoryService.removeCategory(id);
-                return res.json({
-                    status: 201,
-                    massage: "Delete category success.",
-                    data: { reissuedAccessToken },
+                return (0, response_util_1.default)(res, 201, "Delete category success.", {
+                    reissuedAccessToken,
                 });
             }
             catch (error) {

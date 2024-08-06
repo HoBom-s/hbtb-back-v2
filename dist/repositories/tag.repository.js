@@ -36,18 +36,18 @@ class TagRepository {
             return foundTag;
         });
     }
-    createTag(newTagInfo) {
+    createTag(createTagRequestDto) {
         return __awaiter(this, void 0, void 0, function* () {
-            const createdTag = this.tag.create(newTagInfo);
+            const createdTag = this.tag.create(createTagRequestDto);
             if (!createdTag)
                 throw new error_middleware_1.CustomError(404, "Create tag failed.");
             yield this.tag.save(createdTag);
             return createdTag;
         });
     }
-    updateTag(id, updatedTagInfo) {
+    updateTag(id, updateTagRequestDto) {
         return __awaiter(this, void 0, void 0, function* () {
-            const updateResult = yield this.tag.update(id, updatedTagInfo);
+            const updateResult = yield this.tag.update(id, updateTagRequestDto);
             if (!updateResult.affected)
                 throw new error_middleware_1.CustomError(404, "Update tag failed: 0 affected.");
             return;

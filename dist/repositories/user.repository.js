@@ -37,32 +37,29 @@ class UserRepository {
             return foundUser;
         });
     }
-    createUser(newUserInfo) {
+    createUser(createUserRequestDto, profileImgUrl) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { nickname, password, profileImg, introduction } = newUserInfo;
+            const { password } = createUserRequestDto;
             const hashedPassword = bcrypt_1.default.hashSync(password, parseInt(process.env.SALT));
-            const userInfo = {
-                nickname,
-                password: hashedPassword,
-                profileImg,
-                introduction,
-            };
-            const createdUser = this.user.create(userInfo);
+            const newUserInfo = Object.assign(Object.assign({}, createUserRequestDto), { password: hashedPassword, profileImg: profileImgUrl });
+            const createdUser = this.user.create(newUserInfo);
             if (!createdUser)
                 throw new error_middleware_1.CustomError(404, "Create user failed.");
             yield this.user.save(createdUser);
             return createdUser;
         });
     }
-    updateUser(id, updates) {
+    updateUser(id, updateUserRequestDto, profileImgUrl) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isPasswordUpdate = Object.keys(updates).includes("password");
+            const isPasswordUpdate = Object.keys(updateUserRequestDto).includes("password");
             if (isPasswordUpdate) {
-                const password = updates.password;
+                const password = updateUserRequestDto.password;
                 const hashedPassword = bcrypt_1.default.hashSync(password, parseInt(process.env.SALT));
-                updates.password = hashedPassword;
+                updateUserRequestDto.password = hashedPassword;
             }
-            const updateResult = yield this.user.update(id, updates);
+            updateUserRequestDto = profileImgUrl
+                ? Object.assign(Object.assign({}, updateUserRequestDto), { profileImg: profileImgUrl }) : updateUserRequestDto;
+            const updateResult = yield this.user.update(id, updateUserRequestDto);
             if (!updateResult.affected)
                 throw new error_middleware_1.CustomError(404, "Update user failed: 0 affected.");
             return;

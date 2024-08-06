@@ -24,7 +24,7 @@ function dailyOptions(level) {
     };
 }
 const winstonLogger = (0, winston_1.createLogger)({
-    format: combine(label({ label: "Hobom-TechBlog" }), timestamp({
+    format: combine(label({ label: "HoBom-TechBlog" }), timestamp({
         format: koreanTime,
     }), logFormat),
     transports: [new winston_daily_rotate_file_1.default(dailyOptions("info"))],
