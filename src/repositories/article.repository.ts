@@ -1,9 +1,10 @@
 import { Repository, Like } from "typeorm";
 import Article from "../entities/article.entity";
-import { TCreateArticleWithTagId, TUpdateArticle } from "../types/article.type";
+import { TCreateArticleWithTagId } from "../types/article.type";
 import { myDataSource } from "../data-source";
 import { CustomError } from "../middlewares/error.middleware";
 import { PossibleNull } from "../types/common.type";
+import UpdateArticleRequestDto from "../dtos/article/updateArticleRequest.dto";
 
 export class ArticleRepository {
   private article: Repository<Article>;
@@ -16,6 +17,7 @@ export class ArticleRepository {
     newArticleInfoWithTagId: TCreateArticleWithTagId,
   ): Promise<Article> {
     const createdArticle = this.article.create(newArticleInfoWithTagId);
+
     if (!createdArticle) throw new CustomError(404, "Create article failed.");
 
     await this.article.save(createdArticle);
@@ -29,6 +31,7 @@ export class ArticleRepository {
         user: true,
       },
     });
+
     if (allArticles === undefined)
       throw new CustomError(404, "Get all articles failed.");
 
@@ -40,6 +43,7 @@ export class ArticleRepository {
       where: { path },
       relations: { user: true },
     });
+
     if (!foundArticle) return null;
 
     return foundArticle;
@@ -50,13 +54,18 @@ export class ArticleRepository {
       where: { id },
       relations: { user: true },
     });
+
     if (!foundArticle) throw new CustomError(404, "Original aticle not found.");
 
     return foundArticle;
   }
 
-  async updateArticle(id: string, updatedInfo: TUpdateArticle) {
-    const updateResult = await this.article.update(id, updatedInfo);
+  async updateArticle(
+    id: string,
+    updateArticleREquestDto: UpdateArticleRequestDto,
+  ) {
+    const updateResult = await this.article.update(id, updateArticleREquestDto);
+
     if (!updateResult.affected)
       throw new CustomError(404, "Update article failed: 0 affected.");
 
@@ -65,6 +74,7 @@ export class ArticleRepository {
 
   async removeArticle(articleId: string) {
     const deleteResult = await this.article.delete(articleId);
+
     if (!deleteResult.affected)
       throw new CustomError(404, "Delete article failed: 0 affected.");
 
@@ -110,6 +120,7 @@ export class ArticleRepository {
     const totalArticleCount = await this.getArticleCount();
 
     let totalPageCount: number;
+
     if (totalArticleCount % perPage === 0) {
       totalPageCount = totalArticleCount / perPage;
     } else {

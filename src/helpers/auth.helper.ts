@@ -76,6 +76,7 @@ class AuthHelper {
       );
 
     const { userId, reissuedAccessToken } = authInfo;
+
     if (!userId)
       throw new CustomError(401, "Error: userId missing in req.authInfo.");
 
