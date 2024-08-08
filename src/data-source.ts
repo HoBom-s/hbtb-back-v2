@@ -11,6 +11,7 @@ export const myDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DB,
   entities: ["./dist/**/*.entity.js"],
+  charset: "utf8mb4",
   logging: true,
   synchronize: false,
 });

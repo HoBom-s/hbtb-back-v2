@@ -13,7 +13,10 @@ function sendResponse<T>(
     return res.status(responseDto.statusCode).json(responseDto.toResponse());
   }
 
-  return res.status(responseDto.statusCode).send(responseDto.message);
+  return res
+    .status(responseDto.statusCode)
+    .setHeader("Content-Type", "application/json; charset=utf-8")
+    .send(responseDto.message);
 }
 
 export default sendResponse;

@@ -3,19 +3,19 @@ class BaseResponseDto<T> {
 
   message: string;
 
-  body?: T;
+  data?: T;
 
-  constructor(statusCode: number, message: string, body?: T) {
+  constructor(statusCode: number, message: string, data?: T) {
     this.statusCode = statusCode;
     this.message = message;
 
-    if (body !== undefined) {
-      this.body = body;
+    if (data !== undefined) {
+      this.data = data;
     }
   }
 
   toResponse(): BaseResponseDto<T> {
-    return new BaseResponseDto(this.statusCode, this.message, this.body);
+    return new BaseResponseDto(this.statusCode, this.message, this.data);
   }
 }
 
