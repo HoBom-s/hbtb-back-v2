@@ -19,6 +19,7 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const api_spec_1 = __importDefault(require("./swagger/api-spec"));
 const morgan_util_1 = __importDefault(require("./utils/morgan.util"));
 const redis_config_1 = require("./redis/redis.config");
+const backup_runner_1 = __importDefault(require("./backups/backup.runner"));
 (0, dotenv_1.config)();
 data_source_1.myDataSource
     .initialize()
@@ -47,6 +48,7 @@ const server = app.listen(process.env.DB_PORT, () => {
     if (process.send)
         process.send("ready");
     console.log(`SERVER IS RUNNING ON PORT ${process.env.DB_PORT}`);
+    (0, backup_runner_1.default)();
 });
 process.on("SIGINT", () => {
     server.close(() => {
