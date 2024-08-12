@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const child_process_1 = require("child_process");
-const backupScriptPath = path_1.default.join(__dirname, "article.backup.script.js");
+const backupScriptPath = path_1.default.join(__dirname, "article.backup.js");
 function runBackupScript() {
     (0, child_process_1.execFile)("node", [backupScriptPath], (error, stdout, stderr) => {
         if (error) {

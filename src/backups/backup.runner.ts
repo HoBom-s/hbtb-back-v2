@@ -1,7 +1,7 @@
 import path from "path";
 import { execFile } from "child_process";
 
-const backupScriptPath = path.join(__dirname, "article.backup.script.js");
+const backupScriptPath = path.join(__dirname, "article.backup.js");
 
 function runBackupScript() {
   execFile("node", [backupScriptPath], (error, stdout, stderr) => {
