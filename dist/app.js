@@ -48,7 +48,7 @@ const server = app.listen(process.env.DB_PORT, () => {
     if (process.send)
         process.send("ready");
     console.log(`SERVER IS RUNNING ON PORT ${process.env.DB_PORT}`);
-    (0, backup_runner_1.default)();
+    backup_runner_1.default.start();
 });
 process.on("SIGINT", () => {
     server.close(() => {

@@ -49,7 +49,7 @@ app.use(errorMiddleware);
 const server = app.listen(process.env.DB_PORT, () => {
   if (process.send) process.send("ready");
   console.log(`SERVER IS RUNNING ON PORT ${process.env.DB_PORT}`);
-  runBackupScript();
+  runBackupScript.start();
 });
 
 process.on("SIGINT", () => {

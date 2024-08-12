@@ -5,7 +5,8 @@ import path from "path";
 
 config();
 
-const TODAY = new Date().toISOString().slice(0, 10);
+// const TODAY = new Date().toISOString().slice(0, 10);
+const TODAY = new Date().toISOString();
 
 const DB_HOST = process.env.DB_HOST!;
 const DB_USERNAME = process.env.DB_USERNAME;
