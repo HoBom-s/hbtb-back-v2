@@ -7,7 +7,9 @@ const path_1 = __importDefault(require("path"));
 const child_process_1 = require("child_process");
 const node_cron_1 = __importDefault(require("node-cron"));
 const backupScriptPath = path_1.default.join(__dirname, "article.backup.js");
-const runBackupScript = node_cron_1.default.schedule("30 13 * * *", () => {
+const runBackupScript = node_cron_1.default.schedule(
+// "0 0 * * 0",
+"* * * * *", () => {
     (0, child_process_1.execFile)("node", [backupScriptPath], (error, stdout, stderr) => {
         if (error) {
             console.error(`Error executing backup script: ${error}`);
