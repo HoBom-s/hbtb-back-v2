@@ -4,18 +4,18 @@ import { createWriteStream } from "fs";
 import { mkdir } from "fs/promises";
 import { access, constants } from "node:fs/promises";
 import path from "path";
+import {
+  ARTICLE_TABLE,
+  BACKUP_DIR,
+  DB_HOST,
+  DB_NAME,
+  DB_PASSWORD,
+  DB_USERNAME,
+} from "../common/constant";
 
 config();
 
 const TODAY = new Date().toISOString().slice(0, 10);
-
-const DB_HOST = process.env.DB_HOST!;
-const DB_USERNAME = process.env.DB_USERNAME;
-const DB_PASSWORD = process.env.DB_PASSWORD;
-const DB_NAME = process.env.DB_DB;
-const ARTICLE_TABLE = "article";
-
-const BACKUP_DIR = path.join(process.cwd(), "../backups");
 
 async function ensureBackupDirExists() {
   try {
@@ -39,9 +39,9 @@ async function createBackupScript() {
     "-h",
     DB_HOST,
     "-u",
-    `${DB_USERNAME}`,
+    DB_USERNAME,
     `-p${DB_PASSWORD}`,
-    `${DB_NAME}`,
+    DB_NAME,
     ARTICLE_TABLE,
   ]);
 

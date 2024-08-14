@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const child_process_1 = require("child_process");
 const node_cron_1 = __importDefault(require("node-cron"));
-const backupScriptPath = path_1.default.join(__dirname, "article.backup.js");
+const backupScriptPath = path_1.default.join(__dirname, "backup.script.js");
+// 매주 토요일에서 일요일 넘어가는 자정 실행
 const runBackupScript = node_cron_1.default.schedule(
 // "0 0 * * 0",
 "* * * * *", () => {

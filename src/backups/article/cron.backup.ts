@@ -2,8 +2,9 @@ import path from "path";
 import { execFile } from "child_process";
 import cron from "node-cron";
 
-const backupScriptPath = path.join(__dirname, "article.backup.js");
+const backupScriptPath = path.join(__dirname, "backup.script.js");
 
+// 매주 토요일에서 일요일 넘어가는 자정 실행
 const runBackupScript = cron.schedule(
   "0 0 * * 0",
   () => {

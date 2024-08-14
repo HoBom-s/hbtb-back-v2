@@ -14,7 +14,8 @@ import swaggerUi from "swagger-ui-express";
 import apiSpec from "./swagger/api-spec";
 import morganHandler from "./utils/morgan.util";
 import { redisConnection } from "./redis/redis.config";
-import runBackupScript from "./backups/backup.runner";
+import runBackupScript from "./backups/article/cron.backup";
+import runCleanupScript from "./backups/cleanup/cron.cleanup";
 
 config();
 
@@ -50,6 +51,7 @@ const server = app.listen(process.env.DB_PORT, () => {
   if (process.send) process.send("ready");
   console.log(`SERVER IS RUNNING ON PORT ${process.env.DB_PORT}`);
   runBackupScript.start();
+  runCleanupScript.start();
 });
 
 process.on("SIGINT", () => {

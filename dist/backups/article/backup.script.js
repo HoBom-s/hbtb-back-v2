@@ -18,37 +18,32 @@ const fs_1 = require("fs");
 const promises_1 = require("fs/promises");
 const promises_2 = require("node:fs/promises");
 const path_1 = __importDefault(require("path"));
+const constant_1 = require("../common/constant");
 (0, dotenv_1.config)();
 const TODAY = new Date().toISOString().slice(0, 10);
-const DB_HOST = process.env.DB_HOST;
-const DB_USERNAME = process.env.DB_USERNAME;
-const DB_PASSWORD = process.env.DB_PASSWORD;
-const DB_NAME = process.env.DB_DB;
-const ARTICLE_TABLE = "article";
-const BACKUP_DIR = path_1.default.join(process.cwd(), "../backups");
 function ensureBackupDirExists() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield (0, promises_2.access)(BACKUP_DIR, promises_2.constants.F_OK);
+            yield (0, promises_2.access)(constant_1.BACKUP_DIR, promises_2.constants.F_OK);
         }
         catch (_a) {
-            yield (0, promises_1.mkdir)(BACKUP_DIR, { recursive: true });
+            yield (0, promises_1.mkdir)(constant_1.BACKUP_DIR, { recursive: true });
         }
     });
 }
 function createBackupScript() {
     return __awaiter(this, void 0, void 0, function* () {
         yield ensureBackupDirExists();
-        const BACKUP_PATH = path_1.default.join(BACKUP_DIR, `${DB_NAME}_${ARTICLE_TABLE}_backup_${TODAY}.sql`);
+        const BACKUP_PATH = path_1.default.join(constant_1.BACKUP_DIR, `${constant_1.DB_NAME}_${constant_1.ARTICLE_TABLE}_backup_${TODAY}.sql`);
         const writeStream = (0, fs_1.createWriteStream)(BACKUP_PATH);
         const dumpCommand = (0, child_process_1.spawn)("mysqldump", [
             "-h",
-            DB_HOST,
+            constant_1.DB_HOST,
             "-u",
-            `${DB_USERNAME}`,
-            `-p${DB_PASSWORD}`,
-            `${DB_NAME}`,
-            ARTICLE_TABLE,
+            constant_1.DB_USERNAME,
+            `-p${constant_1.DB_PASSWORD}`,
+            constant_1.DB_NAME,
+            constant_1.ARTICLE_TABLE,
         ]);
         dumpCommand.stdout
             .pipe(writeStream)
