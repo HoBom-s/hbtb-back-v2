@@ -8,7 +8,7 @@ async function removeOldBackups() {
   try {
     const files = await readdir(BACKUP_DIR);
 
-    files.map(async (file) => {
+    const removePromises = files.map(async (file) => {
       const filePath = path.join(BACKUP_DIR, file);
       const fileStat = await stat(filePath);
 
@@ -22,6 +22,9 @@ async function removeOldBackups() {
         console.log("Deleted old backup file:", file);
       }
     });
+
+    await Promise.all(removePromises);
+    console.log("Deleted old backup files completed.");
   } catch (error) {
     console.log("Error removing old backups:", error);
   }
