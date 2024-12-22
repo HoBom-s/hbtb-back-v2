@@ -4,7 +4,7 @@
 **호봄 테크 블로그**는 우리의 개발 여정을 기록하고 공유하기 위한 서비스 입니다.
 
 **HoBom project** is named after our initial, has begun to freely do all the development we want regardless of companies' technical limitation.  
-**Hobom Tech Blog** is kind of an archive where we can record the content of our wildest dreams: **https://hbtb.vercel.app**
+**Hobom Tech Blog** is kind of an archive where we can record the content of our wildest dreams.
 
 <br/>
 
